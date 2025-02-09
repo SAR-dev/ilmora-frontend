@@ -16,15 +16,17 @@ const Navbar = () => {
                 <Link to="/" className="text-lg">
                     Ilmora
                 </Link>
+                <div className="px-2 py-1 ml-2 rounded-lg text-xs bg-primary text-primary-content uppercase">TEACHER</div>
             </div>
             <div className="navbar-center">
             </div>
             <div className="navbar-end">
-                <button className="btn btn-ghost btn-circle" onClick={toggleDrawer}>
+                <button className="btn gap-2" onClick={toggleDrawer}>
                     <img
-                        className="size-8 object-cover rounded-full"
+                        className="size-6 object-cover rounded-full"
                         src="https://atg-prod-scalar.s3.amazonaws.com/studentpower/media/user%20avatar.png"
                     />
+                    Sayed Rafi
                 </button>
             </div>
             <Drawer

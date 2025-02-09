@@ -30,10 +30,6 @@ const HomePage = () => {
             <ClassCardMin />
           </div>
           <div>
-            <div>Teacher Info</div>
-            <hr />
-          </div>
-          <div>
             <div>Class Stats</div>
             <hr />
           </div>
@@ -42,6 +38,7 @@ const HomePage = () => {
             <div>Student List</div>
             <div>Routine List</div>
             <div>Class List</div>
+            <div>Class Stats</div>
             <hr />
           </div>
         </div>
