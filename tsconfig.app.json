@@ -24,12 +24,6 @@
 
     // imports
     "baseUrl": "./src",
-    "paths": {
-      "@pages/*":["pages/*"],
-      "@components/*":["components/*"],
-      "@assets": ["assets/*"],
-      "@layouts": ["layouts/*"],
-    }
   },
   "include": ["src"]
 }

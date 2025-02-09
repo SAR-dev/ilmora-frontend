@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router";
-import NotFound from "@pages/NotFound.";
-import HomePage from "@pages/HomePage";
+import HomePage from "pages/HomePage";
+import NotFound from "pages/NotFound.";
 
 const router = createBrowserRouter([
   { path: "/", element: <HomePage /> },
