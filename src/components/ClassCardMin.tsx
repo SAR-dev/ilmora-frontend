@@ -8,7 +8,7 @@ import { TbMessage2Star } from "react-icons/tb";
 
 const ClassCardMin = () => {
     return (
-        <div className="card px-5 pt-3">
+        <div className="card px-5 pt-3 hover:bg-base-200">
             <div className="flex justify-between">
                 <div className="font-semibold flex gap-2 items-center">
                     <img

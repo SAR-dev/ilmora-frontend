@@ -30,18 +30,18 @@ const HomePage = () => {
             <ClassCardMin />
           </div>
           <div>
-            <div>Options</div>
-            <div>Student List</div>
-            <div>Routine List</div>
-            <div>Class List</div>
-            <hr />
-          </div>
-          <div>
             <div>Teacher Info</div>
             <hr />
           </div>
           <div>
             <div>Class Stats</div>
+            <hr />
+          </div>
+          <div>
+            <div>Options</div>
+            <div>Student List</div>
+            <div>Routine List</div>
+            <div>Class List</div>
             <hr />
           </div>
         </div>
