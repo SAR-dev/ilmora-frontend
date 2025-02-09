@@ -3,6 +3,8 @@ import Notice from "components/Notice";
 import NavLayout from "layouts/NavLayout"
 import { MdOutlineNotificationsActive } from "react-icons/md";
 import { RiMastodonLine } from "react-icons/ri";
+import { PiStudentDuotone } from "react-icons/pi";
+import StudentCardMin from "components/StudentCardMin";
 
 const HomePage = () => {
   return (
@@ -28,6 +30,17 @@ const HomePage = () => {
             <ClassCardMin />
             <ClassCardMin />
             <ClassCardMin />
+          </div>
+          <div className="card divide-y divide-base-300 border border-base-300">
+            <div className="p-5 w-full">
+              <div className="flex items-center gap-2">
+                <PiStudentDuotone className="size-5" />
+                Student List
+              </div>
+            </div>
+            <StudentCardMin />
+            <StudentCardMin />
+            <StudentCardMin />
           </div>
           <div>
             <div>Class Stats</div>
