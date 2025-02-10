@@ -135,7 +135,12 @@ const RoutineCreate = () => {
             <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
                 <div className="fixed inset-0 flex w-screen items-center justify-center p-4 bg-base-300/75">
                     <DialogPanel className="card max-w-lg space-y-4 border bg-base-100 border-base-300 p-12">
-                        <DayPicker mode="range" />
+                        <DayPicker 
+                            mode="range" 
+                            min={1} 
+                            max={200} 
+                            // captionLayout="dropdown"
+                        />
                     </DialogPanel>
                 </div>
             </Dialog>
