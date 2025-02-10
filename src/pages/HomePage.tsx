@@ -10,12 +10,14 @@ import StatCardMin from "components/StatCardMin";
 import { BsFillHddStackFill } from "react-icons/bs";
 import ResourceCardMin from "components/ResourceCardMin";
 import Card from "components/Card";
+import { IoOptions } from "react-icons/io5";
+import { Link } from "react-router";
 
 const HomePage = () => {
   return (
     <NavLayout>
       <div className="w-full max-w-screen-xl mx-auto px-5 my-5 lg:my-10">
-        <div className="flex gap-10">
+        <div className="flex flex-col lg:flex-row gap-10">
           <div className="flex-1">
             <div className="grid grid-cols-1 gap-10">
               <Card
@@ -46,7 +48,7 @@ const HomePage = () => {
             </div>
           </div>
 
-          <div className="w-96">
+          <div className="w-auto lg:w-96">
             <div className="grid grid-cols-1 gap-10">
               <Card
                 headerIcon={<IoIosStats className="size-5" />}
@@ -78,15 +80,22 @@ const HomePage = () => {
                 <ResourceCardMin />
                 <ResourceCardMin />
               </Card>
+
+              <Card
+                headerIcon={<IoOptions className="size-5" />}
+                headerTitle="Options"
+              >
+                <div className="card flex-row gap-5 px-5 py-2">
+                  <button className="btn flex-1">View Routines</button>
+                  <Link to="/routines/create" className="btn flex-1">Create Routine</Link>
+                </div>
+                <div className="card flex-row gap-5 px-5 py-2">
+                  <button className="btn flex-1">View Classes</button>
+                  <button className="btn flex-1">Create Class</button>
+                </div>
+              </Card>
             </div>
           </div>
-
-          {/* <div>
-            <div>Options</div>
-            <div>Routine List</div>
-            <div>Class List</div>
-            <hr />
-          </div> */}
         </div>
       </div>
     </NavLayout>
