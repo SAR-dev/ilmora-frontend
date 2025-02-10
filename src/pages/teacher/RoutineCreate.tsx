@@ -6,8 +6,13 @@ import { PiPottedPlantDuotone } from "react-icons/pi";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import { IoSaveOutline } from "react-icons/io5";
 import { LuBadgeAlert } from "react-icons/lu";
+import { useState } from 'react';
+import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
+import { DayPicker } from "react-day-picker"
 
 const RoutineCreate = () => {
+    const [isOpen, setIsOpen] = useState(false)
+
     return (
         <NavLayout>
             <div className="w-full max-w-screen-xl mx-auto px-5 my-5 lg:my-10">
@@ -39,17 +44,17 @@ const RoutineCreate = () => {
                                     <option>Star Wars</option>
                                 </select>
                             </label>
-                            <label className="form-control max-w-sm">
+                            <label className="form-control max-w-sm" onClick={() => setIsOpen(true)}>
                                 <div className="label pb-2">
                                     <span className="label-text">Start Date</span>
                                 </div>
-                                <input type="date" className="input input-bordered" />
+                                <input type="text" placeholder="DD-MM-YYYY" className="input input-bordered" />
                             </label>
-                            <label className="form-control max-w-sm">
+                            <label className="form-control max-w-sm" onClick={() => setIsOpen(true)}>
                                 <div className="label pb-2">
                                     <span className="label-text">End Date</span>
                                 </div>
-                                <input type="date" className="input input-bordered" />
+                                <input type="text" placeholder="DD-MM-YYYY" className="input input-bordered" />
                             </label>
                         </div>
                         <div className="bg-info/10 border-s-4 border-info/50 p-4">
@@ -127,6 +132,13 @@ const RoutineCreate = () => {
                     </div>
                 </Card>
             </div>
+            <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
+                <div className="fixed inset-0 flex w-screen items-center justify-center p-4 bg-base-300/75">
+                    <DialogPanel className="card max-w-lg space-y-4 border bg-base-100 border-base-300 p-12">
+                        <DayPicker mode="range" />
+                    </DialogPanel>
+                </div>
+            </Dialog>
         </NavLayout>
     )
 }
