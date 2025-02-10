@@ -86,7 +86,7 @@ const HomePage = () => {
                 headerTitle="Options"
               >
                 <div className="card flex-row gap-5 px-5 py-2">
-                  <button className="btn flex-1">View Routines</button>
+                  <Link to="/routines" className="btn flex-1">View Routines</Link>
                   <Link to="/routines/create" className="btn flex-1">Create Routine</Link>
                 </div>
                 <div className="card flex-row gap-5 px-5 py-2">

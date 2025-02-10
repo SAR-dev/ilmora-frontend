@@ -139,8 +139,9 @@ const RoutineCreate = () => {
                             mode="range" 
                             min={1} 
                             max={200} 
-                            // captionLayout="dropdown"
                         />
+                        <div className='text-xs text-center'>20 Dec 2025 ~ 20 Dec 2025</div>
+                        <button className="btn" onClick={() => setIsOpen(false)}>Save</button>
                     </DialogPanel>
                 </div>
             </Dialog>
