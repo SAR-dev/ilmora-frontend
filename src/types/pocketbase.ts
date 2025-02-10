@@ -100,7 +100,7 @@ export enum ClassLogsStatusOptions {
 	"FINISHED" = "FINISHED",
 }
 export type ClassLogsRecord = {
-	classDetails?: string
+	classNote?: string
 	created?: IsoDateString
 	dailyClassPackageId: RecordIdString
 	finishedAt?: IsoDateString
@@ -151,8 +151,8 @@ export type RoutinesRecord = {
 export type SharedFilesRecord = {
 	created?: IsoDateString
 	description?: string
-	file?: string[]
 	id: string
+	link: string
 	title: string
 	updated?: IsoDateString
 }
@@ -211,6 +211,7 @@ export type TeachersRecord = {
 
 export type UsersRecord = {
 	avatar?: string
+	country?: string
 	created?: IsoDateString
 	email: string
 	emailVisibility?: boolean
