@@ -3,18 +3,9 @@ import Drawer from 'react-modern-drawer';
 import { Link } from "react-router";
 import { FiShoppingBag, FiShoppingCart } from "react-icons/fi";
 import { RxExit } from "react-icons/rx";
-import { FaMoon, FaSun } from "react-icons/fa";
-import { ThemeName, useThemeStore } from "stores/themeStore";
+import { FaMoon } from "react-icons/fa";
 
 const Navbar = () => {
-    const { theme, setTheme } = useThemeStore()
-    const toogleTheme = () => {
-        console.log(theme == ThemeName.Dark)
-        console.log(theme, ThemeName.Dark)
-        if (theme == ThemeName.Dark) setTheme(ThemeName.Light)
-        if (theme == ThemeName.Light) setTheme(ThemeName.Dark)
-    }
-
     const [showDrawer, setShowDrawer] = useState<boolean>(false)
     const toggleDrawer = () => {
         setShowDrawer((prevState) => !prevState)
@@ -31,12 +22,8 @@ const Navbar = () => {
             <div className="navbar-center">
             </div>
             <div className="navbar-end gap-1">
-                <button className="btn btn-circle" onClick={toogleTheme}>
-                    {theme == ThemeName.Dark ? (
-                        <FaMoon className="size-5" />
-                    ) : (
-                        <FaSun className="size-5" />
-                    )}
+                <button className="btn btn-circle">
+                    <FaMoon className="size-5" />
                 </button>
                 <button className="btn gap-2" onClick={toggleDrawer}>
                     <img
