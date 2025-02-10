@@ -11,7 +11,7 @@ const ResourceCardMin = () => {
                 </div>
                 <button className="btn btn-sm">
                     <VscLink className="size-4" />
-                    Open Link
+                    <span className="hidden lg:flex">Open Link</span>
                 </button>
             </div>
         </div>

@@ -1,8 +1,7 @@
 import Card from 'components/Card';
 import { constants } from 'constants';
 import NavLayout from 'layouts/NavLayout'
-import { FaInfo } from 'react-icons/fa';
-import { PiPottedPlantDuotone } from "react-icons/pi";
+import { FaInfo, FaRegCalendarPlus } from 'react-icons/fa';
 import { IoIosArrowRoundBack } from "react-icons/io";
 import { IoSaveOutline } from "react-icons/io5";
 import { LuBadgeAlert } from "react-icons/lu";
@@ -17,7 +16,7 @@ const RoutineCreate = () => {
         <NavLayout>
             <div className="w-full max-w-screen-xl mx-auto px-5 my-5 lg:my-10">
                 <Card
-                    headerIcon={<PiPottedPlantDuotone className='size-5' />}
+                    headerIcon={<FaRegCalendarPlus className='size-5' />}
                     headerTitle='Plan Routine for a Student'
                 >
                     <div className="p-5 flex flex-col gap-5">

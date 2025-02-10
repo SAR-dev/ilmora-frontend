@@ -12,6 +12,9 @@ import ResourceCardMin from "components/ResourceCardMin";
 import Card from "components/Card";
 import { IoOptions } from "react-icons/io5";
 import { Link } from "react-router";
+import { FaRegCalendarPlus, FaRegCalendarAlt } from "react-icons/fa";
+import { SiGoogleclassroom } from "react-icons/si";
+import { TbTableDashed } from "react-icons/tb";
 
 const HomePage = () => {
   return (
@@ -49,7 +52,7 @@ const HomePage = () => {
           </div>
 
           <div className="w-auto lg:w-96">
-            <div className="grid grid-cols-1 gap-10">
+            <div className="grid grid-cols-1 gap-10 sticky top-0">
               <Card
                 headerIcon={<IoIosStats className="size-5" />}
                 headerTitle="Class Stats"
@@ -86,12 +89,24 @@ const HomePage = () => {
                 headerTitle="Options"
               >
                 <div className="card flex-row gap-5 px-5 py-2">
-                  <Link to="/routines" className="btn flex-1">View Routines</Link>
-                  <Link to="/routines/create" className="btn flex-1">Create Routine</Link>
+                  <Link to="/routines" className="btn flex-1">
+                    <FaRegCalendarAlt className="size-4" />
+                    View Routines
+                  </Link>
+                  <Link to="/routines/create" className="btn flex-1">
+                    <FaRegCalendarPlus className="size-4" />
+                    Create Routine
+                  </Link>
                 </div>
                 <div className="card flex-row gap-5 px-5 py-2">
-                  <button className="btn flex-1">View Classes</button>
-                  <button className="btn flex-1">Create Class</button>
+                  <Link to="/classes" className="btn flex-1">
+                    <SiGoogleclassroom className="size-4" />
+                    View Classes
+                  </Link>
+                  <Link to="/classes/create" className="btn flex-1">
+                    <TbTableDashed className="size-4" />
+                    Create Class
+                  </Link>
                 </div>
               </Card>
             </div>

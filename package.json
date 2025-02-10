@@ -24,6 +24,7 @@
     "react-modern-drawer": "^1.4.0",
     "react-router": "^7.1.5",
     "tailwindcss": "^4.0.5",
+    "use-mask-input": "^3.4.2",
     "usehooks-ts": "^3.1.1",
     "zustand": "^5.0.3"
   },

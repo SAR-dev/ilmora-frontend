@@ -14,12 +14,12 @@ const Notice = () => {
                 {showDetails ? (
                     <button className="btn btn-sm" onClick={toggleDetails}>
                         <BiSolidChevronUp className="size-4" />
-                        Show Less
+                        <span className="hidden lg:flex">Show Less</span>
                     </button>
                 ) : (
                     <button className="btn btn-sm" onClick={toggleDetails}>
                         <BiSolidChevronDown className="size-4" />
-                        Show More
+                        <span className="hidden lg:flex">Show More</span>
                     </button>
                 )}
             </div>

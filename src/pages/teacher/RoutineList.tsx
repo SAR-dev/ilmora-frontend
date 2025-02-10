@@ -1,32 +1,15 @@
 import Card from 'components/Card';
 import { constants } from 'constants';
 import NavLayout from 'layouts/NavLayout'
-import { PiPottedPlantDuotone } from "react-icons/pi";
-import { FaArrowRight } from "react-icons/fa";
-
-const RoutineClassLog = () => (
-    <div className="flex justify-between py-2 px-5 w-full">
-        <div className="flex flex-col gap-1">
-            <div className="text-sm text-primary/80">08:00 AM</div>
-            <div className='text-lg font-semibold'>Shariar Abrar</div>
-            <div className="text-sm opacity-80">
-                Bangladesh . 150 TK / Class . 30 Mins
-            </div>
-        </div>
-        <div className='flex items-center'>
-            <button className="btn btn-square">
-                <FaArrowRight className='size-5' />
-            </button>
-        </div>
-    </div>
-)
+import RoutineClassLog from 'components/RoutineClassLog';
+import { FaRegCalendarAlt } from 'react-icons/fa';
 
 const RoutineList = () => {
     return (
         <NavLayout>
             <div className="w-full max-w-screen-xl mx-auto px-5 my-5 lg:my-10">
                 <Card
-                    headerIcon={<PiPottedPlantDuotone className='size-5' />}
+                    headerIcon={<FaRegCalendarAlt className='size-5' />}
                     headerTitle='Student Routines'
                 >
                     <div className="p-5">

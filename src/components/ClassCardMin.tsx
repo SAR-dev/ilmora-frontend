@@ -41,21 +41,21 @@ const ClassCardMin = () => {
                     </div>
                 </div>
             </div>
-            <div className="flex text-sm mt-3 px-5 border-t border-base-300 gap-3 divide-x divide-base-300">
-                <div className="flex flex-1 py-3 items-center gap-2 text-primary">
-                    <MdSignalWifiStatusbar2Bar className="size-4" />
+            <div className="grid grid-cols-2 lg:grid-cols-4 text-sm mt-3 border-t border-base-300 divide-x divide-y divide-base-300">
+                <div className="flex py-3 px-5 items-center gap-2">
+                    <MdSignalWifiStatusbar2Bar className="size-3 md:size-4" />
                     <div>Started</div>
                 </div>
-                <div className="flex flex-1 py-3 items-center gap-2">
-                    <FaRegClock className="size-4" />
+                <div className="flex py-3 px-5 items-center gap-2">
+                    <FaRegClock className="size-3 md:size-4" />
                     <div>12:00 PM</div>
                 </div>
-                <div className="flex flex-1 py-3 items-center gap-2">
-                    <LuPackage2 className="size-4" />
+                <div className="flex py-3 px-5 items-center gap-2">
+                    <LuPackage2 className="size-3 md:size-4" />
                     <div>30 Minutes</div>
                 </div>
-                <div className="flex flex-1 py-3 items-center gap-2">
-                    <GoLocation className="size-4" />
+                <div className="flex py-3 px-5 items-center gap-2">
+                    <GoLocation className="size-3 md:size-4" />
                     <div>Bangladesh</div>
                 </div>
             </div>
