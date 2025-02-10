@@ -8,7 +8,7 @@ const Notice = () => {
     }
 
     return (
-        <div className="card p-5 hover:bg-base-200 transition duration-150 ease-in-out">
+        <div className="card p-5 hover:bg-accent/20 transition duration-150 ease-in-out">
             <div className="flex items-center justify-between">
                 <div className="font-semibold">This is a dark alert</div>
                 {showDetails ? (

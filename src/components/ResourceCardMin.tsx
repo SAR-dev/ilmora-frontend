@@ -3,7 +3,7 @@ import { CiFileOn } from "react-icons/ci";
 
 const ResourceCardMin = () => {
     return (
-        <div className="card px-5 py-2 hover:bg-base-200 transition duration-150 ease-in-out">
+        <div className="card px-5 py-2 hover:bg-accent/20 transition duration-150 ease-in-out">
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                     <CiFileOn className="size-5" />

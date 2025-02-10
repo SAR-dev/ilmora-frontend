@@ -5,7 +5,7 @@ import { ScrollRestoration } from 'react-router';
 
 const NavLayout = ({ children }: { children: ReactNode }) => {
     return (
-        <section className='min-h-screen flex flex-col'>
+        <section className='min-h-screen flex flex-col bg-base-200'>
             <Navbar />
             {children}
             <Footer />

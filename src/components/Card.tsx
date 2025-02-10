@@ -12,7 +12,7 @@ const Card = ({
   children: ReactNode | ReactNode[]
 }) => {
   return (
-    <div className="card divide-y divide-base-300 border border-base-300">
+    <div className="card divide-y divide-base-300 border border-base-300 bg-base-100">
       <div className="p-5 w-full flex justify-between items-center">
         <div className="flex items-center gap-2">
           {headerIcon}

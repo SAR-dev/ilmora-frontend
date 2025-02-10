@@ -9,7 +9,7 @@ import { MdSignalWifiStatusbar2Bar } from "react-icons/md";
 
 const ClassCardMin = () => {
     return (
-        <div className="card pt-3 hover:bg-base-200 transition duration-150 ease-in-out">
+        <div className="card pt-3 hover:bg-accent/20 transition duration-150 ease-in-out">
             <div className="px-5 flex justify-between">
                 <div className="font-semibold flex gap-2 items-center">
                     <img

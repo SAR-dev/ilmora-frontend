@@ -15,70 +15,78 @@ const HomePage = () => {
   return (
     <NavLayout>
       <div className="w-full max-w-screen-xl mx-auto px-5 my-5 lg:my-10">
-        <div className="grid grid-cols-1 gap-10">
-          <Card
-            headerIcon={<MdOutlineNotificationsActive className="size-5" />}
-            headerTitle="Notifications"
-          >
-            <Notice />
-          </Card>
+        <div className="flex gap-10">
+          <div className="flex-1">
+            <div className="grid grid-cols-1 gap-10">
+              <Card
+                headerIcon={<MdOutlineNotificationsActive className="size-5" />}
+                headerTitle="Notifications"
+              >
+                <Notice />
+              </Card>
 
-          <Card
-            headerIcon={<RiMastodonLine className="size-5" />}
-            headerTitle="Today's Class List"
-          >
-            <ClassCardMin />
-            <ClassCardMin />
-            <ClassCardMin />
-          </Card>
+              <Card
+                headerIcon={<RiMastodonLine className="size-5" />}
+                headerTitle="Today's Class List"
+              >
+                <ClassCardMin />
+                <ClassCardMin />
+                <ClassCardMin />
+              </Card>
 
-          <Card
-            headerIcon={<PiStudentDuotone className="size-5" />}
-            headerTitle="Student List"
-          >
-            <StudentCardMin />
-            <StudentCardMin />
-            <StudentCardMin />
-            <StudentCardMin />
-          </Card>
+              <Card
+                headerIcon={<PiStudentDuotone className="size-5" />}
+                headerTitle="Student List"
+              >
+                <StudentCardMin />
+                <StudentCardMin />
+                <StudentCardMin />
+                <StudentCardMin />
+              </Card>
+            </div>
+          </div>
 
-          <Card
-            headerIcon={<IoIosStats className="size-5" />}
-            headerTitle="Class Stats"
-            headerInfo={
-              <div className="flex gap-2">
-                <select className="select select-sm select-bordered w-full max-w-xs">
-                  <option disabled selected>Year</option>
-                  <option>Han Solo</option>
-                  <option>Greedo</option>
-                </select>
-                <select className="select select-sm select-bordered w-full max-w-xs">
-                  <option disabled selected>Month</option>
-                  <option>Han Solo</option>
-                  <option>Greedo</option>
-                </select>
-              </div>
-            }
-          >
-            <StatCardMin />
-          </Card>
+          <div className="w-96">
+            <div className="grid grid-cols-1 gap-10">
+              <Card
+                headerIcon={<IoIosStats className="size-5" />}
+                headerTitle="Class Stats"
+                headerInfo={
+                  <div className="flex gap-2">
+                    <select className="select select-sm select-bordered w-full max-w-xs">
+                      <option disabled selected>Year</option>
+                      <option>Han Solo</option>
+                      <option>Greedo</option>
+                    </select>
+                    <select className="select select-sm select-bordered w-full max-w-xs">
+                      <option disabled selected>Month</option>
+                      <option>Han Solo</option>
+                      <option>Greedo</option>
+                    </select>
+                  </div>
+                }
+              >
+                <StatCardMin />
+              </Card>
 
-          <Card
-            headerIcon={<BsFillHddStackFill className="size-5" />}
-            headerTitle="Resources"
-          >
-            <ResourceCardMin />
-            <ResourceCardMin />
-            <ResourceCardMin />
-            <ResourceCardMin />
-          </Card>
-          
-          <div>
+              <Card
+                headerIcon={<BsFillHddStackFill className="size-5" />}
+                headerTitle="Resources"
+              >
+                <ResourceCardMin />
+                <ResourceCardMin />
+                <ResourceCardMin />
+                <ResourceCardMin />
+              </Card>
+            </div>
+          </div>
+
+          {/* <div>
             <div>Options</div>
             <div>Routine List</div>
             <div>Class List</div>
             <hr />
-          </div>
+          </div> */}
         </div>
       </div>
     </NavLayout>
