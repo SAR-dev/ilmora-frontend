@@ -5,6 +5,7 @@ import { FaInfo } from 'react-icons/fa';
 import { PiPottedPlantDuotone } from "react-icons/pi";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import { IoSaveOutline } from "react-icons/io5";
+import { LuBadgeAlert } from "react-icons/lu";
 
 const RoutineCreate = () => {
     return (
@@ -15,7 +16,7 @@ const RoutineCreate = () => {
                     headerTitle='Plan Routine for a Student'
                 >
                     <div className="p-5 flex flex-col gap-5">
-                        <div className="flex gap-5">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
                             <label className="form-control max-w-sm">
                                 <div className="label pb-2">
                                     <span className="label-text">Select Student</span>
@@ -31,12 +32,24 @@ const RoutineCreate = () => {
                             </label>
                             <label className="form-control max-w-sm">
                                 <div className="label pb-2">
-                                    <span className="label-text">Your Location</span>
+                                    <span className="label-text">Your Timezone</span>
                                 </div>
                                 <select disabled className="select select-bordered">
                                     <option disabled selected>Dhaka, Bangladesh (+06:00)</option>
                                     <option>Star Wars</option>
                                 </select>
+                            </label>
+                            <label className="form-control max-w-sm">
+                                <div className="label pb-2">
+                                    <span className="label-text">Start Date</span>
+                                </div>
+                                <input type="date" className="input input-bordered" />
+                            </label>
+                            <label className="form-control max-w-sm">
+                                <div className="label pb-2">
+                                    <span className="label-text">End Date</span>
+                                </div>
+                                <input type="date" className="input input-bordered" />
                             </label>
                         </div>
                         <div className="bg-info/10 border-s-4 border-info/50 p-4">
@@ -56,14 +69,50 @@ const RoutineCreate = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
+                        <div className="flex flex-col gap-5">
                             {constants.DAY_NAMES.map((day, i) => (
-                                <div className="flex gap-3" key={i}>
-                                    <button className='card items-center justify-center aspect-square w-full bg-base-300 uppercase'>
+                                <div className="card flex-col sm:flex-row border border-base-300 divide-y divide-base-300" key={i}>
+                                    <div className="w-full p-3">
                                         {day}
-                                    </button>
+                                    </div>
+                                    <div className="flex gap-2 p-3 items-center">
+                                        <select className="select select-sm w-20 select-bordered">
+                                            <option disabled selected>HH</option>
+                                            <option>01</option>
+                                        </select>
+                                        <select className="select select-sm w-20 select-bordered">
+                                            <option disabled selected>MM</option>
+                                            <option>01</option>
+                                        </select>
+                                        <select className="select select-sm w-20 select-bordered">
+                                            <option disabled selected>-</option>
+                                            <option>AM</option>
+                                        </select>
+                                        <div className="form-control flex ml-auto">
+                                            <label className="cursor-pointer label">
+                                                <input type="checkbox" className="checkbox checkbox-sm checkbox-success" />
+                                            </label>
+                                        </div>
+                                    </div>
                                 </div>
                             ))}
+                        </div>
+                        <div className="bg-info/10 border-s-4 border-error/50 p-4">
+                            <div className="flex items-center">
+                                <div className="shrink-0">
+                                    <span className="inline-flex justify-center items-center size-8 rounded-full border-4 border-error/10 bg-error/30 text-error">
+                                        <LuBadgeAlert className='shrink-0 size-4' />
+                                    </span>
+                                </div>
+                                <div className="ms-3">
+                                    <h3 className="font-semibold" >
+                                        Read Carefully
+                                    </h3>
+                                    <p className="text-sm text-base-content/50">
+                                        If you update routine, incomplete classes will be deleted and created again.
+                                    </p>
+                                </div>
+                            </div>
                         </div>
                         <div className='flex justify-between'>
                             <button className="btn">
@@ -72,7 +121,7 @@ const RoutineCreate = () => {
                             </button>
                             <button className="btn btn-primary">
                                 <IoSaveOutline className='size-5' />
-                                Register Routine
+                                Update Routine
                             </button>
                         </div>
                     </div>
