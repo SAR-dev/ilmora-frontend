@@ -7,7 +7,7 @@ import { IoIosArrowRoundBack } from "react-icons/io";
 import { IoSaveOutline } from "react-icons/io5";
 import { LuBadgeAlert } from "react-icons/lu";
 import { useState } from 'react';
-import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
+import { Dialog, DialogPanel } from '@headlessui/react';
 import { DayPicker } from "react-day-picker"
 
 const RoutineCreate = () => {
