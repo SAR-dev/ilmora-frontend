@@ -42,7 +42,10 @@ export const PocketbaseProvider = ({ children }: { children: ReactNode }) => {
     )
 
     useEffect(() => {
-        api.get("/api/self").then(res => setUserData(res.data))
+        if(!user) return;
+        api
+            .get("/api/self")
+            .then(res => setUserData(res.data))
     }, [user])
     
 

@@ -13,7 +13,6 @@ import Card from "components/Card";
 import { IoOptions } from "react-icons/io5";
 import { Link } from "react-router";
 import { FaRegCalendarPlus, FaRegCalendarAlt } from "react-icons/fa";
-import { SiGoogleclassroom } from "react-icons/si";
 import { TbTableDashed } from "react-icons/tb";
 import { FaArrowLeftLong, FaArrowRightLong } from "react-icons/fa6";
 
@@ -100,24 +99,18 @@ const TeacherHome = () => {
                 headerIcon={<IoOptions className="size-5" />}
                 headerTitle="Options"
               >
-                <div className="flex flex-row gap-5 px-5 py-2">
-                  <Link to="/t/routines" className="btn flex-1">
-                    <FaRegCalendarAlt className="size-4" />
-                    View Routines
-                  </Link>
-                  <Link to="/t/routines/create" className="btn flex-1">
-                    <FaRegCalendarPlus className="size-4" />
-                    Create Routine
-                  </Link>
-                </div>
-                <div className="flex flex-row gap-5 px-5 py-2">
-                  <Link to="/t/classes" className="btn flex-1">
-                    <SiGoogleclassroom className="size-4" />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 p-5">
+                  <Link to="/t/classes" className="btn justify-start sm:justify-center sm:col-span-2">
+                    <TbTableDashed className="size-4" />
                     View Classes
                   </Link>
-                  <Link to="/t/classes/create" className="btn flex-1">
-                    <TbTableDashed className="size-4" />
+                  <Link to="/t/classes/create" className="btn justify-start sm:justify-center">
+                    <FaRegCalendarPlus className="size-4" />
                     Create Class
+                  </Link>
+                  <Link to="/t/routines/create" className="btn justify-start sm:justify-center">
+                    <FaRegCalendarAlt className="size-4" />
+                    Create Routines
                   </Link>
                 </div>
               </Card>

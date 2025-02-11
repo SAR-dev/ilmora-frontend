@@ -19,3 +19,15 @@ export interface StudentDataType {
     startDate: string
     endDate: string
 }
+
+export interface ClassLogDataType {
+    id: string
+    startedAt: string
+    finishedAt: string
+    status: string
+    studentName: string
+    studentCountry: string
+    teachersPrice: string
+    classMins: string
+    classNote: string
+}

@@ -34,6 +34,12 @@ export const dateViewFormatter = new Intl.DateTimeFormat('en-GB', {
   year: 'numeric',
 });
 
+export const timeViewFormatter = new Intl.DateTimeFormat('en-GB', {
+  hour12: true,
+  hour: '2-digit',
+  minute: '2-digit'
+})
+
 export const getDateInYYYYMMDD = (date: Date) => {
   return `${date.getFullYear().toString().padStart(2, "0")}-${(date.getMonth() + 1).toString().padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`
 }

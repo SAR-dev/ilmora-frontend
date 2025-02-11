@@ -14,6 +14,7 @@ import { constants } from 'constants';
 import { RoutineCreateType } from 'types/payload';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router';
+import { useLocalStorage } from 'usehooks-ts';
 
 const RoutineDay = ({
     dayName,
@@ -131,7 +132,7 @@ const RoutineCreate = () => {
     const navigate = useNavigate()
     const localTimeZoneInfo = getLocalTimezoneInfo()
     const [isOpen, setIsOpen] = useState(false)
-    const [studentList, setStudentList] = useState<StudentDataType[]>([])
+    const [studentList, setStudentList] = useLocalStorage<StudentDataType[]>(constants.STUDENT_LIST_DATA_KEY, [])
     const [isLoading, setIsLoading] = useState(false)
 
     const [formData, setFormData] = useState<FormDataType>({
@@ -161,11 +162,15 @@ const RoutineCreate = () => {
 
     const handleSubmit = () => {
         if (!selectedStudent) {
-            toast.error("Select a student")
+            toast.error("Select a student.")
             return;
         }
         if (!formData.startDate || !formData.endDate) {
-            toast.error("Select date range correctly")
+            toast.error("Select date range correctly.")
+            return;
+        }
+        if(formData.startDate < new Date()){
+            toast.error("Start date can not be today or in past.")
             return;
         }
         setIsLoading(true)
@@ -174,22 +179,22 @@ const RoutineCreate = () => {
             utcOffset: formData.utcOffset,
             startDate: getDateInYYYYMMDD(formData.startDate),
             endDate: getDateInYYYYMMDD(formData.endDate),
-            satTime: formData.satTime,
-            sunTime: formData.sunTime,
-            monTime: formData.monTime,
-            tueTime: formData.tueTime,
-            wedTime: formData.wedTime,
-            thuTime: formData.thuTime,
-            friTime: formData.friTime
+            satTime: formData.satTime.trim().length > 1 ? formData.satTime : "",
+            sunTime: formData.sunTime.trim().length > 1 ? formData.sunTime : "",
+            monTime: formData.monTime.trim().length > 1 ? formData.monTime : "",
+            tueTime: formData.tueTime.trim().length > 1 ? formData.tueTime : "",
+            wedTime: formData.wedTime.trim().length > 1 ? formData.wedTime : "",
+            thuTime: formData.thuTime.trim().length > 1 ? formData.thuTime : "",
+            friTime: formData.friTime.trim().length > 1 ? formData.friTime : ""
         }
         api
             .post("/api/t/routine", { ...payload })
             .then(() => {
                 toast.success("Routine has created sucessfully.")
-                navigate(`/t/routines?studentId=${selectedStudent.id}`)
+                navigate(`/t/classes?${constants.SEARCH_PARAMS.STUDENT_ID}=${selectedStudent.id}`)
             })
             .catch(() => {
-                toast.error("ROutine create failed. Please check inputs again.")
+                toast.error("Routine create failed. Please check inputs again.")
             })
             .finally(() => setIsLoading(false))
     }
@@ -406,6 +411,7 @@ const RoutineCreate = () => {
                             min={1}
                             max={constants.MAX_DAY_COUNT_IN_ROUTINE}
                             excludeDisabled
+                            weekStartsOn={6}
                             selected={{
                                 from: formData.startDate ? new Date(formData.startDate) : undefined,
                                 to: formData.endDate ? new Date(formData.endDate) : undefined
