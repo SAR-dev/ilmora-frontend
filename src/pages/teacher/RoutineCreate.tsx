@@ -8,8 +8,53 @@ import { LuBadgeAlert } from "react-icons/lu";
 import { useState } from 'react';
 import { Dialog, DialogPanel } from '@headlessui/react';
 import { DayPicker } from "react-day-picker"
+import { getLocalTimezoneInfo } from 'helpers';
+import classNames from 'classnames';
+
+const RoutineDay = ({ dayName, weekDay }: { dayName: string, weekDay: number }) => {
+    const [active, setActive] = useState(false)
+
+    const handleCheck = (val: boolean) => {
+        setActive(val)
+    }
+
+    return (
+        <div className="card flex-col sm:items-center sm:flex-row border border-base-300 divide-y sm:divide-none divide-base-300">
+            <div className={classNames("w-full p-3", {
+                "opacity-25": !active
+            })}>
+                {weekDay + 1}. {dayName}
+            </div>
+            <div className="flex gap-2 p-3 items-center">
+                <select className="select select-sm w-20 select-bordered" disabled={!active}>
+                    <option disabled selected>HH</option>
+                    <option>01</option>
+                </select>
+                <select className="select select-sm w-20 select-bordered" disabled={!active}>
+                    <option disabled selected>MM</option>
+                    <option>01</option>
+                </select>
+                <select className="select select-sm w-20 select-bordered" disabled={!active}>
+                    <option disabled selected>-</option>
+                    <option>AM</option>
+                </select>
+                <div className="form-control flex ml-auto">
+                    <label className="cursor-pointer label">
+                        <input 
+                            type="checkbox" 
+                            className="checkbox checkbox-sm checkbox-success" 
+                            onChange={e => handleCheck(e.target.checked)}
+                            checked={active}
+                        />
+                    </label>
+                </div>
+            </div>
+        </div>
+    )
+}
 
 const RoutineCreate = () => {
+    const localTimeZoneInfo = getLocalTimezoneInfo()
     const [isOpen, setIsOpen] = useState(false)
 
     return (
@@ -38,10 +83,12 @@ const RoutineCreate = () => {
                                 <div className="label pb-2">
                                     <span className="label-text">Your Timezone</span>
                                 </div>
-                                <select disabled className="select select-bordered">
-                                    <option disabled selected>Dhaka, Bangladesh (+06:00)</option>
-                                    <option>Star Wars</option>
-                                </select>
+                                <input
+                                    type='text'
+                                    disabled
+                                    className="input input-bordered"
+                                    value={`${localTimeZoneInfo.timeZone} (${localTimeZoneInfo.offset})`}
+                                />
                             </label>
                             <label className="form-control max-w-sm" onClick={() => setIsOpen(true)}>
                                 <div className="label pb-2">
@@ -75,30 +122,7 @@ const RoutineCreate = () => {
                         </div>
                         <div className="flex flex-col gap-5">
                             {constants.DAY_NAMES.map((day, i) => (
-                                <div className="card flex-col sm:flex-row border border-base-300 divide-y divide-base-300" key={i}>
-                                    <div className="w-full p-3">
-                                        {day}
-                                    </div>
-                                    <div className="flex gap-2 p-3 items-center">
-                                        <select className="select select-sm w-20 select-bordered">
-                                            <option disabled selected>HH</option>
-                                            <option>01</option>
-                                        </select>
-                                        <select className="select select-sm w-20 select-bordered">
-                                            <option disabled selected>MM</option>
-                                            <option>01</option>
-                                        </select>
-                                        <select className="select select-sm w-20 select-bordered">
-                                            <option disabled selected>-</option>
-                                            <option>AM</option>
-                                        </select>
-                                        <div className="form-control flex ml-auto">
-                                            <label className="cursor-pointer label">
-                                                <input type="checkbox" className="checkbox checkbox-sm checkbox-success" />
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
+                                <RoutineDay dayName={day} weekDay={i} key={i} />
                             ))}
                         </div>
                         <div className="bg-info/10 border-s-4 border-error/50 p-4">
@@ -134,10 +158,10 @@ const RoutineCreate = () => {
             <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
                 <div className="fixed inset-0 flex w-screen items-center justify-center p-4 bg-base-300/75">
                     <DialogPanel className="card max-w-lg space-y-4 border bg-base-100 border-base-300 p-12">
-                        <DayPicker 
-                            mode="range" 
-                            min={1} 
-                            max={200} 
+                        <DayPicker
+                            mode="range"
+                            min={1}
+                            max={200}
                         />
                         <div className='text-xs text-center'>20 Dec 2025 ~ 20 Dec 2025</div>
                         <button className="btn" onClick={() => setIsOpen(false)}>Save</button>
