@@ -7,4 +7,5 @@ export const constants = {
         "January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"
     ],
+    MAX_DAY_COUNT_IN_ROUTINE: 200,
 }
