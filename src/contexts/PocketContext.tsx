@@ -4,7 +4,8 @@ import { useInterval, useLocalStorage } from "usehooks-ts";
 import { jwtDecode } from "jwt-decode";
 import { Collections, TypedPocketBase, UsersResponse } from "types/pocketbase";
 import { constants } from "constants";
-import { setAuthToken } from "helpers";
+import { api, setAuthToken } from "helpers";
+import { UserSelfDataType } from "types/response";
 
 interface DecodedToken {
     exp: number; // Expiration timestamp in seconds
@@ -13,10 +14,11 @@ interface DecodedToken {
 const ONE_MINUTE_IN_MS = 60000;
 
 interface PocketContextType {
-    oAuthLogin: () => Promise<void>;
+    login: ({ email, password }: { email: string, password: string }) => Promise<void>;
     logout: () => void;
     user: UsersResponse | null;
     token: string | null;
+    userData: UserSelfDataType;
 }
 
 // Initialize PocketBase with type safety
@@ -28,12 +30,21 @@ const PocketContext = createContext<PocketContextType | undefined>(undefined);
 // PocketBase Provider component
 export const PocketbaseProvider = ({ children }: { children: ReactNode }) => {
     const [token, setToken] = useLocalStorage<string | null>(
-        constants.AUTH_TOKEN_API,
+        constants.AUTH_TOKEN_KEY,
         pb.authStore.token
     );
     const [user, setUser] = useState<UsersResponse | null>(
         pb.authStore.record as unknown as UsersResponse
     );
+    const [userData, setUserData] = useLocalStorage<UserSelfDataType>(
+        constants.USER_SELF_DATA_KEY,
+        { isStudent: false, isTeacher: false }
+    )
+
+    useEffect(() => {
+        api.get("/api/self").then(res => setUserData(res.data))
+    }, [user])
+    
 
     // Clear local storage and PocketBase store on logout
     const logout = useCallback(() => {
@@ -43,14 +54,17 @@ export const PocketbaseProvider = ({ children }: { children: ReactNode }) => {
         setAuthToken()
     }, []);
 
-    // Handle OAuth login with error handling
-    const oAuthLogin = useCallback(async () => {
-        try {
-            await pb.collection(Collections.Users).authWithOAuth2({ provider: "google" });
-            setAuthToken()
-        } catch (error) {
-            console.error("OAuth login failed:", error);
-        }
+    // Handle login with error handling
+    const login = useCallback(async ({
+        email,
+        password
+    }: {
+        email: string,
+        password: string
+    }) => {
+        await pb.collection(Collections.Users).authWithPassword(email, password);
+        setAuthToken()
+        await api.get("/api/self").then(res => setUserData(res.data))
     }, []);
 
     // Refresh the session token periodically
@@ -92,7 +106,7 @@ export const PocketbaseProvider = ({ children }: { children: ReactNode }) => {
     useInterval(refreshSession, token ? 2 * ONE_MINUTE_IN_MS : null);
 
     return (
-        <PocketContext.Provider value={{ oAuthLogin, logout, user, token }}>
+        <PocketContext.Provider value={{ login, logout, user, token, userData }}>
             {children}
         </PocketContext.Provider>
     );

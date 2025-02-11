@@ -7,7 +7,7 @@ import { TbMoneybag } from "react-icons/tb";
 
 const StudentCardMin = () => {
     return (
-        <div className="card pt-3 hover:bg-accent/20 transition duration-150 ease-in-out">
+        <div className="flex flex-col pt-3 hover:bg-accent/20 transition duration-150 ease-in-out">
             <div className="px-5 flex justify-between">
                 <div className="font-semibold flex gap-2 items-center">
                     <img

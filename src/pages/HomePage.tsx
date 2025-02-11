@@ -1,120 +1,35 @@
-import ClassCardMin from "components/ClassCardMin";
-import Notice from "components/Notice";
-import NavLayout from "layouts/NavLayout"
-import { MdOutlineNotificationsActive } from "react-icons/md";
-import { RiMastodonLine } from "react-icons/ri";
-import { PiStudentDuotone } from "react-icons/pi";
-import StudentCardMin from "components/StudentCardMin";
-import { IoIosStats } from "react-icons/io";
-import StatCardMin from "components/StatCardMin";
-import { BsFillHddStackFill } from "react-icons/bs";
-import ResourceCardMin from "components/ResourceCardMin";
-import Card from "components/Card";
-import { IoOptions } from "react-icons/io5";
-import { Link } from "react-router";
-import { FaRegCalendarPlus, FaRegCalendarAlt } from "react-icons/fa";
-import { SiGoogleclassroom } from "react-icons/si";
-import { TbTableDashed } from "react-icons/tb";
+import { usePocket } from "contexts/PocketContext"
+import { useEffect } from "react"
+import { useNavigate } from "react-router"
 
 const HomePage = () => {
-  return (
-    <NavLayout>
-      <div className="w-full max-w-screen-xl mx-auto px-5 my-5 lg:my-10">
-        <div className="flex flex-col lg:flex-row gap-10">
-          <div className="flex-1">
-            <div className="grid grid-cols-1 gap-10">
-              <Card
-                headerIcon={<MdOutlineNotificationsActive className="size-5" />}
-                headerTitle="Notifications"
-              >
-                <Notice />
-              </Card>
+    const {userData} = usePocket()
+    const navigate = useNavigate()
 
-              <Card
-                headerIcon={<RiMastodonLine className="size-5" />}
-                headerTitle="Today's Class List"
-              >
-                <ClassCardMin />
-                <ClassCardMin />
-                <ClassCardMin />
-              </Card>
+    useEffect(() => {
+      if(userData.isTeacher){
+        navigate("/t")
+        return;
+      }
+      if(userData.isStudent){
+        navigate("/s")
+        return;
+      }
+    }, [userData])
+    
 
-              <Card
-                headerIcon={<PiStudentDuotone className="size-5" />}
-                headerTitle="Student List"
-              >
-                <StudentCardMin />
-                <StudentCardMin />
-                <StudentCardMin />
-                <StudentCardMin />
-              </Card>
-            </div>
-          </div>
-
-          <div className="w-auto lg:w-96">
-            <div className="grid grid-cols-1 gap-10 sticky top-0">
-              <Card
-                headerIcon={<IoIosStats className="size-5" />}
-                headerTitle="Class Stats"
-                headerInfo={
-                  <div className="flex gap-2">
-                    <select className="select select-sm select-bordered w-full max-w-xs">
-                      <option disabled selected>Year</option>
-                      <option>Han Solo</option>
-                      <option>Greedo</option>
-                    </select>
-                    <select className="select select-sm select-bordered w-full max-w-xs">
-                      <option disabled selected>Month</option>
-                      <option>Han Solo</option>
-                      <option>Greedo</option>
-                    </select>
-                  </div>
-                }
-              >
-                <StatCardMin />
-              </Card>
-
-              <Card
-                headerIcon={<BsFillHddStackFill className="size-5" />}
-                headerTitle="Resources"
-              >
-                <ResourceCardMin />
-                <ResourceCardMin />
-                <ResourceCardMin />
-                <ResourceCardMin />
-              </Card>
-
-              <Card
-                headerIcon={<IoOptions className="size-5" />}
-                headerTitle="Options"
-              >
-                <div className="card flex-row gap-5 px-5 py-2">
-                  <Link to="/routines" className="btn flex-1">
-                    <FaRegCalendarAlt className="size-4" />
-                    View Routines
-                  </Link>
-                  <Link to="/routines/create" className="btn flex-1">
-                    <FaRegCalendarPlus className="size-4" />
-                    Create Routine
-                  </Link>
+    return (
+        <div className="h-screen w-full flex justify-center items-center">
+            <div className="flex flex-col gap-2 items-center">
+                <span className="loading loading-spinner text-primary loading-lg" />
+                <div className="flex gap-2">
+                    <span className="loading loading-dots loading-xs" />
+                    Choosing UI Layout 
+                    <span className="loading loading-dots loading-xs" />
                 </div>
-                <div className="card flex-row gap-5 px-5 py-2">
-                  <Link to="/classes" className="btn flex-1">
-                    <SiGoogleclassroom className="size-4" />
-                    View Classes
-                  </Link>
-                  <Link to="/classes/create" className="btn flex-1">
-                    <TbTableDashed className="size-4" />
-                    Create Class
-                  </Link>
-                </div>
-              </Card>
             </div>
-          </div>
         </div>
-      </div>
-    </NavLayout>
-  )
+    )
 }
 
 export default HomePage

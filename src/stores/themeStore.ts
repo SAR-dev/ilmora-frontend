@@ -25,5 +25,3 @@ export const useThemeStore = create<ThemeStore>()(
         storage: createJSONStorage(() => localStorage),
     })
 )
-
-useThemeStore.getState().setTheme(ThemeName.Dark)
