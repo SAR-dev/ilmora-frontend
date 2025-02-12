@@ -6,12 +6,17 @@ import { useEffect, useMemo, useState } from 'react';
 import { ClassLogDataType, StudentDataType } from 'types/response';
 import { useSearchParams } from 'react-router';
 import { constants } from 'constants';
-import { api, getDateInYYYYMMDD, getLocalTimezoneInfo } from 'helpers';
+import { api, getLocalTimezoneInfo } from 'helpers';
 import { useLocalStorage } from 'usehooks-ts';
 import { getDatesOfMonth } from './../../helpers';
 import classNames from 'classnames';
 
 const currentYear = new Date().getFullYear()
+
+const getDateKey = (date: string) => {
+    const dateObj = new Date(date);
+    return `${dateObj.getFullYear()}.${String(dateObj.getMonth() + 1).padStart(2, "0")}.${String(dateObj.getDate()).padStart(2, "0")}`
+}
 
 const ClassLogList = () => {
     const [isLoading, setIsLoading] = useState(false)
@@ -33,6 +38,14 @@ const ClassLogList = () => {
         , [year, month]
     )
 
+    const classLogsByDate = useMemo(() => {
+        return classLogs.reduce<Record<string, ClassLogDataType[]>>((acc, log) => {
+            const dateKey = getDateKey(log.startedAt);
+            acc[dateKey] = [...acc[dateKey] || [], log]
+            return acc;
+        }, {});
+    }, [classLogs]);
+
     useEffect(() => {
         api
             .get("/api/t/students")
@@ -40,21 +53,18 @@ const ClassLogList = () => {
     }, [])
 
     useEffect(() => {
-        if (!selectedDate) {
-            setClassLogs([])
-            return;
-        };
         setIsLoading(true)
         api
-            .post("/api/t/classLogs/day", {
+            .post("/api/t/classLogs/month", {
                 utcOffset: getLocalTimezoneInfo().offset,
-                date: getDateInYYYYMMDD(selectedDate),
+                year,
+                month,
                 studentId: selectedStudent ? selectedStudent.id : ""
             })
             .then((res) => setClassLogs(res.data))
             .catch(() => setClassLogs([]))
             .finally(() => setIsLoading(false))
-    }, [selectedStudent, selectedDate])
+    }, [selectedStudent, year, month])
 
     const handleStudentIdChange = (studentId: string) => {
         setSearchParams({
@@ -135,7 +145,7 @@ const ClassLogList = () => {
                                     <div className="flex flex-row divide-x divide-base-300" key={i}>
                                         {week.map((day, j) => (
                                             <button
-                                                className={classNames("flex w-full h-20 cursor-pointer", {
+                                                className={classNames("flex flex-col w-full h-20 cursor-pointer", {
                                                     "bg-primary text-primary-content": selectedDate?.toDateString() == new Date(year, month, day?.getDate()).toDateString()
                                                 })}
                                                 onClick={() => setSelectedDate(new Date(year, month, day?.getDate()))}
@@ -144,6 +154,13 @@ const ClassLogList = () => {
                                                 <div className="p-2">
                                                     {day?.getDate()}
                                                 </div>
+                                                {day && classLogsByDate[getDateKey(day.toDateString())]?.length > 0 && (
+                                                    <div className='flex justify-center w-full'>
+                                                        <div className="h-6 w-6 flex justify-center items-center rounded-full bg-info text-info-content">
+                                                            {classLogsByDate[getDateKey(day.toDateString())].length}
+                                                        </div>
+                                                    </div>
+                                                )}
                                             </button>
                                         ))}
                                     </div>
@@ -161,14 +178,17 @@ const ClassLogList = () => {
                                 </div>
                             ) : (
                                 <>
-                                    {classLogs.map((e, i) => (
+                                    {selectedDate && classLogsByDate[getDateKey(selectedDate.toDateString())]?.map((e, i) => (
                                         <RoutineClassLog data={e} key={i} />
                                     ))}
-                                    {classLogs.length == 0 && (
-                                        <div className="p-5">
-                                            No Class found
-                                        </div>
-                                    )}
+                                    {(!selectedDate ||
+                                        !classLogsByDate[getDateKey(selectedDate.toDateString())] ||
+                                        classLogsByDate[getDateKey(selectedDate.toDateString())].length == 0
+                                    ) && (
+                                            <div className="p-5">
+                                                No Class found
+                                            </div>
+                                        )}
                                     <hr className='text-base-300' />
                                 </>
                             )}
