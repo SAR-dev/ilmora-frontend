@@ -49,7 +49,7 @@ const ClassLogList = () => {
     const selectedClassLogs = useMemo(() => {
         if (!selectedDate) return [];
         const logs = classLogsByDate[getDateKey(selectedDate.toDateString())]
-        if (logs?.length == 0) return [];
+        if (!logs || logs.length == 0) return [];
         return logs;
     }, [classLogsByDate, selectedDate])
 
