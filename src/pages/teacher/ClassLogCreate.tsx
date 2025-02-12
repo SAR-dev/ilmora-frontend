@@ -1,28 +1,33 @@
 import { Dialog, DialogPanel } from '@headlessui/react';
 import Card from 'components/Card';
 import { constants } from 'constants';
-import { api, dateViewFormatter, getLocalTimezoneInfo } from 'helpers';
+import { api, dateViewFormatter, getDateInYYYYMMDD, getLocalTimezoneInfo } from 'helpers';
 import NavLayout from 'layouts/NavLayout'
 import { useEffect, useMemo, useState } from 'react';
 import { DayPicker } from 'react-day-picker';
-import { FaInfo, FaPlus, FaRegCalendarPlus } from 'react-icons/fa';
+import { FaInfo, FaPlus, FaRegCalendarPlus, FaTrash } from 'react-icons/fa';
 import { IoIosArrowRoundBack } from "react-icons/io";
 import { IoSaveOutline } from "react-icons/io5";
 import { StudentDataType } from 'types/response';
 import { useLocalStorage } from 'usehooks-ts';
 import { FaRegCalendar } from "react-icons/fa";
 import { MdOutlineAccessTime } from "react-icons/md";
+import { useNavigate } from 'react-router';
+import toast from 'react-hot-toast';
+import { ClassLogCreateType } from 'types/payload';
 
 const ClassDateInput = ({
     date,
     setDate,
     time,
     setTime,
+    remove
 }: {
     date?: Date,
     setDate: (props: Date | undefined) => void,
     time: string,
-    setTime: (props: string) => void
+    setTime: (props: string) => void,
+    remove: () => void
 }) => {
     const [isOpen, setIsOpen] = useState(false)
 
@@ -41,7 +46,7 @@ const ClassDateInput = ({
     };
 
     return (
-        <div className="card flex-col sm:flex-row border border-base-300 sm:divide-none divide-y divide-base-300">
+        <div className="card flex-col sm:flex-row sm:divide-none divide-y divide-base-300">
             <div className="w-full p-3 flex gap-3 items-center">
                 <FaRegCalendar className='size-5 opacity-50' />
                 <input
@@ -84,6 +89,9 @@ const ClassDateInput = ({
                         </option>
                     ))}
                 </select>
+                <button className="btn btn-error btn-ghost btn-square btn-sm" onClick={remove}>
+                    <FaTrash className='size-5' />
+                </button>
             </div>
             <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
                 <div className="fixed inset-0 flex w-screen items-center justify-center p-4 bg-base-300/75">
@@ -120,6 +128,7 @@ const initialDateData = {
 }
 
 const ClassLogCreate = () => {
+    const navigate = useNavigate()
     const localTimeZoneInfo = getLocalTimezoneInfo()
     const [studentList, setStudentList] = useLocalStorage<StudentDataType[]>(constants.STUDENT_LIST_DATA_KEY, [])
     const [formData, setFormData] = useState<FormDataType>({
@@ -127,6 +136,7 @@ const ClassLogCreate = () => {
         utcOffset: localTimeZoneInfo.offset
     })
     const [dates, setDates] = useState<{ date: Date | undefined, time: string }[]>([{ ...initialDateData }])
+    const [isLoading, setIsLoading] = useState(false)
 
     const selectedStudent = useMemo(
         () => studentList.find(e => e.id == formData.studentId) ?? null
@@ -147,6 +157,42 @@ const ClassLogCreate = () => {
             studentId
         })
     }
+
+    const handleSubmit = () => {
+        if (!selectedStudent) {
+            toast.error("Select a student.")
+            return;
+        }
+
+        const timeRegex = new RegExp('^([01][0-9]|2[0-3]):([0-5][0-9])$')
+        const incorrectTime = dates.filter(e => !e.date || !timeRegex.test(e.time)).length > 0
+        if(incorrectTime){
+            toast.error("Select times correctly")
+            return;
+        }
+        
+        setIsLoading(true)
+        const payload: ClassLogCreateType = {
+            studentId: selectedStudent.id,
+            utcOffset: formData.utcOffset,
+            logs: dates.map(e => {
+                return {
+                    date: e.date ? getDateInYYYYMMDD(e.date) : "",
+                    time: e.time
+                }
+            })
+        }
+        api
+            .post("/api/t/classLogs", { ...payload })
+            .then(() => {
+                toast.success("Classes has created sucessfully.")
+                navigate(`/t/classes?${constants.SEARCH_PARAMS.STUDENT_ID}=${selectedStudent.id}`)
+            })
+            .catch(() => {
+                toast.error("Class create failed. Please check inputs again.")
+            })
+            .finally(() => setIsLoading(false))
+        }
 
     return (
         <NavLayout>
@@ -201,7 +247,7 @@ const ClassLogCreate = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="flex flex-col gap-5">
+                        <div className="flex flex-col border border-base-300 divide-y divide-base-300">
                             {dates.map((date, i) => (
                                 <ClassDateInput
                                     date={date.date}
@@ -216,10 +262,11 @@ const ClassLogCreate = () => {
                                             i === index ? { ...date, time: val } : date
                                         )
                                     )}
+                                    remove={() => setDates((prevDates) => prevDates.filter((_, index) => i !== index))}
                                     key={i}
                                 />
                             ))}
-                            <div className="card flex-col sm:flex-row border border-base-300 divide-y divide-base-300">
+                            <div className="card flex-col sm:flex-row divide-y divide-base-300">
                                 <div className="w-full p-3">
                                     <button className="btn btn-sm" onClick={() => setDates([...dates, { ...initialDateData }])}>
                                         <FaPlus className='size-3' />
@@ -229,11 +276,11 @@ const ClassLogCreate = () => {
                             </div>
                         </div>
                         <div className='flex justify-between'>
-                            <button className="btn">
+                            <button className="btn" onClick={() => navigate(-1)}>
                                 <IoIosArrowRoundBack className='size-5' />
                                 Back
                             </button>
-                            <button className="btn btn-primary">
+                            <button className="btn btn-primary" onClick={handleSubmit}>
                                 <IoSaveOutline className='size-5' />
                                 Add Class Plans
                             </button>
@@ -241,6 +288,18 @@ const ClassLogCreate = () => {
                     </div>
                 </Card>
             </div>
+            {isLoading && (
+                <div className="h-screen w-full flex justify-center items-center fixed top-0 left-0 bg-base-300/75">
+                    <div className="flex flex-col gap-2 items-center">
+                        <span className="loading loading-spinner text-primary loading-lg" />
+                        <div className="flex gap-2">
+                            <span className="loading loading-dots loading-xs" />
+                            Submitting Data
+                            <span className="loading loading-dots loading-xs" />
+                        </div>
+                    </div>
+                </div>
+            )}
         </NavLayout>
     )
 }

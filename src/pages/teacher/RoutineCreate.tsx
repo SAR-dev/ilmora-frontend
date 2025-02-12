@@ -169,10 +169,19 @@ const RoutineCreate = () => {
             toast.error("Select date range correctly.")
             return;
         }
-        if(formData.startDate < new Date()){
+        if (formData.startDate < new Date()) {
             toast.error("Start date can not be today or in past.")
             return;
         }
+
+        const times = [formData.satTime, formData.sunTime, formData.monTime, formData.tueTime, formData.wedTime, formData.thuTime, formData.friTime].filter(e => e.trim().length > 0)
+        const timeRegex = new RegExp('^([01][0-9]|2[0-3]):([0-5][0-9])$')
+        const incorrectTime = times.filter(e => !timeRegex.test(e)).length > 0
+        if(incorrectTime){
+            toast.error("Select times correctly")
+            return;
+        }
+
         setIsLoading(true)
         const payload: RoutineCreateType = {
             studentId: selectedStudent.id,
@@ -391,7 +400,7 @@ const RoutineCreate = () => {
                             </div>
                         )}
                         <div className='flex justify-between'>
-                            <button className="btn">
+                            <button className="btn" onClick={() => navigate(-1)}>
                                 <IoIosArrowRoundBack className='size-5' />
                                 Back
                             </button>

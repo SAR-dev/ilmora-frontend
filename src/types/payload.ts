@@ -11,3 +11,12 @@ export interface RoutineCreateType {
     thuTime: string
     friTime: string
 }
+
+export interface ClassLogCreateType {
+    studentId: string
+    utcOffset: string
+    logs: {
+        date: string
+        time: string
+    }[]
+}
