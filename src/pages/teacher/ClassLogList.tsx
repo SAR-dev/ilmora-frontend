@@ -46,6 +46,13 @@ const ClassLogList = () => {
         }, {});
     }, [classLogs]);
 
+    const selectedClassLogs = useMemo(() => {
+        if (!selectedDate) return [];
+        const logs = classLogsByDate[getDateKey(selectedDate.toDateString())]
+        if (logs?.length == 0) return [];
+        return logs;
+    }, [classLogsByDate, selectedDate])
+
     useEffect(() => {
         api
             .get("/api/t/students")
@@ -178,17 +185,14 @@ const ClassLogList = () => {
                                 </div>
                             ) : (
                                 <>
-                                    {selectedDate && classLogsByDate[getDateKey(selectedDate.toDateString())]?.map((e, i) => (
+                                    {selectedClassLogs.map((e, i) => (
                                         <RoutineClassLog data={e} key={i} />
                                     ))}
-                                    {(!selectedDate ||
-                                        !classLogsByDate[getDateKey(selectedDate.toDateString())] ||
-                                        classLogsByDate[getDateKey(selectedDate.toDateString())].length == 0
-                                    ) && (
-                                            <div className="p-5">
-                                                No Class found
-                                            </div>
-                                        )}
+                                    {selectedClassLogs.length == 0 && (
+                                        <div className="p-5">
+                                            No Class found
+                                        </div>
+                                    )}
                                     <hr className='text-base-300' />
                                 </>
                             )}
