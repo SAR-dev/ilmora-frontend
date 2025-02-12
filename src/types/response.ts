@@ -27,6 +27,8 @@ export interface ClassLogDataType {
     status: string
     studentName: string
     studentCountry: string
+    studentUserId: string
+    studentUserAvatar: string
     teachersPrice: string
     classMins: string
     classNote: string

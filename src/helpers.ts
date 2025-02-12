@@ -43,3 +43,34 @@ export const timeViewFormatter = new Intl.DateTimeFormat('en-GB', {
 export const getDateInYYYYMMDD = (date: Date) => {
   return `${date.getFullYear().toString().padStart(2, "0")}-${(date.getMonth() + 1).toString().padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`
 }
+
+export const getDatesOfMonth = (year: number, month: number): (Date | null)[][] => {
+  const startDate = new Date(year, month, 1);
+  const endDate = new Date(year, month + 1, 1);
+
+  const rearrangedDays = [1, 2, 3, 4, 5, 6, 0]; // Start week from Monday
+  const dates: (Date | null)[][] = [];
+  let week: (Date | null)[] = Array(7).fill(null);
+
+  while (startDate < endDate) {
+    week[rearrangedDays[startDate.getDay()]] = new Date(startDate);
+    startDate.setDate(startDate.getDate() + 1);
+
+    if (week[6] !== null) {
+      dates.push([...week]);
+      week = Array(7).fill(null);
+    }
+  }
+
+  if (week.some((day) => day !== null)) {
+    dates.push([...week]);
+  }
+
+  while (dates.length < 6) {
+    dates.push(Array(7).fill(null));
+  }
+
+  return dates;
+};
+
+
