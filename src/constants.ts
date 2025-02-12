@@ -3,6 +3,7 @@ export const constants = {
     AUTH_TOKEN_KEY: "token",
     USER_SELF_DATA_KEY: "userType",
     STUDENT_LIST_DATA_KEY: "studentList",
+    ROUTINE_VIEW_KEY: "routineView",
     DAY_NAMES: ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
     MONTHS: [
         "January", "February", "March", "April", "May", "June",
@@ -12,5 +13,9 @@ export const constants = {
     SEARCH_PARAMS: {
         STUDENT_ID: "studentId",
         DATE: "date"
+    },
+    ROUTINE_VIEWS: {
+        CALENDAR: "calendar",
+        DAYS: "days"
     }
 }

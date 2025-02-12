@@ -28,6 +28,19 @@ export const getLocalTimezoneInfo = () => {
   return { timeZone, offset };
 };
 
+export const weekdayViewFormatter = new Intl.DateTimeFormat('en-GB', {
+  weekday: 'long'
+});
+
+export const onlyDateViewFormatter = new Intl.DateTimeFormat('en-GB', {
+  day: '2-digit'
+});
+
+export const shortDateViewFormatter = new Intl.DateTimeFormat('en-GB', {
+  day: '2-digit',
+  month: 'short'
+});
+
 export const dateViewFormatter = new Intl.DateTimeFormat('en-GB', {
   day: '2-digit',
   month: 'short',

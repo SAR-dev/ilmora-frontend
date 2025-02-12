@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { ClassLogDataType, StudentDataType } from 'types/response';
 import { useSearchParams } from 'react-router';
 import { constants } from 'constants';
-import { api, getLocalTimezoneInfo } from 'helpers';
+import { api, dateViewFormatter, getLocalTimezoneInfo, onlyDateViewFormatter, shortDateViewFormatter, weekdayViewFormatter } from 'helpers';
 import { useLocalStorage } from 'usehooks-ts';
 import { getDatesOfMonth } from './../../helpers';
 import classNames from 'classnames';
@@ -21,6 +21,7 @@ const getDateKey = (date: string) => {
 const ClassLogList = () => {
     const [isLoading, setIsLoading] = useState(false)
     const [searchParams, setSearchParams] = useSearchParams();
+    const [routineViewType, setRoutineViewType] = useLocalStorage<string>(constants.ROUTINE_VIEW_KEY, constants.ROUTINE_VIEWS.CALENDAR)
     const [studentList, setStudentList] = useLocalStorage<StudentDataType[]>(constants.STUDENT_LIST_DATA_KEY, [])
     const [classLogs, setClassLogs] = useState<ClassLogDataType[]>([])
 
@@ -86,8 +87,20 @@ const ClassLogList = () => {
                 <Card
                     headerIcon={<TbTableDashed className='size-5' />}
                     headerTitle='Student Class Plans'
+                    headerInfo={
+                        <select
+                            className="select select-bordered w-32"
+                            value={routineViewType}
+                            onChange={e => setRoutineViewType(e.target.value)}
+                        >
+                            <option value={constants.ROUTINE_VIEWS.CALENDAR}>Calendar</option>
+                            <option value={constants.ROUTINE_VIEWS.DAYS}>Days</option>
+                        </select>
+                    }
                 >
-                    <div className="grid grid-cols-1 lg:grid-cols-2">
+                    <div className={classNames("grid grid-cols-1", {
+                        "lg:grid-cols-2": routineViewType == constants.ROUTINE_VIEWS.CALENDAR
+                    })}>
                         <div className="grid grid-cols-1 gap-5 p-5">
                             <div className="grid grid-cols-4 gap-5">
                                 <label className="form-control w-full flex flex-col col-span-4 md:col-span-2">
@@ -140,62 +153,96 @@ const ClassLogList = () => {
                                     </select>
                                 </label>
                             </div>
-                            <div className="card flex-col divide-y divide-base-300 border border-base-300">
-                                <div className="flex flex-row divide-x divide-base-300 bg-base-200">
-                                    {[...Array(7)].map((_, weekDayIndexFromSat) => (
-                                        <div className="w-full h-12 text-sm font-semibold flex justify-center items-center uppercase" key={weekDayIndexFromSat}>
-                                            {constants.DAY_NAMES[weekDayIndexFromSat].slice(0, 3)}
-                                        </div>
-                                    ))}
-                                </div>
-                                {calendarDates.map((week, i) => (
-                                    <div className="flex flex-row divide-x divide-base-300" key={i}>
-                                        {week.map((day, j) => (
-                                            <button
-                                                className={classNames("flex flex-col w-full h-20 cursor-pointer", {
-                                                    "bg-primary text-primary-content": selectedDate?.toDateString() == new Date(year, month, day?.getDate()).toDateString()
-                                                })}
-                                                onClick={() => setSelectedDate(new Date(year, month, day?.getDate()))}
-                                                key={j}
-                                            >
-                                                <div className="p-2">
-                                                    {day?.getDate()}
-                                                </div>
-                                                {day && classLogsByDate[getDateKey(day.toDateString())]?.length > 0 && (
-                                                    <div className='flex justify-center w-full'>
-                                                        <div className="h-6 w-6 flex justify-center items-center rounded-full bg-info text-info-content">
-                                                            {classLogsByDate[getDateKey(day.toDateString())].length}
-                                                        </div>
-                                                    </div>
-                                                )}
-                                            </button>
+                            {routineViewType == constants.ROUTINE_VIEWS.CALENDAR && (
+                                <div className="card flex-col divide-y divide-base-300 border border-base-300">
+                                    <div className="flex flex-row divide-x divide-base-300 bg-base-200">
+                                        {[...Array(7)].map((_, weekDayIndexFromSat) => (
+                                            <div className="w-full h-12 text-sm font-semibold flex justify-center items-center uppercase" key={weekDayIndexFromSat}>
+                                                {constants.DAY_NAMES[weekDayIndexFromSat].slice(0, 3)}
+                                            </div>
                                         ))}
                                     </div>
-                                ))}
-                            </div>
-                        </div>
-                        <div className="card divide-y divide-base-300 h-[40.2rem] w-full mx-5 lg:mx-0 border lg:border-t-0 border-base-300 overflow-y-auto">
-                            {isLoading ? (
-                                <div className="p-5">
-                                    <div className="flex gap-2">
-                                        <span className="loading loading-dots loading-xs" />
-                                        Fetching Data
-                                        <span className="loading loading-dots loading-xs" />
-                                    </div>
-                                </div>
-                            ) : (
-                                <>
-                                    {selectedClassLogs.map((e, i) => (
-                                        <RoutineClassLog data={e} key={i} />
-                                    ))}
-                                    {selectedClassLogs.length == 0 && (
-                                        <div className="p-5">
-                                            No Class found
+                                    {calendarDates.map((week, i) => (
+                                        <div className="flex flex-row divide-x divide-base-300" key={i}>
+                                            {week.map((day, j) => (
+                                                <button
+                                                    className={classNames("flex flex-col w-full h-20", {
+                                                        "bg-primary text-primary-content": selectedDate?.toDateString() == new Date(year, month, day?.getDate()).toDateString(),
+                                                        "cursor-pointer hover:bg-primary/80": !!day
+                                                    })}
+                                                    onClick={() => setSelectedDate(new Date(year, month, day?.getDate()))}
+                                                    disabled={!day}
+                                                    key={j}
+                                                >
+                                                    <div className="p-2">
+                                                        {day?.getDate()}
+                                                    </div>
+                                                    {day && classLogsByDate[getDateKey(day.toDateString())]?.length > 0 && (
+                                                        <div className='flex justify-center w-full'>
+                                                            <div className="h-6 w-6 flex justify-center items-center rounded-full bg-info text-info-content">
+                                                                {classLogsByDate[getDateKey(day.toDateString())].length}
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </button>
+                                            ))}
                                         </div>
-                                    )}
-                                    <hr className='text-base-300' />
-                                </>
+                                    ))}
+                                </div>
                             )}
+                            {routineViewType == constants.ROUTINE_VIEWS.DAYS && (
+                                <div className="carousel flex divide-x divide-base-300 border border-base-300 h-fit">
+                                    {calendarDates.flatMap(c => c).filter(e => !!e).map((day, i) => (
+                                        <button
+                                            className={classNames("carousel-item h-14 w-24 flex justify-center items-center flex-col relative", {
+                                                "bg-primary text-primary-content": selectedDate?.toDateString() == new Date(year, month, day?.getDate()).toDateString(),
+                                                "cursor-pointer hover:bg-primary/80": !!day
+                                            })}
+                                            onClick={() => setSelectedDate(new Date(year, month, day?.getDate()))}
+                                            key={i}
+                                        >
+                                            <div className='text-sm font-semibold'>{onlyDateViewFormatter.format(day)}</div>
+                                            <div className='text-xs'>{weekdayViewFormatter.format(day)}</div>
+                                            {day && classLogsByDate[getDateKey(day.toDateString())]?.length > 0 && (
+                                                <div className="absolute top-0 right-0 m-1">
+                                                    <div className="h-6 w-6 flex justify-center items-center rounded-full bg-info text-info-content text-xs">
+                                                        {classLogsByDate[getDateKey(day.toDateString())].length}
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                        <div className={classNames("w-full px-5", {
+                            "lg:px-0": routineViewType == constants.ROUTINE_VIEWS.CALENDAR
+                        })}>
+                            <div className={classNames("card divide-y divide-base-300 h-[40.2rem] w-full border border-base-300 overflow-y-auto", {
+                                "lg:border-t-0": routineViewType == constants.ROUTINE_VIEWS.CALENDAR
+                            })}>
+                                {isLoading ? (
+                                    <div className="p-5">
+                                        <div className="flex gap-2">
+                                            <span className="loading loading-dots loading-xs" />
+                                            Fetching Data
+                                            <span className="loading loading-dots loading-xs" />
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <>
+                                        {selectedClassLogs.sort((a, b) => a.startedAt.localeCompare(b.startedAt)).map((e, i) => (
+                                            <RoutineClassLog data={e} key={i} />
+                                        ))}
+                                        {selectedClassLogs.length == 0 && (
+                                            <div className="p-5">
+                                                No Class found
+                                            </div>
+                                        )}
+                                        <hr className='text-base-300' />
+                                    </>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </Card>
