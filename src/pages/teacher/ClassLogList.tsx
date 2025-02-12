@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { ClassLogDataType, StudentDataType } from 'types/response';
 import { useSearchParams } from 'react-router';
 import { constants } from 'constants';
-import { api, dateViewFormatter, getLocalTimezoneInfo, onlyDateViewFormatter, shortDateViewFormatter, weekdayViewFormatter } from 'helpers';
+import { api, getLocalTimezoneInfo, onlyDateViewFormatter, weekdayViewFormatter } from 'helpers';
 import { useLocalStorage } from 'usehooks-ts';
 import { getDatesOfMonth } from './../../helpers';
 import classNames from 'classnames';
@@ -42,7 +42,7 @@ const ClassLogList = () => {
     const classLogsByDate = useMemo(() => {
         return classLogs.reduce<Record<string, ClassLogDataType[]>>((acc, log) => {
             const dateKey = getDateKey(log.startedAt);
-            acc[dateKey] = [...acc[dateKey] || [], log]
+            acc[dateKey] = [...(acc[dateKey] || []), log]
             return acc;
         }, {});
     }, [classLogs]);
@@ -89,7 +89,7 @@ const ClassLogList = () => {
                     headerTitle='Student Class Plans'
                     headerInfo={
                         <select
-                            className="select select-bordered w-32"
+                            className="select select-sm select-bordered w-32"
                             value={routineViewType}
                             onChange={e => setRoutineViewType(e.target.value)}
                         >

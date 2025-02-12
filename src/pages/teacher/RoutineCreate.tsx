@@ -16,7 +16,7 @@ import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router';
 import { useLocalStorage } from 'usehooks-ts';
 
-const RoutineDay = ({
+const RoutineDayInput = ({
     dayName,
     weekDay,
     time,
@@ -300,7 +300,7 @@ const RoutineCreate = () => {
                             </div>
                         </div>
                         <div className="flex flex-col gap-5">
-                            <RoutineDay
+                            <RoutineDayInput
                                 dayName="Saturday"
                                 weekDay={1}
                                 time={formData.satTime}
@@ -310,7 +310,7 @@ const RoutineCreate = () => {
                                 })}
                                 disabled={!selectedStudent}
                             />
-                            <RoutineDay
+                            <RoutineDayInput
                                 dayName="Sunday"
                                 weekDay={2}
                                 time={formData.sunTime}
@@ -320,7 +320,7 @@ const RoutineCreate = () => {
                                 })}
                                 disabled={!selectedStudent}
                             />
-                            <RoutineDay
+                            <RoutineDayInput
                                 dayName="Monday"
                                 weekDay={3}
                                 time={formData.monTime}
@@ -330,7 +330,7 @@ const RoutineCreate = () => {
                                 })}
                                 disabled={!selectedStudent}
                             />
-                            <RoutineDay
+                            <RoutineDayInput
                                 dayName="Tuesday"
                                 weekDay={4}
                                 time={formData.tueTime}
@@ -340,7 +340,7 @@ const RoutineCreate = () => {
                                 })}
                                 disabled={!selectedStudent}
                             />
-                            <RoutineDay
+                            <RoutineDayInput
                                 dayName="Wednesday"
                                 weekDay={5}
                                 time={formData.wedTime}
@@ -350,7 +350,7 @@ const RoutineCreate = () => {
                                 })}
                                 disabled={!selectedStudent}
                             />
-                            <RoutineDay
+                            <RoutineDayInput
                                 dayName="Thursday"
                                 weekDay={6}
                                 time={formData.thuTime}
@@ -360,7 +360,7 @@ const RoutineCreate = () => {
                                 })}
                                 disabled={!selectedStudent}
                             />
-                            <RoutineDay
+                            <RoutineDayInput
                                 dayName="Friday"
                                 weekDay={7}
                                 time={formData.friTime}
