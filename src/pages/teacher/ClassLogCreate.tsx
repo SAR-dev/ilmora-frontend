@@ -10,6 +10,8 @@ import { IoIosArrowRoundBack } from "react-icons/io";
 import { IoSaveOutline } from "react-icons/io5";
 import { StudentDataType } from 'types/response';
 import { useLocalStorage } from 'usehooks-ts';
+import { FaRegCalendar } from "react-icons/fa";
+import { MdOutlineAccessTime } from "react-icons/md";
 
 const ClassDateInput = ({
     date,
@@ -40,7 +42,8 @@ const ClassDateInput = ({
 
     return (
         <div className="card flex-col sm:flex-row border border-base-300 sm:divide-none divide-y divide-base-300">
-            <div className="w-full p-3">
+            <div className="w-full p-3 flex gap-3 items-center">
+                <FaRegCalendar className='size-5 opacity-50' />
                 <input
                     type="text"
                     placeholder='Select Date'
@@ -49,9 +52,10 @@ const ClassDateInput = ({
                     onClick={() => setIsOpen(true)}
                 />
             </div>
-            <div className="flex gap-2 p-3 items-center">
+            <div className="flex gap-3 p-3 items-center">
+                <MdOutlineAccessTime className='size-5 opacity-50' />
                 <select
-                    className="select select-sm w-20 select-bordered"
+                    className="select select-sm w-22 select-bordered"
                     value={time.split(":")[0] ?? ""}
                     onChange={e => setHours(e.target.value)}
                 >
@@ -66,7 +70,7 @@ const ClassDateInput = ({
                     ))}
                 </select>
                 <select
-                    className="select select-sm w-20 select-bordered"
+                    className="select select-sm w-22 select-bordered"
                     value={time.split(":")[1] ?? ""}
                     onChange={e => setMinutes(e.target.value)}
                 >
