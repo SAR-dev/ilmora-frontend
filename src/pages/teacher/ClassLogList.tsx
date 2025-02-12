@@ -63,7 +63,7 @@ const ClassLogList = () => {
     useEffect(() => {
         setIsLoading(true)
         api
-            .post("/api/t/classLogs/month", {
+            .post("/api/t/classes/month", {
                 utcOffset: getLocalTimezoneInfo().offset,
                 year,
                 month,

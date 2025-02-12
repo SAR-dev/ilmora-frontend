@@ -183,7 +183,7 @@ const ClassLogCreate = () => {
             })
         }
         api
-            .post("/api/t/classLogs", { ...payload })
+            .post("/api/t/class-logs", { ...payload })
             .then(() => {
                 toast.success("Classes has created sucessfully.")
                 navigate(`/t/classes?${constants.SEARCH_PARAMS.STUDENT_ID}=${selectedStudent.id}`)
