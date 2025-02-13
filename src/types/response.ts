@@ -43,3 +43,14 @@ export interface NoticeShortDataType {
     id: string
     title: string
 }
+
+export interface ClassStatDataType {
+    completedClassInfo: {
+        totalClass: string
+        totalPrice: string
+    }
+    pendingClassInfo: {
+        totalClass: string
+        totalPrice: string
+    }
+}

@@ -19,7 +19,7 @@ import { constants } from "constants";
 import { useEffect, useState } from "react";
 import { addDays, api, dateViewFormatter, getDateInYYYYMMDD, getLocalTimezoneInfo } from "helpers";
 import NoticeCard from "components/NoticeCard";
-import { ClassLogDataType, NoticeShortDataType, StudentDataType } from "types/response";
+import { ClassLogDataType, ClassStatDataType, NoticeShortDataType, StudentDataType } from "types/response";
 
 const today = new Date()
 
@@ -30,6 +30,10 @@ const TeacherHome = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(today)
   const [classLogs, setClassLogs] = useState<ClassLogDataType[]>([])
   const [classFetching, setClassFetching] = useState(false)
+
+  const [statYear, setStatYear] = useState<number>(today.getFullYear())
+  const [statMonth, setStatMonth] = useState<number>(today.getMonth())
+  const [classStat, setClassStat] = useState<ClassStatDataType | null>(null)
 
   useEffect(() => {
     api
@@ -55,6 +59,18 @@ const TeacherHome = () => {
       .get("/api/t/students")
       .then(res => setStudentRoutineList([...res.data]))
   }, [])
+
+  useEffect(() => {
+    api.
+      post("/api/t/classes/stats", {
+        utcOffset: getLocalTimezoneInfo().offset,
+        year: statYear,
+        month: statMonth
+      })
+      .then(res => setClassStat(res.data))
+      .catch(() => setClassStat(null))
+  }, [statYear, statMonth])
+
 
   return (
     <NavLayout>
@@ -129,20 +145,28 @@ const TeacherHome = () => {
                 headerTitle="Class Stats"
                 headerInfo={
                   <div className="flex gap-2">
-                    <select className="select select-sm select-bordered w-full max-w-xs">
-                      <option disabled selected>Year</option>
-                      <option>Han Solo</option>
-                      <option>Greedo</option>
+                    <select
+                      className="select select-sm select-bordered w-20"
+                      value={statYear}
+                      onChange={e => setStatYear(Number(e.target.value))}
+                    >
+                      {[...Array(10)].map((_, i) => (
+                        <option value={today.getFullYear() - 2 + i} key={i}>{today.getFullYear() - 2 + i}</option>
+                      ))}
                     </select>
-                    <select className="select select-sm select-bordered w-full max-w-xs">
-                      <option disabled selected>Month</option>
-                      <option>Han Solo</option>
-                      <option>Greedo</option>
+                    <select
+                      className="select select-sm select-bordered w-28"
+                      value={statMonth}
+                      onChange={e => setStatMonth(Number(e.target.value))}
+                    >
+                      {[...Array(12)].map((_, i) => (
+                        <option value={i} key={i}>{constants.MONTHS[i]}</option>
+                      ))}
                     </select>
                   </div>
                 }
               >
-                <StatCardMin />
+                <StatCardMin data={classStat} />
               </Card>
 
               <Card
