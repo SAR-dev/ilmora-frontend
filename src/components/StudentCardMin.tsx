@@ -48,7 +48,10 @@ const StudentCardMin = ({ data }: { data: StudentDataType }) => {
                 </div>
             </div>
             <div className="grid grid-cols-8 text-xs border-t border-base-300 divide-x divide-base-300">
-                <div className="py-2 flex items-center justify-center">{data.utcOffset}</div>
+                <div className="py-2 flex flex-col items-center justify-center">
+                    <div>TZ</div>
+                    <div>{data.utcOffset}</div>
+                </div>
                 <div
                     className={classNames("py-2 items-center justify-center flex flex-col", {
                         "text-success font-semibold": data.satTime.length > 0,

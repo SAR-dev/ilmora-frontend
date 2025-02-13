@@ -3,6 +3,7 @@ export const constants = {
     AUTH_TOKEN_KEY: "token",
     USER_SELF_DATA_KEY: "userType",
     STUDENT_LIST_DATA_KEY: "studentList",
+    RESOURCE_LIST_DATA_KEY: "resourceList",
     ROUTINE_VIEW_KEY: "routineView",
     NOTICE_LIST_KEY: "noticeList",
     DAY_NAMES: ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],

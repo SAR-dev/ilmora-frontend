@@ -7,7 +7,6 @@ import StudentCardMin from "components/StudentCardMin";
 import { IoIosStats } from "react-icons/io";
 import StatCardMin from "components/StatCardMin";
 import { BsFillHddStackFill } from "react-icons/bs";
-import ResourceCardMin from "components/ResourceCardMin";
 import Card from "components/Card";
 import { IoOptions } from "react-icons/io5";
 import { Link } from "react-router";
@@ -20,17 +19,19 @@ import { useEffect, useMemo, useState } from "react";
 import { addDays, api, dateViewFormatter, getDateInYYYYMMDD, getLocalTimezoneInfo } from "helpers";
 import NoticeCard from "components/NoticeCard";
 import { ClassLogDataType, ClassStatDataType, NoticeShortDataType, StudentDataType } from "types/response";
+import { pb } from "contexts/PocketContext";
+import { Collections, ResourcesResponse } from "types/pocketbase";
+import ResourceCardMin from "components/ResourceCardMin";
 
 const today = new Date()
 
 const TeacherHome = () => {
-  const [fetched, setFetched] = useState({
-    classes: false,
-    stats: false
-  })
+  const [classesFetched, setClassesFetched] = useState(false)
+  const [statsFetched, setStatsFetched] = useState(false)
 
   const [NoticeCardList, setNoticeCardList] = useLocalStorage<NoticeShortDataType[]>(constants.NOTICE_LIST_KEY, [])
   const [studentRoutineList, setStudentRoutineList] = useLocalStorage<StudentDataType[]>(constants.STUDENT_LIST_DATA_KEY, [])
+  const [resourceList, setResourceList] = useLocalStorage<ResourcesResponse[]>(constants.RESOURCE_LIST_DATA_KEY, [])
 
   const [selectedDate, setSelectedDate] = useState<Date>(today)
   const [classLogs, setClassLogs] = useState<ClassLogDataType[]>([])
@@ -40,7 +41,7 @@ const TeacherHome = () => {
   const [statMonth, setStatMonth] = useState<number>(today.getMonth())
   const [classStat, setClassStat] = useState<ClassStatDataType | null>(null)
 
-  const dataFetched = useMemo(() => Object.values(fetched).every(value => value === true), [fetched])
+  const dataFetched = useMemo(() => statsFetched && classesFetched, [statsFetched, classesFetched])
 
   useEffect(() => {
     setClassFetching(true)
@@ -54,7 +55,7 @@ const TeacherHome = () => {
       .catch(() => setClassLogs([]))
       .finally(() => {
         setClassFetching(false)
-        setFetched({ ...fetched, classes: true })
+        setClassesFetched(true)
       })
   }, [selectedDate])
 
@@ -67,23 +68,36 @@ const TeacherHome = () => {
       })
       .then(res => setClassStat(res.data))
       .catch(() => setClassStat(null))
-      .finally(() => setFetched({ ...fetched, stats: true }))
+      .finally(() => setStatsFetched(true))
   }, [statYear, statMonth])
 
   useEffect(() => {
-    if(!dataFetched) return;
+    if (!dataFetched) return;
     api
       .get("/api/t/notices")
       .then(res => setNoticeCardList(res.data))
   }, [dataFetched])
 
   useEffect(() => {
-    if(!dataFetched) return;
+    if (!dataFetched) return;
     api
       .get("/api/t/students")
       .then(res => setStudentRoutineList([...res.data]))
   }, [dataFetched])
 
+  useEffect(() => {
+    if (!dataFetched) return;
+    pb
+      .collection(Collections.Resources)
+      .getFullList({
+        sort: "-created",
+        filter: `userType = 'TEACHER'`
+      })
+      .then(res => {
+        console.log(res)
+        setResourceList(res)
+      })
+  }, [dataFetched])
 
   return (
     <NavLayout>
@@ -186,10 +200,12 @@ const TeacherHome = () => {
                 headerIcon={<BsFillHddStackFill className="size-5" />}
                 headerTitle="Resources"
               >
-                <ResourceCardMin />
-                <ResourceCardMin />
-                <ResourceCardMin />
-                <ResourceCardMin />
+                {resourceList.map((data, i) => (
+                  <ResourceCardMin data={data} key={i} />
+                ))}
+                {resourceList.length == 0 && (
+                  <div className="px-5 py-3">No resources found</div>
+                )}
               </Card>
 
               <Card
