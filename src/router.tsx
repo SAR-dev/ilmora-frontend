@@ -8,6 +8,8 @@ import SignIn from "pages/SignIn";
 import { RequireUnAuth } from "layouts/RequireUnAuth";
 import { RequireTeacherAuth } from "layouts/RequireTeacherAuth";
 import Homepage from "pages/Homepage";
+import NoticeList from "pages/teacher/NoticeList";
+import NoticeDetails from "pages/teacher/NoticeDetails";
 
 const router = createBrowserRouter([
   { path: "/", element: <Homepage /> },
@@ -24,6 +26,8 @@ const router = createBrowserRouter([
       { path: "/t/routines/create", element: <RoutineCreate /> },
       { path: "/t/classes/create", element: <ClassLogCreate /> },
       { path: "/t/classes", element: <ClassLogList /> },
+      { path: "/t/notices", element: <NoticeList /> },
+      { path: "/t/notices/:id", element: <NoticeDetails /> },
     ]
   },
   { path: "*", element: <NotFound /> }

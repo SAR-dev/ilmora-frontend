@@ -132,7 +132,7 @@ const RoutineCreate = () => {
     const navigate = useNavigate()
     const localTimeZoneInfo = getLocalTimezoneInfo()
     const [isOpen, setIsOpen] = useState(false)
-    const [studentList, setStudentList] = useLocalStorage<StudentDataType[]>(constants.STUDENT_LIST_DATA_KEY, [])
+    const [studentRoutineList, setStudentRoutineList] = useLocalStorage<StudentDataType[]>(constants.STUDENT_LIST_DATA_KEY, [])
     const [isLoading, setIsLoading] = useState(false)
 
     const [formData, setFormData] = useState<FormDataType>({
@@ -150,14 +150,14 @@ const RoutineCreate = () => {
     })
 
     const selectedStudent = useMemo(
-        () => studentList.find(e => e.id == formData.studentId) ?? null
-        , [formData, studentList]
+        () => studentRoutineList.find(e => e.id == formData.studentId) ?? null
+        , [formData, studentRoutineList]
     )
 
     useEffect(() => {
         api
-            .get("/api/t/students")
-            .then(res => setStudentList([...res.data]))
+            .get("/api/t/routines")
+            .then(res => setStudentRoutineList([...res.data]))
     }, [])
 
     const handleSubmit = () => {
@@ -209,7 +209,7 @@ const RoutineCreate = () => {
     }
 
     const handleStudentIdChange = (studentId: string) => {
-        const found = studentList.find(e => e.id == studentId) ?? null
+        const found = studentRoutineList.find(e => e.id == studentId) ?? null
         if (!found) return;
         setFormData({
             ...formData,
@@ -245,7 +245,7 @@ const RoutineCreate = () => {
                                     onChange={e => handleStudentIdChange(e.target.value)}
                                 >
                                     <option disabled value="">-</option>
-                                    {studentList.map((e, i) => (
+                                    {studentRoutineList.map((e, i) => (
                                         <option value={e.id} key={i}>{e.name}</option>
                                     ))}
                                 </select>

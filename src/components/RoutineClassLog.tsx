@@ -1,10 +1,10 @@
 import { FaArrowRight } from "react-icons/fa";
-import { CiMemoPad } from "react-icons/ci";
 import { ClassLogDataType } from "types/response";
 import { timeViewFormatter } from "helpers";
 import { MdOutlineSignalWifiStatusbar4Bar } from "react-icons/md";
 import classNames from "classnames";
 import { BsAlarmFill } from "react-icons/bs";
+import { TbMessage2Star } from "react-icons/tb";
 
 const RoutineClassLog = ({ data }: { data: ClassLogDataType }) => {
     return (
@@ -43,14 +43,16 @@ const RoutineClassLog = ({ data }: { data: ClassLogDataType }) => {
                 </div>
             </div>
             <div className='flex items-center gap-2'>
-                <div className="hidden sm:flex tooltip tooltip-primary tooltip-left" data-tip={data.classNote.length > 0 ? data.classNote : "N/A"}>
-                    <button className="btn btn-square">
-                        <CiMemoPad className="size-5" />
+                <div className="tooltip tooltip-info" data-tip="Write a memo">
+                    <button className="btn btn-sm btn-square">
+                        <TbMessage2Star className="size-4" />
                     </button>
                 </div>
-                <button className="btn btn-square">
-                    <FaArrowRight className='size-5' />
-                </button>
+                <div className="tooltip tooltip-success" data-tip="Open Class">
+                    <button className="btn btn-sm btn-square">
+                        <FaArrowRight className='size-4' />
+                    </button>
+                </div>
             </div>
         </div>
     )

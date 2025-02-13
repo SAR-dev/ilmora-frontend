@@ -1,5 +1,4 @@
 import ClassCardMin from "components/ClassCardMin";
-import Notice from "components/Notice";
 import NavLayout from "layouts/NavLayout"
 import { MdOutlineNotificationsActive } from "react-icons/md";
 import { RiMastodonLine } from "react-icons/ri";
@@ -12,11 +11,45 @@ import ResourceCardMin from "components/ResourceCardMin";
 import Card from "components/Card";
 import { IoOptions } from "react-icons/io5";
 import { Link } from "react-router";
-import { FaRegCalendarPlus, FaRegCalendarAlt } from "react-icons/fa";
+import { FaRegCalendarPlus, FaRegCalendarAlt, FaExpand } from "react-icons/fa";
 import { TbTableDashed } from "react-icons/tb";
 import { FaArrowLeftLong, FaArrowRightLong } from "react-icons/fa6";
+import { useLocalStorage } from "usehooks-ts";
+import { constants } from "constants";
+import { useEffect, useState } from "react";
+import { addDays, api, dateViewFormatter, getDateInYYYYMMDD, getLocalTimezoneInfo } from "helpers";
+import NoticeCard from "components/NoticeCard";
+import { ClassLogDataType, NoticeShortDataType } from "types/response";
+
+const today = new Date()
 
 const TeacherHome = () => {
+  const [NoticeCardList, setNoticeCardList] = useLocalStorage<NoticeShortDataType[]>(constants.NOTICE_LIST_KEY, [])
+
+  const [selectedDate, setSelectedDate] = useState<Date>(today)
+  const [classLogs, setClassLogs] = useState<ClassLogDataType[]>([])
+  const [classFetching, setClassFetching] = useState(false)
+
+  useEffect(() => {
+    api
+      .get("/api/t/notices")
+      .then(res => setNoticeCardList(res.data))
+  }, [])
+
+  useEffect(() => {
+    setClassFetching(true)
+    api
+      .post("/api/t/classes/day", {
+        utcOffset: getLocalTimezoneInfo().offset,
+        date: getDateInYYYYMMDD(selectedDate),
+        studentId: ""
+      })
+      .then((res) => setClassLogs(res.data))
+      .catch(() => setClassLogs([]))
+      .finally(() => setClassFetching(false))
+  }, [selectedDate])
+
+
   return (
     <NavLayout>
       <div className="w-full max-w-screen-xl mx-auto px-5 my-5 lg:my-10">
@@ -25,29 +58,48 @@ const TeacherHome = () => {
             <div className="grid grid-cols-1 gap-10">
               <Card
                 headerIcon={<MdOutlineNotificationsActive className="size-5" />}
-                headerTitle="Notifications"
+                headerTitle="Recent Notices"
+                headerInfo={
+                  <div className="tooltip tooltip-info" data-tip="Show more notices">
+                    <Link to="/t/notices" className="btn btn-sm btn-square">
+                      <FaExpand className="size-5" />
+                    </Link>
+                  </div>
+                }
               >
-                <Notice />
-                <Notice />
+                {NoticeCardList.map((data, i) => (
+                  <NoticeCard data={data} key={i} />
+                ))}
               </Card>
 
               <Card
                 headerIcon={<RiMastodonLine className="size-5" />}
-                headerTitle="Today's Class List"
+                headerTitle={`Class Log - ${dateViewFormatter.format(selectedDate)}`}
                 headerInfo={
                   <div className="flex gap-2 items-end">
-                    <button className="btn btn-sm btn-square">
+                    <button
+                      className="btn btn-sm btn-square"
+                      onClick={() => setSelectedDate(addDays(selectedDate.toDateString(), -1))}
+                      disabled={classFetching}
+                    >
                       <FaArrowLeftLong className='size-4' />
                     </button>
-                    <button className="btn btn-sm btn-square">
+                    <button
+                      className="btn btn-sm btn-square"
+                      onClick={() => setSelectedDate(addDays(selectedDate.toDateString(), 1))}
+                      disabled={classFetching}
+                    >
                       <FaArrowRightLong className='size-4' />
                     </button>
                   </div>
                 }
               >
-                <ClassCardMin />
-                <ClassCardMin />
-                <ClassCardMin />
+                {classLogs.map((data, i) => (
+                  <ClassCardMin data={data} key={i} />
+                ))}
+                {classLogs.length == 0 && (
+                  <div className="px-5 py-3">No classes found</div>
+                )}
               </Card>
 
               <Card

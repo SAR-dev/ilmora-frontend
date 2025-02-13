@@ -22,7 +22,7 @@ const ClassLogList = () => {
     const [isLoading, setIsLoading] = useState(false)
     const [searchParams, setSearchParams] = useSearchParams();
     const [routineViewType, setRoutineViewType] = useLocalStorage<string>(constants.ROUTINE_VIEW_KEY, constants.ROUTINE_VIEWS.CALENDAR)
-    const [studentList, setStudentList] = useLocalStorage<StudentDataType[]>(constants.STUDENT_LIST_DATA_KEY, [])
+    const [studentRoutineList, setStudentRoutineList] = useLocalStorage<StudentDataType[]>(constants.STUDENT_LIST_DATA_KEY, [])
     const [classLogs, setClassLogs] = useState<ClassLogDataType[]>([])
 
     const [selectedDate, setSelectedDate] = useState<Date | null>(new Date())
@@ -30,8 +30,8 @@ const ClassLogList = () => {
     const [month, setMonth] = useState<number>(new Date().getMonth())
 
     const selectedStudent = useMemo(
-        () => studentList.find(e => e.id == searchParams.get(constants.SEARCH_PARAMS.STUDENT_ID)) ?? null
-        , [searchParams, studentList]
+        () => studentRoutineList.find(e => e.id == searchParams.get(constants.SEARCH_PARAMS.STUDENT_ID)) ?? null
+        , [searchParams, studentRoutineList]
     )
 
     const calendarDates = useMemo(
@@ -56,8 +56,8 @@ const ClassLogList = () => {
 
     useEffect(() => {
         api
-            .get("/api/t/students")
-            .then(res => setStudentList([...res.data]))
+            .get("/api/t/routines")
+            .then(res => setStudentRoutineList([...res.data]))
     }, [])
 
     useEffect(() => {
@@ -113,7 +113,7 @@ const ClassLogList = () => {
                                         onChange={e => handleStudentIdChange(e.target.value)}
                                     >
                                         <option value="">All</option>
-                                        {studentList.map((e, i) => (
+                                        {studentRoutineList.map((e, i) => (
                                             <option value={e.id} key={i}>{e.name}</option>
                                         ))}
                                     </select>

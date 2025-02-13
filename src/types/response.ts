@@ -29,7 +29,13 @@ export interface ClassLogDataType {
     studentCountry: string
     studentUserId: string
     studentUserAvatar: string
+    whatsAppNo: string
     teachersPrice: string
     classMins: string
     classNote: string
+}
+
+export interface NoticeShortDataType {
+    id: string
+    title: string
 }

@@ -2,7 +2,6 @@ import { LuPackage2 } from "react-icons/lu";
 import { GoLocation } from "react-icons/go";
 import { LiaExpandSolid } from "react-icons/lia";
 import { SiSubtitleedit } from "react-icons/si";
-import { RiCalendarScheduleLine } from "react-icons/ri"
 import { TbMoneybag } from "react-icons/tb";
 
 const StudentCardMin = () => {
@@ -17,12 +16,7 @@ const StudentCardMin = () => {
                     Sayed Rafi
                 </div>
                 <div className="flex gap-.5">
-                    <div className="tooltip tooltip-info" data-tip="Write memo">
-                        <button className="btn btn-sm btn-square btn-ghost">
-                            <RiCalendarScheduleLine className="size-4" />
-                        </button>
-                    </div>
-                    <div className="tooltip tooltip-success" data-tip="Open Class">
+                    <div className="tooltip tooltip-info" data-tip="Open Class History">
                         <button className="btn btn-sm btn-square btn-ghost">
                             <LiaExpandSolid className="size-4" />
                         </button>

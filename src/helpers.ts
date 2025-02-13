@@ -87,3 +87,8 @@ export const getDatesOfMonth = (year: number, month: number): (Date | null)[][] 
 };
 
 
+export const addDays = (date:string, days:number) => {
+  const result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+}
