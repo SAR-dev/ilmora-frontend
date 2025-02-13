@@ -16,7 +16,7 @@ import { TbTableDashed } from "react-icons/tb";
 import { FaArrowLeftLong, FaArrowRightLong } from "react-icons/fa6";
 import { useLocalStorage } from "usehooks-ts";
 import { constants } from "constants";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { addDays, api, dateViewFormatter, getDateInYYYYMMDD, getLocalTimezoneInfo } from "helpers";
 import NoticeCard from "components/NoticeCard";
 import { ClassLogDataType, ClassStatDataType, NoticeShortDataType, StudentDataType } from "types/response";
@@ -24,6 +24,11 @@ import { ClassLogDataType, ClassStatDataType, NoticeShortDataType, StudentDataTy
 const today = new Date()
 
 const TeacherHome = () => {
+  const [fetched, setFetched] = useState({
+    classes: false,
+    stats: false
+  })
+
   const [NoticeCardList, setNoticeCardList] = useLocalStorage<NoticeShortDataType[]>(constants.NOTICE_LIST_KEY, [])
   const [studentRoutineList, setStudentRoutineList] = useLocalStorage<StudentDataType[]>(constants.STUDENT_LIST_DATA_KEY, [])
 
@@ -35,11 +40,7 @@ const TeacherHome = () => {
   const [statMonth, setStatMonth] = useState<number>(today.getMonth())
   const [classStat, setClassStat] = useState<ClassStatDataType | null>(null)
 
-  useEffect(() => {
-    api
-      .get("/api/t/notices")
-      .then(res => setNoticeCardList(res.data))
-  }, [])
+  const dataFetched = useMemo(() => Object.values(fetched).every(value => value === true), [fetched])
 
   useEffect(() => {
     setClassFetching(true)
@@ -51,14 +52,11 @@ const TeacherHome = () => {
       })
       .then((res) => setClassLogs(res.data))
       .catch(() => setClassLogs([]))
-      .finally(() => setClassFetching(false))
+      .finally(() => {
+        setClassFetching(false)
+        setFetched({ ...fetched, classes: true })
+      })
   }, [selectedDate])
-
-  useEffect(() => {
-    api
-      .get("/api/t/students")
-      .then(res => setStudentRoutineList([...res.data]))
-  }, [])
 
   useEffect(() => {
     api.
@@ -69,7 +67,22 @@ const TeacherHome = () => {
       })
       .then(res => setClassStat(res.data))
       .catch(() => setClassStat(null))
+      .finally(() => setFetched({ ...fetched, stats: true }))
   }, [statYear, statMonth])
+
+  useEffect(() => {
+    if(!dataFetched) return;
+    api
+      .get("/api/t/notices")
+      .then(res => setNoticeCardList(res.data))
+  }, [dataFetched])
+
+  useEffect(() => {
+    if(!dataFetched) return;
+    api
+      .get("/api/t/students")
+      .then(res => setStudentRoutineList([...res.data]))
+  }, [dataFetched])
 
 
   return (

@@ -51,7 +51,7 @@ const StudentCardMin = ({ data }: { data: StudentDataType }) => {
                 <div className="py-2 flex items-center justify-center">{data.utcOffset}</div>
                 <div
                     className={classNames("py-2 items-center justify-center flex flex-col", {
-                        "text-primary font-semibold": data.satTime.length > 0,
+                        "text-success font-semibold": data.satTime.length > 0,
                         "text-base-content/20": data.satTime.length == 0,
                     })}
                 >
@@ -60,7 +60,7 @@ const StudentCardMin = ({ data }: { data: StudentDataType }) => {
                 </div>
                 <div
                     className={classNames("py-2 items-center justify-center flex flex-col", {
-                        "text-primary font-semibold": data.sunTime.length > 0,
+                        "text-success font-semibold": data.sunTime.length > 0,
                         "text-base-content/20": data.sunTime.length == 0,
                     })}
                 >
@@ -69,7 +69,7 @@ const StudentCardMin = ({ data }: { data: StudentDataType }) => {
                 </div>
                 <div
                     className={classNames("py-2 items-center justify-center flex flex-col", {
-                        "text-primary font-semibold": data.monTime.length > 0,
+                        "text-success font-semibold": data.monTime.length > 0,
                         "text-base-content/20": data.monTime.length == 0,
                     })}
                 >
@@ -78,7 +78,7 @@ const StudentCardMin = ({ data }: { data: StudentDataType }) => {
                 </div>
                 <div
                     className={classNames("py-2 items-center justify-center flex flex-col", {
-                        "text-primary font-semibold": data.tueTime.length > 0,
+                        "text-success font-semibold": data.tueTime.length > 0,
                         "text-base-content/20": data.tueTime.length == 0,
                     })}
                 >
@@ -87,7 +87,7 @@ const StudentCardMin = ({ data }: { data: StudentDataType }) => {
                 </div>
                 <div
                     className={classNames("py-2 items-center justify-center flex flex-col", {
-                        "text-primary font-semibold": data.wedTime.length > 0,
+                        "text-success font-semibold": data.wedTime.length > 0,
                         "text-base-content/20": data.wedTime.length == 0,
                     })}
                 >
@@ -96,7 +96,7 @@ const StudentCardMin = ({ data }: { data: StudentDataType }) => {
                 </div>
                 <div
                     className={classNames("py-2 items-center justify-center flex flex-col", {
-                        "text-primary font-semibold": data.thuTime.length > 0,
+                        "text-success font-semibold": data.thuTime.length > 0,
                         "text-base-content/20": data.thuTime.length == 0,
                     })}
                 >
@@ -105,7 +105,7 @@ const StudentCardMin = ({ data }: { data: StudentDataType }) => {
                 </div>
                 <div
                     className={classNames("py-2 items-center justify-center flex flex-col", {
-                        "text-primary font-semibold": data.friTime.length > 0,
+                        "text-success font-semibold": data.friTime.length > 0,
                         "text-base-content/20": data.friTime.length == 0,
                     })}
                 >
