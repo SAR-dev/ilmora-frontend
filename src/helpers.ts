@@ -92,3 +92,7 @@ export const addDays = (date:string, days:number) => {
   result.setDate(result.getDate() + days);
   return result;
 }
+
+export const getWhatsappUrl = (whatsAppNo: string) => {
+  return `https://wa.me/${whatsAppNo.replace(/\D/g, "")}`
+}

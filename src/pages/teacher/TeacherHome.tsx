@@ -24,6 +24,8 @@ import { Collections, ResourcesResponse } from "types/pocketbase";
 import ResourceCardMin from "components/ResourceCardMin";
 
 const today = new Date()
+const yesterday = new Date(new Date().setDate(today.getDate() - 1))
+const tomorrow = new Date(new Date().setDate(today.getDate() + 1))
 
 const TeacherHome = () => {
   const [classesFetched, setClassesFetched] = useState(false)
@@ -42,6 +44,13 @@ const TeacherHome = () => {
   const [classStat, setClassStat] = useState<ClassStatDataType | null>(null)
 
   const dataFetched = useMemo(() => statsFetched && classesFetched, [statsFetched, classesFetched])
+
+  const classLogTitle = useMemo(() => {
+    if(selectedDate.toDateString() == today.toDateString()) return "Today's Class Logs"
+    if(selectedDate.toDateString() == yesterday.toDateString()) return "Yesterday's Class Logs"
+    if(selectedDate.toDateString() == tomorrow.toDateString()) return "Tomorrow's Class Logs"
+    return `Class Log - ${dateViewFormatter.format(selectedDate)}`
+  }, [selectedDate])
 
   useEffect(() => {
     setClassFetching(true)
@@ -94,7 +103,6 @@ const TeacherHome = () => {
         filter: `userType = 'TEACHER'`
       })
       .then(res => {
-        console.log(res)
         setResourceList(res)
       })
   }, [dataFetched])
@@ -123,7 +131,7 @@ const TeacherHome = () => {
 
               <Card
                 headerIcon={<RiMastodonLine className="size-5" />}
-                headerTitle={`Class Log - ${dateViewFormatter.format(selectedDate)}`}
+                headerTitle={classLogTitle}
                 headerInfo={
                   <div className="flex gap-2 items-end">
                     <button

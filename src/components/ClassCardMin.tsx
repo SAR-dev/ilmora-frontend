@@ -7,9 +7,13 @@ import { TbMessage2Star } from "react-icons/tb";
 import { FaWhatsapp } from "react-icons/fa";
 import { MdSignalWifiStatusbar2Bar } from "react-icons/md";
 import { ClassLogDataType } from "types/response";
-import { timeViewFormatter } from "helpers";
+import { getWhatsappUrl, timeViewFormatter } from "helpers";
+import { useClassNote } from "contexts/ClassNoteContext";
+import { Link } from "react-router";
 
 const ClassCardMin = ({ data }: { data: ClassLogDataType }) => {
+    const { openNoteModal } = useClassNote()
+
     return (
         <div className="flex flex-col pt-3 hover:bg-accent/20 transition duration-150 ease-in-out">
             <div className="px-5 flex justify-between">
@@ -30,20 +34,20 @@ const ClassCardMin = ({ data }: { data: ClassLogDataType }) => {
                             <FiTrash className="size-4" />
                         </button>
                     </div>
-                    <div className="tooltip tooltip-info" data-tip="Open in WhatsApp">
-                        <button className="btn btn-sm btn-square btn-ghost">
+                    <div className="tooltip tooltip-info" data-tip={`${data.studentWhtsAppNo}`}>
+                        <a href={getWhatsappUrl(data.studentWhtsAppNo)} target="_blank" className="btn btn-sm btn-square btn-ghost">
                             <FaWhatsapp className="size-4" />
-                        </button>
+                        </a>
                     </div>
-                    <div className="tooltip tooltip-info" data-tip="Write memo">
+                    <div className="tooltip tooltip-info" data-tip="Write note" onClick={() => openNoteModal(data.id)}>
                         <button className="btn btn-sm btn-square btn-ghost">
                             <TbMessage2Star className="size-4" />
                         </button>
                     </div>
                     <div className="tooltip tooltip-success" data-tip="Open Class">
-                        <button className="btn btn-sm btn-square btn-ghost">
+                        <Link to={`/t/classes/${data.id}`} className="btn btn-sm btn-square btn-ghost">
                             <LiaExpandSolid className="size-4" />
-                        </button>
+                        </Link>
                     </div>
                 </div>
             </div>

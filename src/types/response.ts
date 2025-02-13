@@ -33,7 +33,7 @@ export interface ClassLogDataType {
     studentCountry: string
     studentUserId: string
     studentUserAvatar: string
-    whatsAppNo: string
+    studentWhtsAppNo: string
     teachersPrice: string
     classMins: string
     classNote: string

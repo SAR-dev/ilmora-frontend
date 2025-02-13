@@ -5,6 +5,8 @@ import { SiSubtitleedit } from "react-icons/si";
 import { TbMoneybag } from "react-icons/tb";
 import { StudentDataType } from "types/response";
 import classNames from "classnames";
+import { getWhatsappUrl } from "helpers";
+import { FaWhatsapp } from "react-icons/fa6";
 
 const StudentCardMin = ({ data }: { data: StudentDataType }) => {
     return (
@@ -21,7 +23,12 @@ const StudentCardMin = ({ data }: { data: StudentDataType }) => {
                     )}
                     {data.name}
                 </div>
-                <div className="flex gap-.5">
+                <div className="flex items-center">
+                    <div className="tooltip tooltip-info" data-tip={`${data.whatsAppNo}`}>
+                        <a href={getWhatsappUrl(data.whatsAppNo)} target="_blank" className="btn btn-sm btn-square btn-ghost">
+                            <FaWhatsapp className="size-4" />
+                        </a>
+                    </div>
                     <div className="tooltip tooltip-info" data-tip="Open Class History">
                         <button className="btn btn-sm btn-square btn-ghost">
                             <LiaExpandSolid className="size-4" />

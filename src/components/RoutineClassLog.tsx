@@ -1,12 +1,17 @@
-import { FaArrowRight } from "react-icons/fa";
+import { FaWhatsapp } from "react-icons/fa";
 import { ClassLogDataType } from "types/response";
-import { timeViewFormatter } from "helpers";
+import { getWhatsappUrl, timeViewFormatter } from "helpers";
 import { MdOutlineSignalWifiStatusbar4Bar } from "react-icons/md";
 import classNames from "classnames";
 import { BsAlarmFill } from "react-icons/bs";
 import { TbMessage2Star } from "react-icons/tb";
+import { useClassNote } from "contexts/ClassNoteContext";
+import { Link } from "react-router";
+import { LiaExpandSolid } from "react-icons/lia";
 
 const RoutineClassLog = ({ data }: { data: ClassLogDataType }) => {
+    const { openNoteModal } = useClassNote()
+
     return (
         <div className="flex justify-between pt-2 pb-4 px-5 w-full hover:bg-accent/20 transition duration-150 ease-in-out">
             <div className="flex gap-5 items-start">
@@ -42,16 +47,21 @@ const RoutineClassLog = ({ data }: { data: ClassLogDataType }) => {
                     </div>
                 </div>
             </div>
-            <div className='flex items-center gap-2'>
-                <div className="tooltip tooltip-info" data-tip="Write a memo">
-                    <button className="btn btn-sm btn-square">
+            <div className='flex items-center'>
+                <div className="tooltip tooltip-info" data-tip={`${data.studentWhtsAppNo}`}>
+                    <a href={getWhatsappUrl(data.studentWhtsAppNo)} target="_blank" className="btn btn-sm btn-square btn-ghost">
+                        <FaWhatsapp className="size-4" />
+                    </a>
+                </div>
+                <div className="tooltip tooltip-info" data-tip="Update note">
+                    <button className="btn btn-sm btn-square btn-ghost" onClick={() => openNoteModal(data.id)}>
                         <TbMessage2Star className="size-4" />
                     </button>
                 </div>
                 <div className="tooltip tooltip-success" data-tip="Open Class">
-                    <button className="btn btn-sm btn-square">
-                        <FaArrowRight className='size-4' />
-                    </button>
+                    <Link to={`/t/classes/${data.id}`} className="btn btn-sm btn-square btn-ghost">
+                        <LiaExpandSolid className='size-4' />
+                    </Link>
                 </div>
             </div>
         </div>

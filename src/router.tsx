@@ -10,6 +10,7 @@ import { RequireTeacherAuth } from "layouts/RequireTeacherAuth";
 import Homepage from "pages/Homepage";
 import NoticeList from "pages/teacher/NoticeList";
 import NoticeDetails from "pages/teacher/NoticeDetails";
+import ClassLogDetails from "pages/teacher/ClassLogDetails";
 
 const router = createBrowserRouter([
   { path: "/", element: <Homepage /> },
@@ -26,6 +27,7 @@ const router = createBrowserRouter([
       { path: "/t/routines/create", element: <RoutineCreate /> },
       { path: "/t/classes/create", element: <ClassLogCreate /> },
       { path: "/t/classes", element: <ClassLogList /> },
+      { path: "/t/classes/:id", element: <ClassLogDetails /> },
       { path: "/t/notices", element: <NoticeList /> },
       { path: "/t/notices/:id", element: <NoticeDetails /> },
     ]
