@@ -19,12 +19,13 @@ import { constants } from "constants";
 import { useEffect, useState } from "react";
 import { addDays, api, dateViewFormatter, getDateInYYYYMMDD, getLocalTimezoneInfo } from "helpers";
 import NoticeCard from "components/NoticeCard";
-import { ClassLogDataType, NoticeShortDataType } from "types/response";
+import { ClassLogDataType, NoticeShortDataType, StudentDataType } from "types/response";
 
 const today = new Date()
 
 const TeacherHome = () => {
   const [NoticeCardList, setNoticeCardList] = useLocalStorage<NoticeShortDataType[]>(constants.NOTICE_LIST_KEY, [])
+  const [studentRoutineList, setStudentRoutineList] = useLocalStorage<StudentDataType[]>(constants.STUDENT_LIST_DATA_KEY, [])
 
   const [selectedDate, setSelectedDate] = useState<Date>(today)
   const [classLogs, setClassLogs] = useState<ClassLogDataType[]>([])
@@ -49,6 +50,11 @@ const TeacherHome = () => {
       .finally(() => setClassFetching(false))
   }, [selectedDate])
 
+  useEffect(() => {
+    api
+      .get("/api/t/students")
+      .then(res => setStudentRoutineList([...res.data]))
+  }, [])
 
   return (
     <NavLayout>
@@ -106,10 +112,12 @@ const TeacherHome = () => {
                 headerIcon={<PiStudentDuotone className="size-5" />}
                 headerTitle="Student List"
               >
-                <StudentCardMin />
-                <StudentCardMin />
-                <StudentCardMin />
-                <StudentCardMin />
+                {studentRoutineList.map((data, i) => (
+                  <StudentCardMin data={data} key={i} />
+                ))}
+                {studentRoutineList.length == 0 && (
+                  <div className="px-5 py-3">No classes found</div>
+                )}
               </Card>
             </div>
           </div>

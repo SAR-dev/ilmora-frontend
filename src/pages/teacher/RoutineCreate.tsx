@@ -156,7 +156,7 @@ const RoutineCreate = () => {
 
     useEffect(() => {
         api
-            .get("/api/t/routines")
+            .get("/api/t/students")
             .then(res => setStudentRoutineList([...res.data]))
     }, [])
 

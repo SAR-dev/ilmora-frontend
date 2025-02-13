@@ -6,6 +6,10 @@ export interface UserSelfDataType {
 export interface StudentDataType {
     id: string
     name: string
+    country: string
+    whatsAppNo: string
+    avatar: string
+    teachersPrice: string
     packageName: string
     packageClassMins: string
     utcOffset: string
