@@ -133,7 +133,7 @@ const ClassLogDetails = () => {
         if (!classDetails) return;
         setIsLoading(true)
         await api
-            .post(`/api/t/class-note/${classDetails.id}`, {
+            .post(`/api/t/class-notes/${classDetails.id}`, {
                 classNote: note
             })
             .then(() => {

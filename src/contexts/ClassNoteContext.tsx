@@ -28,7 +28,7 @@ export const ClassNoteProvider = ({ children }: { children: ReactNode }) => {
         setIsOpen(true)
         setIsLoading(true)
         api
-            .get(`/api/t/class-note/${id}`)
+            .get(`/api/t/class-notes/${id}`)
             .then(res => setNote(res.data))
             .catch(() => toast.error("Failed to retrive class note"))
             .finally(() => setIsLoading(false))
@@ -37,7 +37,7 @@ export const ClassNoteProvider = ({ children }: { children: ReactNode }) => {
     const saveClassNote = () => {
         setIsLoading(true)
         api
-            .post(`/api/t/class-note/${classLogId}`, {
+            .post(`/api/t/class-notes/${classLogId}`, {
                 classNote: note
             })
             .then(() => {

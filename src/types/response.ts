@@ -39,6 +39,16 @@ export interface ClassLogDataType {
     classNote: string
 }
 
+export interface PaginatedClassLogDataType {
+    hasNext: boolean
+    hasPrev: boolean
+    pageNo: number
+    pageSize: number
+    totalItems: number
+    totalPages: number
+    items: ClassLogDataType[]
+}
+
 export interface NoticeShortDataType {
     id: string
     title: string
