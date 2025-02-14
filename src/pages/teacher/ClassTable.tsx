@@ -102,8 +102,8 @@ const ClassTable = () => {
                                 </select>
                             </label>
                         </div>
-                        <div className="overflow-x-auto">
-                            <table className="table table-auto table-zebra w-full">
+                        <div className="overflow-auto scrollbar" style={{height: "calc(100vh - 7rem)"}}>
+                            <table className="table table-auto table-zebra table-pin-rows table-pin-cols w-full">
                                 <thead>
                                     <tr>
                                         <th></th>
@@ -190,7 +190,7 @@ const ClassTable = () => {
                                 </tbody>
                             </table>
                         </div>
-                        <div className="flex flex-col md:flex-row w-full gap-5 md:items-center md:justify-between mt-10">
+                        <div className="flex flex-col md:flex-row w-full gap-5 md:items-center md:justify-between">
                             <div className="opacity-50">
                                 Total {classLogs?.totalItems ?? 0} classes found . Showing page {classLogs?.pageNo ?? 1} of {classLogs?.totalPages ?? 1}
                             </div>
@@ -202,6 +202,39 @@ const ClassTable = () => {
                     </div>
                 </Card>
             </div>
+            {/* <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
+                <div className="fixed inset-0 flex w-screen items-center justify-center p-4 bg-base-300/75">
+                    <DialogPanel className="card max-w-lg space-y-4 border bg-base-100 border-base-300 p-8">
+                        <DayPicker
+                            mode="range"
+                            min={1}
+                            max={constants.MAX_DAY_COUNT_IN_ROUTINE}
+                            excludeDisabled
+                            weekStartsOn={6}
+                            selected={{
+                                from: formData.startDate ? new Date(formData.startDate) : undefined,
+                                to: formData.endDate ? new Date(formData.endDate) : undefined
+                            }}
+                            onSelect={e => {
+                                setFormData({
+                                    ...formData,
+                                    startDate: e?.from,
+                                    endDate: e?.to
+                                })
+                            }}
+                        />
+                        <div className="flex justify-between items-center">
+                            <div className='flex flex-col gap-1'>
+                                <div className='text-xs'>{formData.startDate && dateViewFormatter.format(formData.startDate)} ~ {formData.endDate && dateViewFormatter.format(formData.endDate)}</div>
+                                <div className='text-xs'>Maximum {constants.MAX_DAY_COUNT_IN_ROUTINE} days can be selected</div>
+                            </div>
+                            <button className="btn" onClick={() => setIsOpen(false)}>
+                                Close
+                            </button>
+                        </div>
+                    </DialogPanel>
+                </div>
+            </Dialog> */}
         </NavLayout>
     )
 }
