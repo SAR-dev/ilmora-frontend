@@ -4,7 +4,7 @@ import { api, convertToOffset, dateViewFormatter, getWhatsappUrl } from 'helpers
 import NavLayout from 'layouts/NavLayout'
 import { useEffect, useMemo, useState } from 'react';
 import { FaPlay, FaStop, FaWhatsapp } from 'react-icons/fa';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { ClassLogDetailsDataType } from 'types/response';
 import { timeViewFormatter } from 'helpers';
 import { TbMessage2Star } from 'react-icons/tb';
@@ -16,9 +16,12 @@ import { pb } from 'contexts/PocketContext';
 import { Collections, DailyClassPackagesResponse } from 'types/pocketbase';
 import { useLocalStorage } from 'usehooks-ts';
 import { constants } from 'constants';
+import { FiTrash } from 'react-icons/fi';
+import { AiFillAlert } from "react-icons/ai";
 
 const ClassLogDetails = () => {
     const { id } = useParams();
+    const navigate = useNavigate()
 
     const [classDetails, setClassDetails] = useState<ClassLogDetailsDataType | null>(null)
 
@@ -28,6 +31,8 @@ const ClassLogDetails = () => {
     const [isPacModalOpen, setIsPacModalOpen] = useState(false)
     const [classPackageList, setClassPackageList] = useLocalStorage<DailyClassPackagesResponse[]>(constants.PACKAGE_DATA_KEY, [])
     const [classPackage, setClassPackage] = useState(classDetails?.packageId ?? "")
+
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
 
     const [isLoading, setIsLoading] = useState(false)
 
@@ -66,7 +71,6 @@ const ClassLogDetails = () => {
             })
             .then(res => setClassPackageList(res))
     }, [classDetails])
-
 
     const getClassDetails = async () => {
         if (!id || id?.length == 0) return;
@@ -108,6 +112,18 @@ const ClassLogDetails = () => {
             .catch(() => toast.error("Class finish failed"))
         await getClassDetails()
         setIsLoading(false)
+    }
+
+    const deleteClass = async () => {
+        setIsLoading(true)
+        await api
+            .post(`/api/t/class-logs/${id}/delete`)
+            .then(() => {
+                toast.success("Class has been deleted")
+                navigate(-1)
+            })
+            .catch(() => toast.error("This class can not be deleted"))
+            .finally(() => setIsLoading(false))
     }
 
     const saveClassPackage = async () => {
@@ -281,6 +297,13 @@ const ClassLogDetails = () => {
                                             </a>
                                         </div>
                                     </div>
+                                    <div className="w-full flex flex-1 justify-center items-center">
+                                        <div className="tooltip tooltip-error" data-tip="Delete Class">
+                                            <button className="w-full btn btn-ghost h-10 btn-sm" disabled={isLoading} onClick={() => setIsDeleteModalOpen(true)}>
+                                                <FiTrash className='size-4' />
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -351,6 +374,36 @@ const ClassLogDetails = () => {
                                 >
                                     Save
                                 </button>
+                            </div>
+                        </DialogPanel>
+                    </div>
+                </Dialog>
+                <Dialog open={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)} className="relative z-50">
+                    <div className="fixed inset-0 flex w-screen items-center justify-center p-4 bg-base-300/75">
+                        <DialogPanel className="card max-w-lg space-y-4 border bg-base-100 border-base-300 p-8">
+                            <div className="flex flex-col justify-center items-center gap-5">
+                                <AiFillAlert className='size-20 text-warning' />
+                                <div className="text-center">
+                                    Are you sure you want to delete this class ? 
+                                    <br />
+                                    You can not undo this action
+                                    </div>
+                                <div className="flex gap-5">
+                                    <button
+                                        className="btn"
+                                        onClick={() => setIsDeleteModalOpen(false)}
+                                        disabled={isLoading}
+                                    >
+                                        Go Back
+                                    </button>
+                                    <button
+                                        className="btn btn-primary flex-1"
+                                        onClick={deleteClass}
+                                        disabled={isLoading}
+                                    >
+                                        Continue Deleting
+                                    </button>
+                                </div>
                             </div>
                         </DialogPanel>
                     </div>

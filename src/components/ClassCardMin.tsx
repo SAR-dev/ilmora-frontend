@@ -29,11 +29,6 @@ const ClassCardMin = ({ data }: { data: ClassLogDataType }) => {
                     {data.studentName}
                 </div>
                 <div className="flex gap-.5">
-                    <div className="tooltip tooltip-error" data-tip="Delete">
-                        <button className="btn btn-sm btn-square btn-ghost">
-                            <FiTrash className="size-4" />
-                        </button>
-                    </div>
                     <div className="tooltip tooltip-info" data-tip={`${data.studentWhtsAppNo}`}>
                         <a href={getWhatsappUrl(data.studentWhtsAppNo)} target="_blank" className="btn btn-sm btn-square btn-ghost">
                             <FaWhatsapp className="size-4" />
