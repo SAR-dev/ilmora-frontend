@@ -15,7 +15,9 @@ export const constants = {
     MAX_DAY_COUNT_IN_ROUTINE: 200,
     SEARCH_PARAMS: {
         STUDENT_ID: "studentId",
-        DATE: "date"
+        DATE: "date",
+        PAGE_SIZE: "pageSize",
+        PAGE_NO: "pageNo"
     },
     ROUTINE_VIEWS: {
         CALENDAR: "calendar",

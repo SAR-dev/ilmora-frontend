@@ -37,6 +37,8 @@ export interface ClassLogDataType {
     teachersPrice: string
     classMins: string
     classNote: string
+    utcOffset: string
+    packageName: string
 }
 
 export interface PaginatedClassLogDataType {

@@ -200,7 +200,7 @@ const RoutineCreate = () => {
             .post("/api/t/routine", { ...payload })
             .then(() => {
                 toast.success("Routine has created sucessfully.")
-                navigate(`/t/classes?${constants.SEARCH_PARAMS.STUDENT_ID}=${selectedStudent.id}`)
+                navigate(`/t/classes/calendar?${constants.SEARCH_PARAMS.STUDENT_ID}=${selectedStudent.id}`)
             })
             .catch(() => {
                 toast.error("Routine create failed. Please check inputs again.")

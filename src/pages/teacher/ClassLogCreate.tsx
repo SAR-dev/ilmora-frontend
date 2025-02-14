@@ -186,7 +186,7 @@ const ClassLogCreate = () => {
             .post("/api/t/class-logs", { ...payload })
             .then(() => {
                 toast.success("Classes has created sucessfully.")
-                navigate(`/t/classes?${constants.SEARCH_PARAMS.STUDENT_ID}=${selectedStudent.id}`)
+                navigate(`/t/classes/calendar?${constants.SEARCH_PARAMS.STUDENT_ID}=${selectedStudent.id}`)
             })
             .catch(() => {
                 toast.error("Class create failed. Please check inputs again.")

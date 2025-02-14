@@ -1,15 +1,15 @@
 import Card from 'components/Card';
 import NavLayout from 'layouts/NavLayout'
 import RoutineClassLog from 'components/RoutineClassLog';
-import { TbTableDashed } from 'react-icons/tb';
 import { useEffect, useMemo, useState } from 'react';
 import { ClassLogDataType, StudentDataType } from 'types/response';
 import { useSearchParams } from 'react-router';
 import { constants } from 'constants';
 import { api, getLocalTimezoneInfo, onlyDateViewFormatter, weekdayViewFormatter } from 'helpers';
 import { useLocalStorage } from 'usehooks-ts';
-import { getDatesOfMonth } from './../../helpers';
+import { getDatesOfMonth } from '../../helpers';
 import classNames from 'classnames';
+import { BsCalendar2Week } from 'react-icons/bs';
 
 const currentYear = new Date().getFullYear()
 
@@ -18,7 +18,7 @@ const getDateKey = (date: string) => {
     return `${dateObj.getFullYear()}.${String(dateObj.getMonth() + 1).padStart(2, "0")}.${String(dateObj.getDate()).padStart(2, "0")}`
 }
 
-const ClassLogList = () => {
+const ClassCalendar = () => {
     const [isLoading, setIsLoading] = useState(false)
     const [searchParams, setSearchParams] = useSearchParams();
     const [routineViewType, setRoutineViewType] = useLocalStorage<string>(constants.ROUTINE_VIEW_KEY, constants.ROUTINE_VIEWS.CALENDAR)
@@ -85,8 +85,8 @@ const ClassLogList = () => {
         <NavLayout>
             <div className="w-full max-w-screen-xl mx-auto px-5 my-5 lg:my-10">
                 <Card
-                    headerIcon={<TbTableDashed className='size-5' />}
-                    headerTitle='Student Class Plans'
+                    headerIcon={<BsCalendar2Week className='size-5' />}
+                    headerTitle='Student Class Calendar'
                     headerInfo={
                         <select
                             className="select select-sm select-bordered w-32"
@@ -251,4 +251,4 @@ const ClassLogList = () => {
     )
 }
 
-export default ClassLogList
+export default ClassCalendar

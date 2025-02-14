@@ -22,6 +22,7 @@ import { ClassLogDataType, ClassStatDataType, NoticeShortDataType, StudentDataTy
 import { pb } from "contexts/PocketContext";
 import { Collections, ResourcesResponse } from "types/pocketbase";
 import ResourceCardMin from "components/ResourceCardMin";
+import { BsCalendar2Week } from "react-icons/bs";
 
 const today = new Date()
 const yesterday = new Date(new Date().setDate(today.getDate() - 1))
@@ -221,9 +222,13 @@ const TeacherHome = () => {
                 headerTitle="Options"
               >
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 p-5">
-                  <Link to="/t/classes" className="btn justify-start sm:justify-center sm:col-span-2">
+                <Link to="/t/classes/table" className="btn justify-start sm:justify-center">
                     <TbTableDashed className="size-4" />
-                    View Classes
+                    Class Table
+                  </Link>
+                  <Link to="/t/classes/calendar" className="btn justify-start sm:justify-center">
+                    <BsCalendar2Week className="size-4" />
+                    Class Calendar
                   </Link>
                   <Link to="/t/classes/create" className="btn justify-start sm:justify-center">
                     <FaRegCalendarPlus className="size-4" />
