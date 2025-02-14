@@ -17,7 +17,9 @@ export const constants = {
         STUDENT_ID: "studentId",
         DATE: "date",
         PAGE_SIZE: "pageSize",
-        PAGE_NO: "pageNo"
+        PAGE_NO: "pageNo",
+        START_DATE: "startDate",
+        END_DATE: "endDate",
     },
     ROUTINE_VIEWS: {
         CALENDAR: "calendar",

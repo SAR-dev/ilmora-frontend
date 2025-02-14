@@ -5,14 +5,23 @@ import { useEffect, useMemo, useState } from 'react';
 import { PaginatedClassLogDataType, StudentDataType } from 'types/response';
 import { useSearchParams } from 'react-router';
 import { constants } from 'constants';
-import { api, convertToOffset, dateViewFormatter, getLocalTimezoneInfo, timeViewFormatter } from 'helpers';
+import { api, convertToOffset, dateViewFormatter, getDateInYYYYMMDD, getLocalTimezoneInfo, timeViewFormatter } from 'helpers';
 import { useLocalStorage } from 'usehooks-ts';
 import { FaCircleNotch } from 'react-icons/fa';
 import { MdOutlineSignalWifiStatusbar4Bar } from 'react-icons/md';
 import { FaCircleCheck } from 'react-icons/fa6';
+import { Dialog, DialogPanel } from '@headlessui/react';
+import { DayPicker } from 'react-day-picker';
 
 const ClassTable = () => {
     const [searchParams, setSearchParams] = useSearchParams();
+
+    const [isOpen, setIsOpen] = useState(false)
+    const [startDate, setStartDate] = useState<Date | undefined>(undefined)
+    const [endDate, setEndDate] = useState<Date | undefined>(undefined)
+
+    const [tempStartDate, setTempStartDate] = useState<Date | undefined>(undefined)
+    const [tempEndDate, setTempEndDate] = useState<Date | undefined>(undefined)
 
     const [isLoading, setIsLoading] = useState(false)
     const [studentRoutineList, setStudentRoutineList] = useLocalStorage<StudentDataType[]>(constants.STUDENT_LIST_DATA_KEY, [])
@@ -27,6 +36,16 @@ const ClassTable = () => {
         api
             .get("/api/t/students")
             .then(res => setStudentRoutineList([...res.data]))
+        const sd = searchParams.get(constants.SEARCH_PARAMS.START_DATE);
+        if (sd) {
+            setStartDate(new Date(sd))
+            setTempStartDate(new Date(sd))
+        }
+        const ed = searchParams.get(constants.SEARCH_PARAMS.END_DATE);
+        if (ed) {
+            setEndDate(new Date(ed))
+            setTempEndDate(new Date(ed))
+        }
     }, [])
 
     useEffect(() => {
@@ -34,7 +53,9 @@ const ClassTable = () => {
         api
             .post(`/api/t/classes/filter?pageNo=${searchParams.get(constants.SEARCH_PARAMS.PAGE_NO) ?? 1}`, {
                 utcOffset: getLocalTimezoneInfo().offset,
-                studentId: selectedStudent ? selectedStudent.id : ""
+                studentId: selectedStudent ? selectedStudent.id : "",
+                startDate: searchParams.get(constants.SEARCH_PARAMS.START_DATE) ?? "",
+                endDate: searchParams.get(constants.SEARCH_PARAMS.END_DATE) ?? ""
             })
             .then((res) => setClassLogs(res.data))
             .catch(() => setClassLogs(null))
@@ -43,23 +64,47 @@ const ClassTable = () => {
 
     const handleStudentIdChange = (studentId: string) => {
         setSearchParams({
-            pageNo: (searchParams.get(constants.SEARCH_PARAMS.PAGE_NO) ?? 1).toString(),
+            [constants.SEARCH_PARAMS.PAGE_NO]: (searchParams.get(constants.SEARCH_PARAMS.PAGE_NO) ?? 1).toString(),
+            [constants.SEARCH_PARAMS.START_DATE]: (searchParams.get(constants.SEARCH_PARAMS.START_DATE) ?? "").toString(),
+            [constants.SEARCH_PARAMS.END_DATE]: (searchParams.get(constants.SEARCH_PARAMS.END_DATE) ?? "").toString(),
             [constants.SEARCH_PARAMS.STUDENT_ID]: studentId
         })
     }
 
     const handleNext = () => {
         setSearchParams({
+            [constants.SEARCH_PARAMS.PAGE_NO]: (Number(searchParams.get(constants.SEARCH_PARAMS.PAGE_NO) ?? 1) + 1).toString(),
+            [constants.SEARCH_PARAMS.START_DATE]: (searchParams.get(constants.SEARCH_PARAMS.START_DATE) ?? "").toString(),
+            [constants.SEARCH_PARAMS.END_DATE]: (searchParams.get(constants.SEARCH_PARAMS.END_DATE) ?? "").toString(),
             [constants.SEARCH_PARAMS.STUDENT_ID]: searchParams.get(constants.SEARCH_PARAMS.STUDENT_ID) ?? "",
-            pageNo: (Number(searchParams.get(constants.SEARCH_PARAMS.PAGE_NO) ?? 1) + 1).toString()
         })
     }
 
     const handlePrev = () => {
         setSearchParams({
-            [constants.SEARCH_PARAMS.STUDENT_ID]: searchParams.get(constants.SEARCH_PARAMS.STUDENT_ID) ?? "",
-            pageNo: (Number(searchParams.get(constants.SEARCH_PARAMS.PAGE_NO) ?? 2) - 1).toString()
+            [constants.SEARCH_PARAMS.PAGE_NO]: (Number(searchParams.get(constants.SEARCH_PARAMS.PAGE_NO) ?? 2) - 1).toString(),
+            [constants.SEARCH_PARAMS.START_DATE]: (searchParams.get(constants.SEARCH_PARAMS.START_DATE) ?? "").toString(),
+            [constants.SEARCH_PARAMS.END_DATE]: (searchParams.get(constants.SEARCH_PARAMS.END_DATE) ?? "").toString(),
+            [constants.SEARCH_PARAMS.STUDENT_ID]: searchParams.get(constants.SEARCH_PARAMS.STUDENT_ID) ?? ""
         })
+    }
+
+    const closeDateModal = () => {
+        setTempStartDate(undefined)
+        setTempEndDate(undefined)
+        setIsOpen(false)
+    }
+
+    const saveDateModal = () => {
+        setStartDate(tempStartDate)
+        setEndDate(tempEndDate)
+        setSearchParams({
+            [constants.SEARCH_PARAMS.PAGE_NO]: (Number(searchParams.get(constants.SEARCH_PARAMS.PAGE_NO) ?? 2) - 1).toString(),
+            [constants.SEARCH_PARAMS.START_DATE]: tempStartDate ? getDateInYYYYMMDD(tempStartDate) : "",
+            [constants.SEARCH_PARAMS.END_DATE]: tempEndDate ? getDateInYYYYMMDD(tempEndDate) : "",
+            [constants.SEARCH_PARAMS.STUDENT_ID]: searchParams.get(constants.SEARCH_PARAMS.STUDENT_ID) ?? ""
+        })
+        setIsOpen(false)
     }
 
     const getTeacherDateTime = (dateString?: string) => {
@@ -85,7 +130,7 @@ const ClassTable = () => {
                 >
                     <div className="grid grid-cols-1 gap-5 p-5">
                         <div className="flex flex-row gap-5">
-                            <label className="form-control max-w-md">
+                            <label className="form-control w-full max-w-64">
                                 <div className="label pb-2">
                                     <span className="label-text">Select Student</span>
                                 </div>
@@ -101,12 +146,22 @@ const ClassTable = () => {
                                     ))}
                                 </select>
                             </label>
+                            <label className="form-control w-full max-w-64" onClick={() => setIsOpen(true)}>
+                                <div className="label pb-2">
+                                    <span className="label-text">Select Date Range</span>
+                                </div>
+                                <input
+                                    className='input input-bordered w-full'
+                                    value={(startDate ? dateViewFormatter.format(startDate) : "") + " - " + (endDate ? dateViewFormatter.format(endDate) : "")}
+                                    type="text"
+                                />
+                            </label>
                         </div>
-                        <div className="overflow-auto scrollbar" style={{height: "calc(100vh - 7rem)"}}>
+                        <div className="overflow-auto scrollbar" style={{ height: "calc(100vh - 7rem)" }}>
                             <table className="table table-auto table-zebra table-pin-rows table-pin-cols w-full">
                                 <thead>
                                     <tr>
-                                        <th></th>
+                                        <th>SN</th>
                                         <th></th>
                                         <th>Student</th>
                                         <th>Country</th>
@@ -187,6 +242,13 @@ const ClassTable = () => {
                                             </td>
                                         </tr>
                                     ))}
+                                    {classLogs && classLogs?.items.length == 0 && (
+                                        <tr>
+                                            <td colSpan={13} className='p-5 bg-base-200 text-center'>
+                                                No Result Found
+                                            </td>
+                                        </tr>
+                                    )}
                                 </tbody>
                             </table>
                         </div>
@@ -202,7 +264,7 @@ const ClassTable = () => {
                     </div>
                 </Card>
             </div>
-            {/* <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
+            <Dialog open={isOpen} onClose={closeDateModal} className="relative z-50">
                 <div className="fixed inset-0 flex w-screen items-center justify-center p-4 bg-base-300/75">
                     <DialogPanel className="card max-w-lg space-y-4 border bg-base-100 border-base-300 p-8">
                         <DayPicker
@@ -212,29 +274,25 @@ const ClassTable = () => {
                             excludeDisabled
                             weekStartsOn={6}
                             selected={{
-                                from: formData.startDate ? new Date(formData.startDate) : undefined,
-                                to: formData.endDate ? new Date(formData.endDate) : undefined
+                                from: tempStartDate,
+                                to: tempEndDate
                             }}
                             onSelect={e => {
-                                setFormData({
-                                    ...formData,
-                                    startDate: e?.from,
-                                    endDate: e?.to
-                                })
+                                setTempStartDate(e?.from)
+                                setTempEndDate(e?.to)
                             }}
                         />
-                        <div className="flex justify-between items-center">
-                            <div className='flex flex-col gap-1'>
-                                <div className='text-xs'>{formData.startDate && dateViewFormatter.format(formData.startDate)} ~ {formData.endDate && dateViewFormatter.format(formData.endDate)}</div>
-                                <div className='text-xs'>Maximum {constants.MAX_DAY_COUNT_IN_ROUTINE} days can be selected</div>
+                        <div className="flex flex-col gap-2">
+                            <div className='text-xs text-center'>
+                                {tempStartDate && dateViewFormatter.format(tempStartDate)} ~ {tempEndDate && dateViewFormatter.format(tempEndDate)}
                             </div>
-                            <button className="btn" onClick={() => setIsOpen(false)}>
-                                Close
+                            <button className="btn" onClick={saveDateModal}>
+                                Set Dates
                             </button>
                         </div>
                     </DialogPanel>
                 </div>
-            </Dialog> */}
+            </Dialog>
         </NavLayout>
     )
 }
