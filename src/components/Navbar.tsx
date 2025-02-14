@@ -3,12 +3,15 @@ import Drawer from 'react-modern-drawer';
 import { Link } from "react-router";
 import { FiShoppingBag, FiShoppingCart } from "react-icons/fi";
 import { RxExit } from "react-icons/rx";
-import { FaMoon, FaSun } from "react-icons/fa";
+import { FaMoon, FaRegCalendarAlt, FaRegCalendarPlus, FaSun } from "react-icons/fa";
 import { ThemeName, useThemeStore } from "stores/themeStore";
 import { usePocket } from "contexts/PocketContext";
+import { TbTableDashed } from "react-icons/tb";
+import { BsCalendar2Week } from "react-icons/bs";
+import { MdOutlineNotificationsActive } from "react-icons/md";
 
 const Navbar = () => {
-    const { userData, user } = usePocket()
+    const { userData, user, logout } = usePocket()
     const [showDrawer, setShowDrawer] = useState<boolean>(false)
     const toggleDrawer = () => {
         setShowDrawer((prevState) => !prevState)
@@ -18,6 +21,11 @@ const Navbar = () => {
     const toogleTheme = () => {
         if (theme == ThemeName.Dark) setTheme(ThemeName.Light)
         if (theme == ThemeName.Light) setTheme(ThemeName.Dark)
+    }
+
+    const handleLogout = () => {
+        logout()
+        window.location.reload()
     }
 
     return (
@@ -63,19 +71,33 @@ const Navbar = () => {
                                 Ilmora
                             </Link>
                         </div>
-                        <div className="flex flex-col p-3">
-                            <Link to="/products" className="no-animation btn gap-3 justify-start btn-primary btn-ghost">
-                                <FiShoppingBag className="size-5" />
-                                Shop
-                            </Link>
-                            <Link to="/carts" className="no-animation btn gap-3 justify-start btn-primary btn-ghost">
-                                <FiShoppingCart className="size-5" />
-                                Cart & Wishlist
-                            </Link>
-                        </div>
+                        {userData.isTeacher && (
+                            <div className="flex flex-col p-3">
+                                <Link to="/t/notices" className="no-animation btn gap-3 justify-start btn-primary btn-ghost">
+                                    <MdOutlineNotificationsActive className="size-5" />
+                                    Notices
+                                </Link>
+                                <Link to="/t/classes/table" className="no-animation btn gap-3 justify-start btn-primary btn-ghost">
+                                    <TbTableDashed className="size-5" />
+                                    Class Table
+                                </Link>
+                                <Link to="/t/classes/calendar" className="no-animation btn gap-3 justify-start btn-primary btn-ghost">
+                                    <BsCalendar2Week className="size-5" />
+                                    Class Calendar
+                                </Link>
+                                <Link to="/t/classes/create" className="no-animation btn gap-3 justify-start btn-primary btn-ghost">
+                                    <FaRegCalendarPlus className="size-5" />
+                                    Create Class
+                                </Link>
+                                <Link to="/t/routines/create" className="no-animation btn gap-3 justify-start btn-primary btn-ghost">
+                                    <FaRegCalendarAlt className="size-5" />
+                                    Create Routines
+                                </Link>
+                            </div>
+                        )}
                     </div>
                     <div className="w-full px-3 py-2 bg-base-100">
-                        <button className="no-animation btn gap-3 justify-start btn-primary btn-ghost w-full">
+                        <button className="no-animation btn gap-3 justify-start btn-primary btn-ghost w-full" onClick={handleLogout}>
                             <RxExit className="size-5" />
                             Sign Out
                         </button>

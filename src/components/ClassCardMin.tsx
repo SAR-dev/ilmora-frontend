@@ -72,7 +72,7 @@ const ClassCardMin = ({ data }: { data: ClassLogDataType }) => {
                 )}
                 <div className="flex py-3 px-5 items-center gap-2">
                     <FaRegClock className="size-3 md:size-4" />
-                    <div>{timeViewFormatter.format(new Date(data.startedAt))}</div>
+                    <div className="uppercase">{timeViewFormatter.format(new Date(data.startedAt))}</div>
                 </div>
                 <div className="flex py-3 px-5 items-center gap-2">
                     <LuPackage2 className="size-3 md:size-4" />

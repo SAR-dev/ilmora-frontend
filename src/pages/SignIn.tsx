@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 
 const SignIn = () => {
     const { login } = usePocket()
-    const [signType, setSignType] = useState<1 | 2>(1)
+    const [signType, setSignType] = useState<1 | 2 | 3>(1)
     const [isLoading, setIsLoading] = useState(false)
     const [formData, setFormData] = useState({
         email: '',
@@ -44,6 +44,15 @@ const SignIn = () => {
                             onClick={() => setSignType(2)}
                         >
                             Student
+                        </button>
+                        <button
+                            className={classNames("flex-1 py-3 hover:bg-primary/75 hover:text-primary-content cursor-pointer", {
+                                "bg-base-200": signType != 3,
+                                "bg-primary text-primary-content": signType == 3
+                            })}
+                            onClick={() => setSignType(2)}
+                        >
+                            Admin
                         </button>
                     </div>
                     <div className="p-5 flex flex-col gap-5">
