@@ -94,7 +94,7 @@ export const addDays = (date: string, days: number) => {
 }
 
 export const getWhatsappUrl = (whatsAppNo: string) => {
-  return `https://wa.me/${whatsAppNo.replace(/\D/g, "")}`
+  return `https://wa.me/${whatsAppNo?.replace(/\D/g, "")}`
 }
 
 export const convertToOffset = (date: Date, offset: string): Date | null => {

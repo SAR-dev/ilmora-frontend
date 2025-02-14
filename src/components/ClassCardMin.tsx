@@ -1,11 +1,11 @@
-import { FaRegClock } from "react-icons/fa6";
+import { FaCircleCheck, FaRegClock } from "react-icons/fa6";
 import { LuPackage2 } from "react-icons/lu";
 import { GoLocation } from "react-icons/go";
 import { FiTrash } from "react-icons/fi";
 import { LiaExpandSolid } from "react-icons/lia";
 import { TbMessage2Star } from "react-icons/tb";
-import { FaWhatsapp } from "react-icons/fa";
-import { MdSignalWifiStatusbar2Bar } from "react-icons/md";
+import { FaCircleNotch, FaWhatsapp } from "react-icons/fa";
+import { MdOutlineSignalWifiStatusbar4Bar } from "react-icons/md";
 import { ClassLogDataType } from "types/response";
 import { getWhatsappUrl, timeViewFormatter } from "helpers";
 import { useClassNote } from "contexts/ClassNoteContext";
@@ -52,10 +52,24 @@ const ClassCardMin = ({ data }: { data: ClassLogDataType }) => {
                 </div>
             </div>
             <div className="grid grid-cols-2 lg:grid-cols-4 text-sm mt-3 border-t border-base-300 divide-x divide-y divide-base-300">
-                <div className="flex py-3 px-5 items-center gap-2">
-                    <MdSignalWifiStatusbar2Bar className="size-3 md:size-4" />
-                    <div>{data.status}</div>
-                </div>
+                {data.status == 'CREATED' && (
+                    <div className="flex py-3 px-5 items-center gap-2">
+                        <FaCircleNotch className="size-4" />
+                        CREATED
+                    </div>
+                )}
+                {data.status == 'STARTED' && (
+                    <div className="flex py-3 px-5 items-center gap-2 text-info">
+                        <MdOutlineSignalWifiStatusbar4Bar className="size-4" />
+                        STARTED
+                    </div>
+                )}
+                {data.status == 'FINISHED' && (
+                    <div className="flex py-3 px-5 items-center gap-2 text-success">
+                        <FaCircleCheck className="size-4" />
+                        COMPLETED
+                    </div>
+                )}
                 <div className="flex py-3 px-5 items-center gap-2">
                     <FaRegClock className="size-3 md:size-4" />
                     <div>{timeViewFormatter.format(new Date(data.startedAt))}</div>

@@ -198,10 +198,26 @@ const ClassLogDetails = () => {
                             </div>
                             <div className="col-span-2 text-center py-2 px-5 text-sm">
                                 {classDetails.status == 'CREATED' && (
-                                    <div className='text-primary'>Class starts from <span>{dateViewFormatter.format(new Date(classDetails.startedAt))}</span> <span className="uppercase">{timeViewFormatter.format(new Date(classDetails.startedAt))}</span></div>
+                                    <div className='text-primary'>
+                                        Class starts from
+                                        <span className='ml-1'>{dateViewFormatter.format(new Date(classDetails.startedAt))}</span>
+                                        <span className="uppercase ml-1">{timeViewFormatter.format(new Date(classDetails.startedAt))}</span>
+                                    </div>
                                 )}
                                 {classDetails.status == 'STARTED' && (
-                                    <div className='text-success'>Class started from <span>{dateViewFormatter.format(new Date(classDetails.startedAt))}</span> <span className="uppercase">{timeViewFormatter.format(new Date(classDetails.startedAt))}</span></div>
+                                    <div className='text-success'>
+                                        Class started from
+                                        <span className='ml-1'>{dateViewFormatter.format(new Date(classDetails.startedAt))}</span>
+                                        <span className="uppercase ml-1">{timeViewFormatter.format(new Date(classDetails.startedAt))}</span>
+                                    </div>
+                                )}
+                                {classDetails.status == 'FINISHED' && (
+                                    <div className='text-success'>
+                                        Class Completed
+                                        <span className="uppercase mx-1">{timeViewFormatter.format(new Date(classDetails.startedAt))}</span>
+                                        ~
+                                        <span className="uppercase mx-1">{timeViewFormatter.format(new Date(classDetails.finishedAt))}</span>
+                                    </div>
                                 )}
                             </div>
                             <div className="col-span-2">

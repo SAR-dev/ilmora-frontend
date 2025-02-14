@@ -1,13 +1,13 @@
-import { FaWhatsapp } from "react-icons/fa";
+import { FaCircleNotch, FaWhatsapp } from "react-icons/fa";
 import { ClassLogDataType } from "types/response";
 import { getWhatsappUrl, timeViewFormatter } from "helpers";
 import { MdOutlineSignalWifiStatusbar4Bar } from "react-icons/md";
-import classNames from "classnames";
 import { BsAlarmFill } from "react-icons/bs";
 import { TbMessage2Star } from "react-icons/tb";
 import { useClassNote } from "contexts/ClassNoteContext";
 import { Link } from "react-router";
 import { LiaExpandSolid } from "react-icons/lia";
+import { FaCircleCheck } from "react-icons/fa6";
 
 const RoutineClassLog = ({ data }: { data: ClassLogDataType }) => {
     const { openNoteModal } = useClassNote()
@@ -36,13 +36,24 @@ const RoutineClassLog = ({ data }: { data: ClassLogDataType }) => {
                                 <BsAlarmFill className="size-4" />
                                 {timeViewFormatter.format(new Date(data.startedAt))} {data.finishedAt.length > 0 && "~"} {data.finishedAt.length > 0 && timeViewFormatter.format(new Date(data.finishedAt))}
                             </div>
-                            <div className={classNames("text-xs flex items-center gap-1", {
-                                "text-info": data.status == 'STARTED',
-                                "text-success": data.status == 'FINISHED',
-                            })}>
-                                <MdOutlineSignalWifiStatusbar4Bar className="size-4" />
-                                {data.status}
-                            </div>
+                            {data.status == 'CREATED' && (
+                                <div className="flex text-xs items-center gap-1">
+                                    <FaCircleNotch className="size-4" />
+                                    CREATED
+                                </div>
+                            )}
+                            {data.status == 'STARTED' && (
+                                <div className="flex text-xs items-center gap-1 text-info">
+                                    <MdOutlineSignalWifiStatusbar4Bar className="size-4" />
+                                    STARTED
+                                </div>
+                            )}
+                            {data.status == 'FINISHED' && (
+                                <div className="flex text-xs items-center gap-1 text-success">
+                                    <FaCircleCheck className="size-4" />
+                                    COMPLETED
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
