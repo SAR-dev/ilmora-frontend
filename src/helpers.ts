@@ -87,7 +87,7 @@ export const getDatesOfMonth = (year: number, month: number): (Date | null)[][] 
 };
 
 
-export const addDays = (date:string, days:number) => {
+export const addDays = (date: string, days: number) => {
   const result = new Date(date);
   result.setDate(result.getDate() + days);
   return result;
@@ -96,3 +96,20 @@ export const addDays = (date:string, days:number) => {
 export const getWhatsappUrl = (whatsAppNo: string) => {
   return `https://wa.me/${whatsAppNo.replace(/\D/g, "")}`
 }
+
+export const convertToOffset = (date: Date, offset: string): Date | null => {
+  const [sign, hours, minutes] = offset.match(/([+-])(\d{2}):(\d{2})/)?.slice(1) || [];
+
+  if (!sign || !hours || !minutes) {
+    return null
+  }
+
+  // Convert hours and minutes to total minutes
+  const offsetMinutes = (parseInt(hours) * 60 + parseInt(minutes)) * (sign === "+" ? 1 : -1);
+
+  // Get UTC time and apply offset
+  const utcTime = date.getTime() + date.getTimezoneOffset() * 60000;
+  const newTime = new Date(utcTime + offsetMinutes * 60000);
+
+  return newTime;
+};

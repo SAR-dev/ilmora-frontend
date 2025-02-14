@@ -4,6 +4,7 @@ export const constants = {
     USER_SELF_DATA_KEY: "userType",
     STUDENT_LIST_DATA_KEY: "studentList",
     RESOURCE_LIST_DATA_KEY: "resourceList",
+    PACKAGE_DATA_KEY: "packageList",
     ROUTINE_VIEW_KEY: "routineView",
     NOTICE_LIST_KEY: "noticeList",
     DAY_NAMES: ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],

@@ -54,3 +54,26 @@ export interface ClassStatDataType {
         totalPrice: string
     }
 }
+
+export interface ClassLogDetailsDataType {
+    id: string;
+    studentName: string;
+    studentAvatar: string;
+    studentWhatsAppNo: string;
+    studentCountry: string;
+    studentOffset: string;
+    teacherName: string;
+    teacherAvatar: string;
+    teacherWhatsAppNo: string;
+    teacherCountry: string;
+    teacherOffset: string;
+    startedAt: string;
+    finishedAt: string;
+    status: string;
+    classNote: string;
+    packageTitle: string;
+    classMins: string;
+    teachersPrice: string;
+    classLink: string;
+    packageId: string;
+}
