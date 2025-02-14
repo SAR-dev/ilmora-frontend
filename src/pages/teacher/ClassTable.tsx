@@ -3,7 +3,7 @@ import NavLayout from 'layouts/NavLayout'
 import { TbTableDashed } from 'react-icons/tb';
 import { useEffect, useMemo, useState } from 'react';
 import { PaginatedClassLogDataType, StudentDataType } from 'types/response';
-import { useSearchParams } from 'react-router';
+import { useNavigate, useSearchParams } from 'react-router';
 import { constants } from 'constants';
 import { api, convertToOffset, dateViewFormatter, getDateInYYYYMMDD, getLocalTimezoneInfo, timeViewFormatter } from 'helpers';
 import { useLocalStorage } from 'usehooks-ts';
@@ -15,6 +15,7 @@ import { DayPicker } from 'react-day-picker';
 
 const ClassTable = () => {
     const [searchParams, setSearchParams] = useSearchParams();
+    const navigate = useNavigate()
 
     const [isOpen, setIsOpen] = useState(false)
     const [startDate, setStartDate] = useState<Date | undefined>(undefined)
@@ -158,7 +159,7 @@ const ClassTable = () => {
                             </label>
                         </div>
                         <div className="overflow-auto scrollbar" style={{ height: "calc(100vh - 7rem)" }}>
-                            <table className="table table-auto table-zebra table-pin-rows table-pin-cols w-full">
+                            <table className="table table-auto table-pin-rows table-pin-cols w-full">
                                 <thead>
                                     <tr>
                                         <th>SN</th>
@@ -179,8 +180,8 @@ const ClassTable = () => {
                                 <tbody>
                                     {classLogs?.items.map((data, i) => (
                                         <tr key={i}>
-                                            <th>{(i + 1).toString().padStart(2, "0")}</th>
-                                            <th>
+                                            <th className='hover:bg-base-300 cursor-pointer z-[1]' onClick={() => navigate(`/t/classes/${data.id}`)}>{(i + 1).toString().padStart(2, "0")}</th>
+                                            <td>
                                                 {data.studentUserAvatar?.length > 0 ? (
                                                     <img
                                                         className="size-10 object-cover rounded-full"
@@ -189,7 +190,7 @@ const ClassTable = () => {
                                                 ) : (
                                                     <div className="size-10 rounded-full bg-base-300 animate-pulse" />
                                                 )}
-                                            </th>
+                                            </td>
                                             <td className='whitespace-nowrap'>
                                                 {data.studentName}
                                             </td>
