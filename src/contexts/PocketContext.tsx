@@ -14,6 +14,7 @@ interface DecodedToken {
 const ONE_MINUTE_IN_MS = 60000;
 
 interface PocketContextType {
+    superLogin: ({ email, password }: { email: string, password: string }) => Promise<void>;
     login: ({ email, password }: { email: string, password: string }) => Promise<void>;
     logout: () => void;
     user: UsersResponse | null;
@@ -38,7 +39,9 @@ export const PocketbaseProvider = ({ children }: { children: ReactNode }) => {
     );
     const [userData, setUserData] = useLocalStorage<UserSelfDataType>(
         constants.USER_SELF_DATA_KEY,
-        { isStudent: false, isTeacher: false }
+        { isStudent: false, isTeacher: false, isSuperUser: false, isSuperAdmin: false, 
+            isSuperStaff: false
+         }
     )
 
     useEffect(() => {
@@ -66,6 +69,19 @@ export const PocketbaseProvider = ({ children }: { children: ReactNode }) => {
         password: string
     }) => {
         await pb.collection(Collections.Users).authWithPassword(email, password);
+        setAuthToken()
+        await api.get("/api/self").then(res => setUserData(res.data))
+    }, []);
+
+    // Handle superuser login with error handling
+    const superLogin = useCallback(async ({
+        email,
+        password
+    }: {
+        email: string,
+        password: string
+    }) => {
+        await pb.collection(Collections.Superusers).authWithPassword(email, password);
         setAuthToken()
         await api.get("/api/self").then(res => setUserData(res.data))
     }, []);
@@ -109,7 +125,7 @@ export const PocketbaseProvider = ({ children }: { children: ReactNode }) => {
     useInterval(refreshSession, token ? 2 * ONE_MINUTE_IN_MS : null);
 
     return (
-        <PocketContext.Provider value={{ login, logout, user, token, userData }}>
+        <PocketContext.Provider value={{ superLogin, login, logout, user, token, userData }}>
             {children}
         </PocketContext.Provider>
     );

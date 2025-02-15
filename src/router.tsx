@@ -12,6 +12,8 @@ import NoticeList from "pages/teacher/NoticeList";
 import NoticeDetails from "pages/teacher/NoticeDetails";
 import ClassLogDetails from "pages/teacher/ClassLogDetails";
 import ClassTable from "pages/teacher/ClassTable";
+import { RequireSuperAuth } from "layouts/RequireSuperAuth";
+import AdminHome from "pages/admin/AdminHome";
 
 const router = createBrowserRouter([
   { path: "/", element: <Homepage /> },
@@ -19,6 +21,12 @@ const router = createBrowserRouter([
     element: <RequireUnAuth />,
     children: [
       { path: "/sign-in", element: <SignIn /> },
+    ]
+  },
+  {
+    element: <RequireSuperAuth />,
+    children: [
+      { path: "/a", element: <AdminHome /> },
     ]
   },
   {

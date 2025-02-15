@@ -5,7 +5,7 @@ import { usePocket } from 'contexts/PocketContext';
 import toast from 'react-hot-toast';
 
 const SignIn = () => {
-    const { login } = usePocket()
+    const { login, superLogin } = usePocket()
     const [signType, setSignType] = useState<1 | 2 | 3>(1)
     const [isLoading, setIsLoading] = useState(false)
     const [formData, setFormData] = useState({
@@ -15,11 +15,20 @@ const SignIn = () => {
 
     const handleLogIn = () => {
         setIsLoading(true)
-        login(formData)
-            .catch(() => {
-                toast.error("Sign In failed. Please try again.")
-            })
-            .finally(() => setIsLoading(false))
+        if (signType == 1 || signType == 2) {
+            login(formData)
+                .catch(() => {
+                    toast.error("Sign In failed. Please try again.")
+                })
+                .finally(() => setIsLoading(false))
+        }
+        if (signType == 3) {
+            superLogin(formData)
+                .catch(() => {
+                    toast.error("Sign In failed. Please try again.")
+                })
+                .finally(() => setIsLoading(false))
+        }
     }
 
     return (
@@ -50,16 +59,16 @@ const SignIn = () => {
                                 "bg-base-200": signType != 3,
                                 "bg-primary text-primary-content": signType == 3
                             })}
-                            onClick={() => setSignType(2)}
+                            onClick={() => setSignType(3)}
                         >
                             Admin
                         </button>
                     </div>
                     <div className="p-5 flex flex-col gap-5">
-                        <input 
-                            placeholder='Email' 
-                            type="text" 
-                            className="input input-bordered" 
+                        <input
+                            placeholder='Email'
+                            type="text"
+                            className="input input-bordered"
                             value={formData.email}
                             onChange={e => setFormData({
                                 ...formData,
@@ -67,10 +76,10 @@ const SignIn = () => {
                             })}
                             disabled={isLoading}
                         />
-                        <input 
-                            placeholder='Password' 
-                            type="password" 
-                            className="input input-bordered" 
+                        <input
+                            placeholder='Password'
+                            type="password"
+                            className="input input-bordered"
                             value={formData.password}
                             onChange={e => setFormData({
                                 ...formData,
@@ -78,7 +87,7 @@ const SignIn = () => {
                             })}
                             disabled={isLoading}
                         />
-                        <button 
+                        <button
                             className="btn w-full"
                             onClick={handleLogIn}
                             disabled={isLoading}

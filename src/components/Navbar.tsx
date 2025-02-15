@@ -1,7 +1,6 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Drawer from 'react-modern-drawer';
 import { Link } from "react-router";
-import { FiShoppingBag, FiShoppingCart } from "react-icons/fi";
 import { RxExit } from "react-icons/rx";
 import { FaMoon, FaRegCalendarAlt, FaRegCalendarPlus, FaSun } from "react-icons/fa";
 import { ThemeName, useThemeStore } from "stores/themeStore";
@@ -16,6 +15,13 @@ const Navbar = () => {
     const toggleDrawer = () => {
         setShowDrawer((prevState) => !prevState)
     }
+
+    const userType = useMemo(() => {
+        if(userData.isSuperUser) return "Admin";
+        if(userData.isTeacher) return "Teacher";
+        if(userData.isStudent) return "Student";
+        return "N/A"
+    }, [userData])
 
     const { theme, setTheme } = useThemeStore()
     const toogleTheme = () => {
@@ -35,7 +41,7 @@ const Navbar = () => {
                     Ilmora
                 </Link>
                 <div className="px-2 py-1 ml-2 rounded-lg text-xs bg-primary text-primary-content uppercase">
-                    {userData.isTeacher ? "Teacher" : (userData.isStudent ? "Student" : "N/A")}
+                    {userType}
                 </div>
             </div>
             <div className="navbar-center" />
@@ -49,10 +55,14 @@ const Navbar = () => {
                 </button>
                 {user && (
                     <button className="btn gap-2" onClick={toggleDrawer}>
-                        <img
-                            className="size-6 object-cover rounded-full"
-                            src={`${import.meta.env.VITE_API_URL}/api/files/${user.collectionId}/${user.id}/${user.avatar}`}
-                        />
+                        {user.avatar?.length > 0 ? (
+                            <img
+                                className="size-6 object-cover rounded-full"
+                                src={`${import.meta.env.VITE_API_URL}/api/files/${user.collectionId}/${user.id}/${user.avatar}`}
+                            />
+                        ) : (
+                            <div className="size-6 rounded-full bg-base-300 animate-pulse" />
+                        )}
                         {user.name}
                     </button>
                 )}

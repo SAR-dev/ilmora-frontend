@@ -1,6 +1,9 @@
 export interface UserSelfDataType {
     isTeacher?: boolean
     isStudent?: boolean
+    isSuperUser?: boolean;
+    isSuperAdmin?: boolean;
+    isSuperStaff?: boolean;
 }
 
 export interface StudentDataType {

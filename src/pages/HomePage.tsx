@@ -18,6 +18,10 @@ const Homepage = () => {
       navigate("/s")
       return;
     }
+    if (userData.isSuperUser) {
+      navigate("/a")
+      return;
+    }
   }, [userData])
 
 
