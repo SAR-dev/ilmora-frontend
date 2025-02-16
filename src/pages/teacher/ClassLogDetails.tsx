@@ -1,7 +1,7 @@
 import DataFetchError from 'components/DataFetchError';
 import NotFoundError from 'components/NotFoundError';
 import { api, convertToOffset, dateViewFormatter, getWhatsappUrl } from 'helpers';
-import NavLayout from 'layouts/NavLayout'
+import TeacherNavLayout from 'layouts/TeacherNavLayout'
 import { useEffect, useMemo, useState } from 'react';
 import { FaPlay, FaStop, FaWhatsapp } from 'react-icons/fa';
 import { useNavigate, useParams } from 'react-router';
@@ -172,19 +172,19 @@ const ClassLogDetails = () => {
     }
 
     if (notFound) return (
-        <NavLayout>
+        <TeacherNavLayout>
             <NotFoundError />
-        </NavLayout>
+        </TeacherNavLayout>
     )
 
     if (fetchError) return (
-        <NavLayout>
+        <TeacherNavLayout>
             <DataFetchError />
-        </NavLayout>
+        </TeacherNavLayout>
     )
 
     return (
-        <NavLayout>
+        <TeacherNavLayout>
             <div className="w-full max-w-screen-xl mx-auto px-5 my-5 lg:my-10">
                 {classDetails && (
                     <div className="card m-5 p-5 border border-base-300 bg-base-100 w-fit mx-auto flex justify-center items-center">
@@ -409,7 +409,7 @@ const ClassLogDetails = () => {
                     </div>
                 </Dialog>
             </div>
-        </NavLayout>
+        </TeacherNavLayout>
     )
 }
 

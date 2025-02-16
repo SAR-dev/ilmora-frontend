@@ -113,3 +113,13 @@ export const convertToOffset = (date: Date, offset: string): Date | null => {
 
   return newTime;
 };
+
+export const gerStringError = (err: unknown) => {
+  if (typeof err === "object" && err !== null && "data" in err) {
+    return JSON.stringify((err as { data: unknown }).data, null, 2); // Pretty-print JSON
+  } else if (err instanceof Error) {
+    return err.message; // Standard error message
+  } else {
+    return "An unknown error occurred.";
+  }
+}

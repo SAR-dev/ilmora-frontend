@@ -1,12 +1,12 @@
+import AdminNavbar from 'components/admin/AdminNavbar';
 import Footer from 'components/Footer';
-import Navbar from 'components/Navbar'
 import { ReactNode } from 'react';
 import { ScrollRestoration } from 'react-router';
 
-const NavLayout = ({ children }: { children: ReactNode }) => {
+const AdminNavLayout = ({ children }: { children: ReactNode }) => {
     return (
         <section className='min-h-screen flex flex-col bg-base-200'>
-            <Navbar />
+            <AdminNavbar />
             {children}
             <Footer />
             <ScrollRestoration />
@@ -14,4 +14,4 @@ const NavLayout = ({ children }: { children: ReactNode }) => {
     )
 }
 
-export default NavLayout
+export default AdminNavLayout

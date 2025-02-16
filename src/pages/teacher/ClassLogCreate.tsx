@@ -2,7 +2,7 @@ import { Dialog, DialogPanel } from '@headlessui/react';
 import Card from 'components/Card';
 import { constants } from 'constants';
 import { api, dateViewFormatter, getDateInYYYYMMDD, getLocalTimezoneInfo } from 'helpers';
-import NavLayout from 'layouts/NavLayout'
+import TeacherNavLayout from 'layouts/TeacherNavLayout'
 import { useEffect, useMemo, useState } from 'react';
 import { DayPicker } from 'react-day-picker';
 import { FaInfo, FaPlus, FaRegCalendarPlus, FaTrash } from 'react-icons/fa';
@@ -195,7 +195,7 @@ const ClassLogCreate = () => {
         }
 
     return (
-        <NavLayout>
+        <TeacherNavLayout>
             <div className="w-full max-w-screen-xl mx-auto px-5 my-5 lg:my-10">
                 <Card
                     headerIcon={<FaRegCalendarPlus className='size-5' />}
@@ -300,7 +300,7 @@ const ClassLogCreate = () => {
                     </div>
                 </div>
             )}
-        </NavLayout>
+        </TeacherNavLayout>
     )
 }
 

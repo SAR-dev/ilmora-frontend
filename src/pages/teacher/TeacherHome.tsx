@@ -1,11 +1,11 @@
 import ClassCardMin from "components/ClassCardMin";
-import NavLayout from "layouts/NavLayout"
+import TeacherNavLayout from "layouts/TeacherNavLayout"
 import { MdOutlineNotificationsActive } from "react-icons/md";
 import { RiMastodonLine } from "react-icons/ri";
 import { PiStudentDuotone } from "react-icons/pi";
 import StudentCardMin from "components/StudentCardMin";
 import { IoIosStats } from "react-icons/io";
-import StatCardMin from "components/StatCardMin";
+import StatCardMin from "components/teacher/StatCardMin";
 import { BsFillHddStackFill } from "react-icons/bs";
 import Card from "components/Card";
 import { IoOptions } from "react-icons/io5";
@@ -109,7 +109,7 @@ const TeacherHome = () => {
   }, [dataFetched])
 
   return (
-    <NavLayout>
+    <TeacherNavLayout>
       <div className="w-full max-w-screen-xl mx-auto px-5 my-5 lg:my-10">
         <div className="flex flex-col lg:flex-row gap-10">
           <div className="flex-1">
@@ -247,7 +247,7 @@ const TeacherHome = () => {
           </div>
         </div>
       </div>
-    </NavLayout>
+    </TeacherNavLayout>
   )
 }
 

@@ -1,5 +1,5 @@
 import Card from 'components/Card';
-import NavLayout from 'layouts/NavLayout'
+import TeacherNavLayout from 'layouts/TeacherNavLayout'
 import { FaInfo, FaRegCalendarPlus } from 'react-icons/fa';
 import { IoIosArrowRoundBack } from "react-icons/io";
 import { IoSaveOutline } from "react-icons/io5";
@@ -15,6 +15,7 @@ import { RoutineCreateType } from 'types/payload';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router';
 import { useLocalStorage } from 'usehooks-ts';
+import Loading from 'components/Loading';
 
 const RoutineDayInput = ({
     dayName,
@@ -233,7 +234,7 @@ const RoutineCreate = () => {
     }
 
     return (
-        <NavLayout>
+        <TeacherNavLayout>
             <div className="w-full max-w-screen-xl mx-auto px-5 my-5 lg:my-10">
                 <Card
                     headerIcon={<FaRegCalendarPlus className='size-5' />}
@@ -451,19 +452,8 @@ const RoutineCreate = () => {
                     </DialogPanel>
                 </div>
             </Dialog>
-            {isLoading && (
-                <div className="h-screen w-full flex justify-center items-center fixed top-0 left-0 bg-base-300/75">
-                    <div className="flex flex-col gap-2 items-center">
-                        <span className="loading loading-spinner text-primary loading-lg" />
-                        <div className="flex gap-2">
-                            <span className="loading loading-dots loading-xs" />
-                            Submitting Data
-                            <span className="loading loading-dots loading-xs" />
-                        </div>
-                    </div>
-                </div>
-            )}
-        </NavLayout>
+            {isLoading && <Loading />}
+        </TeacherNavLayout>
     )
 }
 

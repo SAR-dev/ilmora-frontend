@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import Drawer from 'react-modern-drawer';
 import { Link } from "react-router";
 import { RxExit } from "react-icons/rx";
@@ -9,19 +9,12 @@ import { TbTableDashed } from "react-icons/tb";
 import { BsCalendar2Week } from "react-icons/bs";
 import { MdOutlineNotificationsActive } from "react-icons/md";
 
-const Navbar = () => {
-    const { userData, user, logout } = usePocket()
+const TeacherNavbar = () => {
+    const { user, logout } = usePocket()
     const [showDrawer, setShowDrawer] = useState<boolean>(false)
     const toggleDrawer = () => {
         setShowDrawer((prevState) => !prevState)
     }
-
-    const userType = useMemo(() => {
-        if(userData.isSuperUser) return "Admin";
-        if(userData.isTeacher) return "Teacher";
-        if(userData.isStudent) return "Student";
-        return "N/A"
-    }, [userData])
 
     const { theme, setTheme } = useThemeStore()
     const toogleTheme = () => {
@@ -41,7 +34,7 @@ const Navbar = () => {
                     Ilmora
                 </Link>
                 <div className="px-2 py-1 ml-2 rounded-lg text-xs bg-primary text-primary-content uppercase">
-                    {userType}
+                    TEACHER
                 </div>
             </div>
             <div className="navbar-center" />
@@ -81,30 +74,28 @@ const Navbar = () => {
                                 Ilmora
                             </Link>
                         </div>
-                        {userData.isTeacher && (
-                            <div className="flex flex-col p-3">
-                                <Link to="/t/notices" className="no-animation btn gap-3 justify-start btn-primary btn-ghost">
-                                    <MdOutlineNotificationsActive className="size-5" />
-                                    Notices
-                                </Link>
-                                <Link to="/t/classes/table" className="no-animation btn gap-3 justify-start btn-primary btn-ghost">
-                                    <TbTableDashed className="size-5" />
-                                    Class Table
-                                </Link>
-                                <Link to="/t/classes/calendar" className="no-animation btn gap-3 justify-start btn-primary btn-ghost">
-                                    <BsCalendar2Week className="size-5" />
-                                    Class Calendar
-                                </Link>
-                                <Link to="/t/classes/create" className="no-animation btn gap-3 justify-start btn-primary btn-ghost">
-                                    <FaRegCalendarPlus className="size-5" />
-                                    Create Class
-                                </Link>
-                                <Link to="/t/routines/create" className="no-animation btn gap-3 justify-start btn-primary btn-ghost">
-                                    <FaRegCalendarAlt className="size-5" />
-                                    Create Routines
-                                </Link>
-                            </div>
-                        )}
+                        <div className="flex flex-col p-3">
+                            <Link to="/t/notices" className="no-animation btn gap-3 justify-start btn-primary btn-ghost">
+                                <MdOutlineNotificationsActive className="size-5" />
+                                Notices
+                            </Link>
+                            <Link to="/t/classes/table" className="no-animation btn gap-3 justify-start btn-primary btn-ghost">
+                                <TbTableDashed className="size-5" />
+                                Class Table
+                            </Link>
+                            <Link to="/t/classes/calendar" className="no-animation btn gap-3 justify-start btn-primary btn-ghost">
+                                <BsCalendar2Week className="size-5" />
+                                Class Calendar
+                            </Link>
+                            <Link to="/t/classes/create" className="no-animation btn gap-3 justify-start btn-primary btn-ghost">
+                                <FaRegCalendarPlus className="size-5" />
+                                Create Class
+                            </Link>
+                            <Link to="/t/routines/create" className="no-animation btn gap-3 justify-start btn-primary btn-ghost">
+                                <FaRegCalendarAlt className="size-5" />
+                                Create Routines
+                            </Link>
+                        </div>
                     </div>
                     <div className="w-full px-3 py-2 bg-base-100">
                         <button className="no-animation btn gap-3 justify-start btn-primary btn-ghost w-full" onClick={handleLogout}>
@@ -118,4 +109,4 @@ const Navbar = () => {
     )
 }
 
-export default Navbar
+export default TeacherNavbar

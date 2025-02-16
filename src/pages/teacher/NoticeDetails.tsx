@@ -2,7 +2,7 @@ import Card from 'components/Card'
 import DataFetchError from 'components/DataFetchError';
 import NotFoundError from 'components/NotFoundError';
 import { pb } from 'contexts/PocketContext';
-import NavLayout from 'layouts/NavLayout'
+import TeacherNavLayout from 'layouts/TeacherNavLayout'
 import { useEffect, useState } from 'react';
 import { MdOutlineNotificationsActive } from 'react-icons/md'
 import { useParams } from 'react-router';
@@ -33,19 +33,19 @@ function NoticeDetails() {
     }, [id])
 
     if (notFound) return (
-        <NavLayout>
+        <TeacherNavLayout>
             <NotFoundError />
-        </NavLayout>
+        </TeacherNavLayout>
     )
 
     if (fetchError) return (
-        <NavLayout>
+        <TeacherNavLayout>
             <DataFetchError />
-        </NavLayout>
+        </TeacherNavLayout>
     )
 
     return (
-        <NavLayout>
+        <TeacherNavLayout>
             <div className="w-full max-w-screen-xl mx-auto px-5 my-5 lg:my-10">
                 <Card
                     headerIcon={<MdOutlineNotificationsActive className="size-5" />}
@@ -62,7 +62,7 @@ function NoticeDetails() {
                     </div>
                 </Card>
             </div>
-        </NavLayout>
+        </TeacherNavLayout>
     )
 }
 

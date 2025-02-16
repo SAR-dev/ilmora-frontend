@@ -1,5 +1,5 @@
 import Card from 'components/Card';
-import NavLayout from 'layouts/NavLayout'
+import TeacherNavLayout from 'layouts/TeacherNavLayout'
 import { TbTableDashed } from 'react-icons/tb';
 import { useEffect, useMemo, useState } from 'react';
 import { PaginatedClassLogDataType, StudentDataType } from 'types/response';
@@ -123,7 +123,7 @@ const ClassTable = () => {
     }
 
     return (
-        <NavLayout>
+        <TeacherNavLayout>
             <div className="w-full max-w-screen-xl mx-auto px-5 my-5 lg:my-10">
                 <Card
                     headerIcon={<TbTableDashed className='size-5' />}
@@ -294,7 +294,7 @@ const ClassTable = () => {
                     </DialogPanel>
                 </div>
             </Dialog>
-        </NavLayout>
+        </TeacherNavLayout>
     )
 }
 

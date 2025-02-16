@@ -1,7 +1,7 @@
 import Card from 'components/Card'
 import NoticeCard from 'components/NoticeCard'
 import { api } from 'helpers'
-import NavLayout from 'layouts/NavLayout'
+import TeacherNavLayout from 'layouts/TeacherNavLayout'
 import { useEffect, useState } from 'react';
 import { MdOutlineNotificationsActive } from 'react-icons/md'
 import { NoticeShortDataType } from 'types/response'
@@ -16,7 +16,7 @@ function NoticeList() {
     }, [])
 
     return (
-        <NavLayout>
+        <TeacherNavLayout>
             <div className="w-full max-w-screen-xl mx-auto px-5 my-5 lg:my-10">
                 <Card
                     headerIcon={<MdOutlineNotificationsActive className="size-5" />}
@@ -27,7 +27,7 @@ function NoticeList() {
                     ))}
                 </Card>
             </div>
-        </NavLayout>
+        </TeacherNavLayout>
     )
 }
 
