@@ -194,7 +194,7 @@ const ClassLogDetails = () => {
                         <div className="flex flex-col justify-center items-center my-2">
                             <div className='font-semibold text-primary text-lg'>{classDetails.studentName}</div>
                             <div className="opacity-50 text-sm">
-                                {classDetails.studentCountry}
+                                {classDetails.studentLocation}
                             </div>
                         </div>
                         <div className="grid grid-cols-2 border border-base-300 divide-x divide-y divide-base-300 w-fit max-w-96 text-sm">

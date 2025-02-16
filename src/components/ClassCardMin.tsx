@@ -74,7 +74,7 @@ const ClassCardMin = ({ data }: { data: ClassLogDataType }) => {
                 </div>
                 <div className="flex py-3 px-5 items-center gap-2">
                     <GoLocation className="size-3 md:size-4" />
-                    <div>{data.studentCountry}</div>
+                    <div>{data.studentLocation}</div>
                 </div>
             </div>
         </div>

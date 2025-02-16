@@ -8,7 +8,7 @@ export interface UserSelfDataType {
 export interface StudentDataType {
     id: string
     name: string
-    country: string
+    location: string
     whatsAppNo: string
     avatar: string
     teachersPrice: string
@@ -32,7 +32,7 @@ export interface ClassLogDataType {
     finishedAt: string
     status: string
     studentName: string
-    studentCountry: string
+    studentLocation: string
     studentUserId: string
     studentUserAvatar: string
     studentWhtsAppNo: string
@@ -74,12 +74,12 @@ export interface ClassLogDetailsDataType {
     studentName: string;
     studentAvatar: string;
     studentWhatsAppNo: string;
-    studentCountry: string;
+    studentLocation: string;
     studentOffset: string;
     teacherName: string;
     teacherAvatar: string;
     teacherWhatsAppNo: string;
-    teacherCountry: string;
+    teacherLocation: string;
     teacherOffset: string;
     startedAt: string;
     finishedAt: string;

@@ -29,7 +29,7 @@ const RoutineClassLog = ({ data }: { data: ClassLogDataType }) => {
                     <div className='text-lg font-semibold'>{data.studentName}</div>
                     <div className="flex flex-col gap-3">
                         <div className="text-sm opacity-80">
-                            {data.studentCountry} . {data.teachersPrice} TK . {data.classMins} Mins
+                            {data.studentLocation} . {data.teachersPrice} TK . {data.classMins} Mins
                         </div>
                         <div className="flex gap-3 items-center">
                             <div className="text-xs flex items-center gap-1 uppercase">

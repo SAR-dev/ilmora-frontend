@@ -165,7 +165,7 @@ const ClassTable = () => {
                                         <th>SN</th>
                                         <th></th>
                                         <th>Student</th>
-                                        <th>Country</th>
+                                        <th>Location</th>
                                         <th>WhatsApp</th>
                                         <th>Status</th>
                                         <th>Teacher Start</th>
@@ -195,7 +195,7 @@ const ClassTable = () => {
                                                 {data.studentName}
                                             </td>
                                             <td>
-                                                {data.studentCountry}
+                                                {data.studentLocation}
                                             </td>
                                             <td>
                                                 {data.studentWhtsAppNo}

@@ -51,7 +51,7 @@ const StudentCardMin = ({ data }: { data: StudentDataType }) => {
                 </div>
                 <div className="flex py-3 px-5 items-center gap-2">
                     <GoLocation className="size-4" />
-                    <div>{data.country}</div>
+                    <div>{data.location}</div>
                 </div>
             </div>
             <div className="grid grid-cols-8 text-xs border-t border-base-300 divide-x divide-base-300">
