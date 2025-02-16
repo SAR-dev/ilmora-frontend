@@ -7,6 +7,7 @@ import { StudentDataType } from "types/response";
 import classNames from "classnames";
 import { getWhatsappUrl } from "helpers";
 import { FaWhatsapp } from "react-icons/fa6";
+import { Link } from "react-router";
 
 const StudentCardMin = ({ data }: { data: StudentDataType }) => {
     return (
@@ -30,9 +31,9 @@ const StudentCardMin = ({ data }: { data: StudentDataType }) => {
                         </a>
                     </div>
                     <div className="tooltip tooltip-info" data-tip="Open Class History">
-                        <button className="btn btn-sm btn-square btn-ghost">
+                        <Link to={`/t/classes/calendar?studentId=${data.id}`} className="btn btn-sm btn-square btn-ghost">
                             <LiaExpandSolid className="size-4" />
-                        </button>
+                        </Link>
                     </div>
                 </div>
             </div>
