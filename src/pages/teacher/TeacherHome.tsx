@@ -32,7 +32,7 @@ const TeacherHome = () => {
   const [classesFetched, setClassesFetched] = useState(false)
   const [statsFetched, setStatsFetched] = useState(false)
 
-  const [NoticeCardList, setNoticeCardList] = useLocalStorage<NoticeShortDataType[]>(constants.NOTICE_LIST_KEY, [])
+  const [noticeList, setnoticeList] = useLocalStorage<NoticeShortDataType[]>(constants.NOTICE_LIST_KEY, [])
   const [studentRoutineList, setStudentRoutineList] = useLocalStorage<StudentDataType[]>(constants.STUDENT_LIST_DATA_KEY, [])
   const [resourceList, setResourceList] = useLocalStorage<ResourcesResponse[]>(constants.RESOURCE_LIST_DATA_KEY, [])
 
@@ -85,7 +85,7 @@ const TeacherHome = () => {
     if (!dataFetched) return;
     api
       .get("/api/t/notices")
-      .then(res => setNoticeCardList(res.data))
+      .then(res => setnoticeList(res.data))
   }, [dataFetched])
 
   useEffect(() => {
@@ -125,9 +125,12 @@ const TeacherHome = () => {
                   </div>
                 }
               >
-                {NoticeCardList.map((data, i) => (
+                {noticeList.map((data, i) => (
                   <NoticeCard data={data} key={i} />
                 ))}
+                {noticeList.length == 0 && (
+                  <div className="px-5 py-3">No recent notices</div>
+                )}
               </Card>
 
               <Card

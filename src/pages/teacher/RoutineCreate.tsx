@@ -128,6 +128,12 @@ interface FormDataType {
     friTime: string
 }
 
+const tomorrow = new Date();
+tomorrow.setDate(tomorrow.getDate() + 1);
+
+const nextMonth = new Date();
+nextMonth.setMonth(nextMonth.getMonth() + 1);
+
 const RoutineCreate = () => {
     const navigate = useNavigate()
     const localTimeZoneInfo = getLocalTimezoneInfo()
@@ -138,8 +144,8 @@ const RoutineCreate = () => {
     const [formData, setFormData] = useState<FormDataType>({
         studentId: "",
         utcOffset: localTimeZoneInfo.offset,
-        startDate: new Date(),
-        endDate: new Date((new Date()).setMonth(new Date().getMonth() + 1)),
+        startDate: tomorrow,
+        endDate: nextMonth,
         satTime: "",
         sunTime: "",
         monTime: "",
