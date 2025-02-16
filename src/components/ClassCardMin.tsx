@@ -1,7 +1,6 @@
 import { FaCircleCheck, FaRegClock } from "react-icons/fa6";
 import { LuPackage2 } from "react-icons/lu";
 import { GoLocation } from "react-icons/go";
-import { FiTrash } from "react-icons/fi";
 import { LiaExpandSolid } from "react-icons/lia";
 import { TbMessage2Star } from "react-icons/tb";
 import { FaCircleNotch, FaWhatsapp } from "react-icons/fa";

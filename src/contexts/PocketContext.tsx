@@ -39,9 +39,7 @@ export const PocketbaseProvider = ({ children }: { children: ReactNode }) => {
     );
     const [userData, setUserData] = useLocalStorage<UserSelfDataType>(
         constants.USER_SELF_DATA_KEY,
-        { isStudent: false, isTeacher: false, isSuperUser: false, isSuperAdmin: false, 
-            isSuperStaff: false
-         }
+        { isStudent: false, isTeacher: false, isSuperUser: false }
     )
 
     useEffect(() => {
