@@ -91,3 +91,49 @@ export interface ClassLogDetailsDataType {
     classLink: string;
     packageId: string;
 }
+
+export interface AdminStudentLastInvoiceListType {
+    hasNext: boolean
+    hasPrev: boolean
+    pageNo: number
+    pageSize: number
+    totalItems: number
+    totalPages: number
+    items: AdminStudentLastInvoiceType[]
+}
+
+export interface AdminStudentLastInvoiceType {
+    userId: string
+    studentId: string
+    studentInvoiceId: string
+    name: string
+    email: string
+    location: string
+    whatsAppNo: string
+    startDate: string
+    endDate: string
+    created: ''
+}
+
+export interface AdminTeacherLastInvoiceListType {
+    hasNext: boolean
+    hasPrev: boolean
+    pageNo: number
+    pageSize: number
+    totalItems: number
+    totalPages: number
+    items: AdminTeacherLastInvoiceType[]
+}
+
+export interface AdminTeacherLastInvoiceType {
+    userId: string
+    teacherId: string
+    teacherInvoiceId: string
+    name: string
+    email: string
+    location: string
+    whatsAppNo: string
+    startDate: string
+    endDate: string
+    created: ''
+}

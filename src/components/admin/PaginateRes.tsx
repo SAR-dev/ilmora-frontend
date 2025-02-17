@@ -16,7 +16,7 @@ const PaginateRes = ({
             </div>
             <div className="join grid grid-cols-2">
                 <button className="join-item btn btn-outline" disabled={data?.page == 1} onClick={handlePrev}>Previous page</button>
-                <button className="join-item btn btn-outline" disabled={data?.page == data?.totalPages} onClick={handleNext}>Next Page</button>
+                <button className="join-item btn btn-outline" disabled={data?.page == data?.totalPages || data?.totalItems == 0} onClick={handleNext}>Next Page</button>
             </div>
         </div>
     )

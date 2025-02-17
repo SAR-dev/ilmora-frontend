@@ -9,6 +9,7 @@ import AdminAccordion from "./AdminAccordion"
 import { FaSearch } from "react-icons/fa"
 
 const UserUpdate = () => {
+    const [show, setShow] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState("")
     const [formData, setFormData] = useState({
@@ -67,7 +68,7 @@ const UserUpdate = () => {
     }
 
     return (
-        <AdminAccordion title="Update User" hideInitially>
+        <AdminAccordion title="Update User" show={show} setShow={setShow}>
             <div className="flex gap-2">
                 <input
                     placeholder='User Id'

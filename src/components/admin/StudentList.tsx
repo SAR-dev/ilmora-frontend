@@ -9,6 +9,8 @@ import PaginateRes from "./PaginateRes"
 import { FaSearch } from "react-icons/fa";
 
 const StudentList = () => {
+    const [count, setCount] = useState(1)
+    const [show, setShow] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const inputRef = useRef<HTMLInputElement>(null);
     const [searchText, setSearchText] = useState("")
@@ -16,6 +18,7 @@ const StudentList = () => {
     const [data, setData] = useState<ListResult<TexpandStudentListWithUser>>()
 
     useEffect(() => {
+        if (!show) return;
         setIsLoading(true)
         pb
             .collection(Collections.Students).getList(pageNo, 20, {
@@ -24,7 +27,7 @@ const StudentList = () => {
             })
             .then(res => setData(res as unknown as ListResult<TexpandStudentListWithUser>))
             .finally(() => setIsLoading(false))
-    }, [pageNo, searchText])
+    }, [pageNo, searchText, show, count])
 
     const handleNext = () => {
         setPageNo(pageNo + 1)
@@ -35,16 +38,21 @@ const StudentList = () => {
     }
 
     return (
-        <AdminAccordion title="Student List" hideInitially>
-            <div className="flex gap-2">
-                <input
-                    placeholder='Student Name'
-                    type="text"
-                    className='input input-bordered w-48'
-                    ref={inputRef}
-                />
-                <button className="btn btn-square" onClick={() => setSearchText(inputRef.current?.value ?? "")}>
-                    <FaSearch className="size-5" />
+        <AdminAccordion title="Student List" show={show} setShow={setShow}>
+            <div className="flex justify-between">
+                <div className="flex gap-2">
+                    <input
+                        placeholder='Student Name'
+                        type="text"
+                        className='input input-bordered w-48'
+                        ref={inputRef}
+                    />
+                    <button className="btn btn-square" onClick={() => setSearchText(inputRef.current?.value ?? "")}>
+                        <FaSearch className="size-5" />
+                    </button>
+                </div>
+                <button className="btn" onClick={() => setCount(count + 1)}>
+                    Refresh Data
                 </button>
             </div>
             <div className="overflow-x-auto border border-base-300">
@@ -55,6 +63,7 @@ const StudentList = () => {
                             <th>Student Id</th>
                             <th>Name</th>
                             <th>Email</th>
+                            <th>WhatsApp</th>
                             <th>Utc Offset</th>
                             <th>Location</th>
                         </tr>
@@ -75,6 +84,9 @@ const StudentList = () => {
                                     {item.expand.userId.email}
                                 </td>
                                 <td>
+                                    {item.expand.userId.whatsAppNo}
+                                </td>
+                                <td>
                                     {item.expand.userId.utcOffset}
                                 </td>
                                 <td>
@@ -84,7 +96,7 @@ const StudentList = () => {
                         ))}
                         {!isLoading && data?.items.length == 0 && (
                             <tr>
-                                <td colSpan={6} className='p-5 bg-base-200 text-center'>
+                                <td colSpan={7} className='p-5 bg-base-200 text-center'>
                                     No Result Found
                                 </td>
                             </tr>

@@ -1,31 +1,31 @@
 import Loading from "components/Loading"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react";
 import AdminAccordion from "./AdminAccordion"
-import { pb } from "contexts/PocketContext"
-import { Collections } from "types/pocketbase";
-import { ListResult } from "pocketbase"
-import { TexpandTeacherListWithUser } from "types/extended";
 import PaginateRes from "./PaginateRes"
+import { api, dateViewFormatter, timeViewFormatter } from "helpers";
+import { AdminStudentLastInvoiceListType } from "types/response";
 import { FaSearch } from "react-icons/fa";
 
-const TeacherList = () => {
+const StudentInvoiceCreate = () => {
     const [count, setCount] = useState(1)
     const [show, setShow] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const inputRef = useRef<HTMLInputElement>(null);
     const [searchText, setSearchText] = useState("")
     const [pageNo, setPageNo] = useState(1)
-    const [data, setData] = useState<ListResult<TexpandTeacherListWithUser>>()
+    const [data, setData] = useState<AdminStudentLastInvoiceListType>()
 
     useEffect(() => {
         if (!show) return;
         setIsLoading(true)
-        pb
-            .collection(Collections.Teachers).getList(pageNo, 20, {
-                filter: `userId.name ~ '${searchText}'`,
-                expand: "userId"
+        api
+            .get("/api/a/student-last-invoices", {
+                params: {
+                    studentId: searchText,
+                    pageNo
+                }
             })
-            .then(res => setData(res as unknown as ListResult<TexpandTeacherListWithUser>))
+            .then(res => setData(res.data))
             .finally(() => setIsLoading(false))
     }, [pageNo, searchText, show, count])
 
@@ -38,11 +38,11 @@ const TeacherList = () => {
     }
 
     return (
-        <AdminAccordion title="Teacher List" show={show} setShow={setShow}>
+        <AdminAccordion title="Create Student Invoices" show={show} setShow={setShow}>
             <div className="flex justify-between">
                 <div className="flex gap-2">
                     <input
-                        placeholder='Teacher Name'
+                        placeholder='Student Id'
                         type="text"
                         className='input input-bordered w-48'
                         ref={inputRef}
@@ -60,43 +60,51 @@ const TeacherList = () => {
                     <thead>
                         <tr>
                             <th>User Id</th>
-                            <th>Teacher Id</th>
+                            <th>Student Id</th>
                             <th>Name</th>
                             <th>Email</th>
                             <th>WhatsApp</th>
-                            <th>Utc Offset</th>
                             <th>Location</th>
+                            <th>Last Invoice Id</th>
+                            <th>Last Invoiced At</th>
+                            <th>Last Invoice Dates</th>
                         </tr>
                     </thead>
                     <tbody>
                         {data?.items.map((item, i) => (
                             <tr key={i}>
-                                <th>
-                                    <code className="code bg-base-200 px-2 py-1">{item.expand.userId.id}</code>
-                                </th>
                                 <td>
-                                    <code className="code bg-base-200 px-2 py-1">{item.id}</code>
+                                    <code className="code bg-base-200 px-2 py-1">{item.userId}</code>
                                 </td>
                                 <td>
-                                    {item.expand.userId.name}
+                                    <code className="code bg-base-200 px-2 py-1">{item.studentId}</code>
                                 </td>
                                 <td>
-                                    {item.expand.userId.email}
+                                    {item.name}
                                 </td>
                                 <td>
-                                    {item.expand.userId.whatsAppNo}
+                                    {item.email}
                                 </td>
                                 <td>
-                                    {item.expand.userId.utcOffset}
+                                    {item.whatsAppNo}
                                 </td>
                                 <td>
-                                    {item.expand.userId.location}
+                                    {item.location}
+                                </td>
+                                <td>
+                                    <code className="code bg-base-200 px-2 py-1">{item.studentInvoiceId}</code>
+                                </td>
+                                <td className="uppercase">
+                                    {item.created.length > 0 && dateViewFormatter.format(new Date(item.created))} {item.created.length > 0 && timeViewFormatter.format(new Date(item.created))}
+                                </td>
+                                <td>
+                                    {item.startDate} ~ {item.endDate}
                                 </td>
                             </tr>
                         ))}
                         {!isLoading && data?.items.length == 0 && (
                             <tr>
-                                <td colSpan={6} className='p-5 bg-base-200 text-center'>
+                                <td colSpan={9} className='p-5 bg-base-200 text-center'>
                                     No Result Found
                                 </td>
                             </tr>
@@ -105,11 +113,24 @@ const TeacherList = () => {
                 </table>
             </div>
             <div>
-                <PaginateRes data={data} handleNext={handleNext} handlePrev={handlePrev} />
+                {data && (
+                    <PaginateRes
+                        data={{
+                            page: data?.pageNo,
+                            perPage: data?.pageSize,
+                            totalItems: data?.totalItems,
+                            totalPages: data?.totalPages,
+                            items: data?.items
+
+                        }}
+                        handleNext={handleNext}
+                        handlePrev={handlePrev}
+                    />
+                )}
             </div>
             {isLoading && <Loading />}
         </AdminAccordion>
     )
 }
 
-export default TeacherList
+export default StudentInvoiceCreate

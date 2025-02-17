@@ -1,16 +1,17 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode } from 'react';
 import { FaChevronRight } from 'react-icons/fa';
 
 const AdminAccordion = ({ 
     title, 
     children,
-    hideInitially
+    show,
+    setShow
 }: { 
     title: string, 
     children: ReactNode,
-    hideInitially?: boolean
+    show: boolean,
+    setShow: (props: boolean) => void
 }) => {
-    const [show, setShow] = useState(!hideInitially)
     const toogleShow = () => setShow(!show)
 
     return (

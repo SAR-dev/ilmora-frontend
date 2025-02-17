@@ -8,6 +8,7 @@ import AdminErrorDisplay from "./AdminErrorDisplay"
 import AdminAccordion from "./AdminAccordion"
 
 const TeacherCreate = () => {
+    const [show, setShow] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState("")
     const [formData, setFormData] = useState({
@@ -47,7 +48,7 @@ const TeacherCreate = () => {
     }
 
     return (
-        <AdminAccordion title="Create Teacher" hideInitially>
+        <AdminAccordion title="Create Teacher" show={show} setShow={setShow}>
             <div className="grid grid-cols-4 gap-5">
                 <label className="form-control">
                     <div className="label pb-2">
