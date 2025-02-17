@@ -45,8 +45,6 @@ const StudentInvoiceList = () => {
                     <thead>
                         <tr>
                             <th>Invoice Id</th>
-                            <th>Start Date</th>
-                            <th>End Date</th>
                             <th>Generated At</th>
                             <th>Action</th>
                         </tr>
@@ -56,12 +54,6 @@ const StudentInvoiceList = () => {
                             <tr key={i}>
                                 <td>
                                     <code className="code bg-base-200 px-2 py-1">{item.id}</code>
-                                </td>
-                                <td>
-                                    {item.startDate}
-                                </td>
-                                <td>
-                                    {item.endDate}
                                 </td>
                                 <td className="uppercase">
                                     {dateViewFormatter.format(new Date(item.created))} {timeViewFormatter.format(new Date(item.created))}
@@ -73,7 +65,7 @@ const StudentInvoiceList = () => {
                         ))}
                         {!isLoading && data?.items.length == 0 && (
                             <tr>
-                                <td colSpan={5} className='p-5 bg-base-200 text-center'>
+                                <td colSpan={3} className='p-5 bg-base-200 text-center'>
                                     No Result Found
                                 </td>
                             </tr>

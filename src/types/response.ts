@@ -110,9 +110,7 @@ export interface AdminStudentLastInvoiceType {
     email: string
     location: string
     whatsAppNo: string
-    startDate: string
-    endDate: string
-    created: ''
+    created: string
 }
 
 export interface AdminTeacherLastInvoiceListType {
@@ -133,7 +131,5 @@ export interface AdminTeacherLastInvoiceType {
     email: string
     location: string
     whatsAppNo: string
-    startDate: string
-    endDate: string
-    created: ''
+    created: string
 }

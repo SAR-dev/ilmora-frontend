@@ -5,9 +5,11 @@ import PaginateRes from "./PaginateRes"
 import { api, dateViewFormatter, timeViewFormatter } from "helpers";
 import { AdminStudentLastInvoiceListType } from "types/response";
 import { FaSearch } from "react-icons/fa";
+import toast from "react-hot-toast";
 
 const StudentInvoiceCreate = () => {
     const [count, setCount] = useState(1)
+    const [studentIds, setStudentIds] = useState<string[]>([])
     const [show, setShow] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const inputRef = useRef<HTMLInputElement>(null);
@@ -31,10 +33,31 @@ const StudentInvoiceCreate = () => {
 
     const handleNext = () => {
         setPageNo(pageNo + 1)
+        setStudentIds([])
     }
 
     const handlePrev = () => {
         setPageNo(pageNo - 1)
+        setStudentIds([])
+    }
+
+    const handleCheck = (id: string) => {
+        if (studentIds.includes(id)) {
+            setStudentIds([...studentIds.filter(e => e != id)])
+        } else {
+            setStudentIds([...studentIds, id])
+        }
+    }
+
+    const handleGenerateInvoice = () => {
+        setIsLoading(true)
+        api
+        .post("/api/a/student-invoices", {
+            studentIds
+        })
+        .then(() => toast.success("Invoices has been issued"))
+        .catch(() => toast.error("Invoice issue failed"))
+        .finally(() => setIsLoading(false))
     }
 
     return (
@@ -51,14 +74,20 @@ const StudentInvoiceCreate = () => {
                         <FaSearch className="size-5" />
                     </button>
                 </div>
-                <button className="btn" onClick={() => setCount(count + 1)}>
-                    Refresh Data
-                </button>
+                <div className="flex gap-5">
+                    <button className="btn" onClick={handleGenerateInvoice}>
+                        Generate Invoice
+                    </button>
+                    <button className="btn" onClick={() => setCount(count + 1)}>
+                        Refresh Data
+                    </button>
+                </div>
             </div>
             <div className="overflow-x-auto border border-base-300">
                 <table className="table">
                     <thead>
                         <tr>
+                            <th></th>
                             <th>User Id</th>
                             <th>Student Id</th>
                             <th>Name</th>
@@ -67,12 +96,19 @@ const StudentInvoiceCreate = () => {
                             <th>Location</th>
                             <th>Last Invoice Id</th>
                             <th>Last Invoiced At</th>
-                            <th>Last Invoice Dates</th>
                         </tr>
                     </thead>
                     <tbody>
                         {data?.items.map((item, i) => (
                             <tr key={i}>
+                                <td>
+                                    <input
+                                        type="checkbox"
+                                        className="checkbox"
+                                        checked={studentIds.includes(item.studentId)}
+                                        onChange={() => handleCheck(item.studentId)}
+                                    />
+                                </td>
                                 <td>
                                     <code className="code bg-base-200 px-2 py-1">{item.userId}</code>
                                 </td>
@@ -97,14 +133,11 @@ const StudentInvoiceCreate = () => {
                                 <td className="uppercase">
                                     {item.created.length > 0 && dateViewFormatter.format(new Date(item.created))} {item.created.length > 0 && timeViewFormatter.format(new Date(item.created))}
                                 </td>
-                                <td>
-                                    {item.startDate} ~ {item.endDate}
-                                </td>
                             </tr>
                         ))}
                         {!isLoading && data?.items.length == 0 && (
                             <tr>
-                                <td colSpan={9} className='p-5 bg-base-200 text-center'>
+                                <td colSpan={10} className='p-5 bg-base-200 text-center'>
                                     No Result Found
                                 </td>
                             </tr>

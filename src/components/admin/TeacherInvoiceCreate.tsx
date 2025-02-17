@@ -67,7 +67,6 @@ const TeacherInvoiceCreate = () => {
                             <th>Location</th>
                             <th>Last Invoice Id</th>
                             <th>Last Invoiced At</th>
-                            <th>Last Invoice Dates</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -96,9 +95,6 @@ const TeacherInvoiceCreate = () => {
                                 </td>
                                 <td className="uppercase">
                                     {item.created.length > 0 && dateViewFormatter.format(new Date(item.created))} {item.created.length > 0 && timeViewFormatter.format(new Date(item.created))}
-                                </td>
-                                <td>
-                                    {item.startDate} ~ {item.endDate}
                                 </td>
                             </tr>
                         ))}
