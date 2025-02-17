@@ -2,7 +2,7 @@ import Loading from "components/Loading"
 import { useEffect, useRef, useState } from "react";
 import AdminAccordion from "./AdminAccordion"
 import PaginateRes from "./PaginateRes"
-import { api, dateViewFormatter, timeViewFormatter } from "helpers";
+import { api, daysDifference } from "helpers";
 import { AdminTeacherLastInvoiceListType } from "types/response";
 import { FaSearch } from "react-icons/fa";
 import toast from "react-hot-toast";
@@ -97,8 +97,7 @@ const TeacherInvoiceCreate = () => {
                             <th>Email</th>
                             <th>WhatsApp</th>
                             <th>Location</th>
-                            <th>Last Invoice Id</th>
-                            <th>Last Invoiced At</th>
+                            <th>Last Invoiced</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -131,15 +130,7 @@ const TeacherInvoiceCreate = () => {
                                     {item.location}
                                 </td>
                                 <td>
-                                    <code className="code bg-base-200 px-2 py-1">{item.teacherInvoiceId}</code>
-                                </td>
-                                <td>
-                                    <span>
-                                        {item.created.length > 0 && dateViewFormatter.format(new Date(item.created))}
-                                    </span>
-                                    <span className="uppercase ml-1">
-                                        {item.created.length > 0 && timeViewFormatter.format(new Date(item.created))}
-                                    </span>
+                                    {item.created.length > 0 && `${daysDifference(new Date(item.created))} days ago`}
                                 </td>
                             </tr>
                         ))}

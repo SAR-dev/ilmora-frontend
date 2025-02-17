@@ -123,3 +123,9 @@ export const gerStringError = (err: unknown) => {
     return "An unknown error occurred.";
   }
 }
+
+export const daysDifference = (date: Date) => {
+  const today = new Date();
+  const diffTime = date.getTime() - today.getTime();
+  return Math.round(diffTime / (1000 * 60 * 60 * 24));
+}

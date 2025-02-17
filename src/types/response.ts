@@ -105,7 +105,6 @@ export interface AdminStudentLastInvoiceListType {
 export interface AdminStudentLastInvoiceType {
     userId: string
     studentId: string
-    studentInvoiceId: string
     name: string
     email: string
     location: string
@@ -126,7 +125,6 @@ export interface AdminTeacherLastInvoiceListType {
 export interface AdminTeacherLastInvoiceType {
     userId: string
     teacherId: string
-    teacherInvoiceId: string
     name: string
     email: string
     location: string
