@@ -52,12 +52,16 @@ const StudentInvoiceCreate = () => {
     const handleGenerateInvoice = () => {
         setIsLoading(true)
         api
-        .post("/api/a/student-invoices", {
-            studentIds
-        })
-        .then(() => toast.success("Invoices has been issued"))
-        .catch(() => toast.error("Invoice issue failed"))
-        .finally(() => setIsLoading(false))
+            .post("/api/a/student-invoices", {
+                studentIds
+            })
+            .then(() => {
+                toast.success("Invoices has been issued")
+                setStudentIds([])
+                setCount(count + 1)
+            })
+            .catch(() => toast.error("Invoice issue failed"))
+            .finally(() => setIsLoading(false))
     }
 
     return (
@@ -130,8 +134,13 @@ const StudentInvoiceCreate = () => {
                                 <td>
                                     <code className="code bg-base-200 px-2 py-1">{item.studentInvoiceId}</code>
                                 </td>
-                                <td className="uppercase">
-                                    {item.created.length > 0 && dateViewFormatter.format(new Date(item.created))} {item.created.length > 0 && timeViewFormatter.format(new Date(item.created))}
+                                <td>
+                                    <span>
+                                        {item.created.length > 0 && dateViewFormatter.format(new Date(item.created))}
+                                    </span>
+                                    <span className="uppercase ml-1">
+                                        {item.created.length > 0 && timeViewFormatter.format(new Date(item.created))}
+                                    </span>
                                 </td>
                             </tr>
                         ))}
