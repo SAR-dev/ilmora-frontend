@@ -53,14 +53,18 @@ export const timeViewFormatter = new Intl.DateTimeFormat('en-GB', {
   minute: '2-digit'
 })
 
-export const dateTimeViewFormatter = new Intl.DateTimeFormat('en-GB', {
-  day: '2-digit',
-  month: 'short',
-  year: 'numeric',
-  hour12: true,
-  hour: '2-digit',
-  minute: '2-digit'
-});
+export const dateTimeViewFormatter = (date: Date) => {
+  return new Intl.DateTimeFormat('en-GB', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour12: true,
+    hour: '2-digit',
+    minute: '2-digit'
+  })
+    .format(date)
+    .replace(/\b(am|pm)\b/, (match) => match.toUpperCase());
+};
 
 export const getDateInYYYYMMDD = (date: Date) => {
   return `${date.getFullYear().toString().padStart(2, "0")}-${(date.getMonth() + 1).toString().padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`

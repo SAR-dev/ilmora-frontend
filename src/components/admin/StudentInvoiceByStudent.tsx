@@ -52,8 +52,8 @@ const StudentInvoiceByStudent = () => {
                 setInvoicePaymentData(invoiceData);
                 setExtraPaymentData(extraData);
                 setStudentData(student as unknown as TexpandStudentListWithUser)
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            } catch (_) {
+            } catch (error) {
+                console.log(error)
                 toast.error("Error fetching data");
                 setInvoicePaymentData([])
                 setExtraPaymentData([])
@@ -87,6 +87,21 @@ const StudentInvoiceByStudent = () => {
         })
     }
 
+    const handleUpdateBalance = () => {
+        if (!studentData || paymentAddData.paidAmount == 0)
+            setIsLoading(true)
+        pb.collection(Collections.StudentBalances).create({
+            studentId: studentData?.id,
+            ...paymentAddData
+        })
+            .then(() => {
+                toast.success("Balance added")
+                handleCloseModal()
+                setCount(count + 1)
+            })
+            .catch(() => toast.error("Failed to add payment"))
+            .finally(() => setIsLoading(false))
+    }
 
     return (
         <AdminAccordion title="Student Invoice History" show={show} setShow={setShow}>
@@ -143,10 +158,14 @@ const StudentInvoiceByStudent = () => {
                         {paymentData.map((item, i) => (
                             <tr key={i}>
                                 <td>
-                                    {JSON.stringify(item.invoicedAt).length > 3 ? dateTimeViewFormatter.format(new Date(JSON.parse(JSON.stringify(item.invoicedAt)))) : "N/A"}
+                                    {JSON.stringify(item.invoicedAt).length > 3 ? dateTimeViewFormatter(new Date(JSON.parse(JSON.stringify(item.invoicedAt)))) : "N/A"}
                                 </td>
                                 <td>
-                                    {item.paidAt.length > 3 ? dateTimeViewFormatter.format(new Date(item.paidAt)) : <button className="btn" onClick={() => handleOpenModal(item.studentInvoiceId)}>Add Payment</button>}
+                                    {item.paidAt.length > 3 ?
+                                        dateTimeViewFormatter(new Date(item.paidAt))
+                                        :
+                                        <button className="btn w-32" onClick={() => handleOpenModal(item.studentInvoiceId)}>Add Payment</button>
+                                    }
                                 </td>
                                 <td>
                                     <code className="code bg-base-200 px-2 py-1">{item.userId}</code>
@@ -155,10 +174,14 @@ const StudentInvoiceByStudent = () => {
                                     <code className="code bg-base-200 px-2 py-1">{item.studentId}</code>
                                 </td>
                                 <td>
-                                    <code className="code bg-base-200 px-2 py-1">{item.studentInvoiceId}</code>
+                                    {item.studentInvoiceId?.length > 0 ? (
+                                        <code className="code bg-base-200 px-2 py-1">{item.studentInvoiceId}</code>
+                                    ) : "N/A"}
                                 </td>
                                 <td>
-                                    <code className="code bg-base-200 px-2 py-1">{item.studentBalanceId}</code>
+                                    {item.studentBalanceId?.length > 0 ? (
+                                        <code className="code bg-base-200 px-2 py-1">{item.studentBalanceId}</code>
+                                    ) : "N/A"}
                                 </td>
                                 <td>
                                     {JSON.stringify(item.totalStudentsPrice)} TK
@@ -239,7 +262,13 @@ const StudentInvoiceByStudent = () => {
                                     onChange={e => setPaymentAddData({ ...paymentAddData, paymentInfo: e.target.value })}
                                 />
                             </label>
-                            <button className="btn btn-primary w-full">Submit Payment</button>
+                            <button
+                                className="btn btn-primary w-full"
+                                onClick={handleUpdateBalance}
+                                disabled={isLoading}
+                            >
+                                Submit Payment
+                            </button>
                         </div>
                     </DialogPanel>
                 </div>

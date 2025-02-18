@@ -10,6 +10,8 @@ import {
     TeacherInvoicePaymentViewResponse,
 } from "types/pocketbase";
 import { dateTimeViewFormatter, sumArray } from "helpers";
+import { TexpandTeacherListWithUser } from "types/extended";
+import { Dialog, DialogPanel } from "@headlessui/react";
 
 const TeacherInvoiceByTeacher = () => {
     const [count, setCount] = useState(1)
@@ -20,6 +22,15 @@ const TeacherInvoiceByTeacher = () => {
 
     const [invoicePaymentData, setInvoicePaymentData] = useState<TeacherInvoicePaymentViewResponse[]>([])
     const [extraPaymentData, setExtraPaymentData] = useState<TeacherExtraPaymentViewResponse[]>([])
+    const [teacherData, setTeacherData] = useState<TexpandTeacherListWithUser | null>(null)
+
+    const [isOpen, setIsOpen] = useState(false)
+    const [paymentAddData, setPaymentAddData] = useState({
+        teacherInvoiceId: "",
+        paidAmount: 0,
+        paymentMethod: "",
+        paymentInfo: ""
+    })
 
     const paymentData = useMemo(() => {
         return [...invoicePaymentData, ...extraPaymentData].sort((a, b) => new Date(a.paidAt).getTime() - new Date(b.paidAt).getTime())
@@ -27,25 +38,30 @@ const TeacherInvoiceByTeacher = () => {
 
     useEffect(() => {
         if (!show || searchText.length === 0) return;
-
         setIsLoading(true);
-
         const fetchData = async () => {
             try {
-                const [invoiceData, extraData] = await Promise.all([
+                const [invoiceData, extraData, teacher] = await Promise.all([
                     pb.collection(Collections.TeacherInvoicePaymentView).getFullList({
                         filter: `teacherId = '${searchText}'`
                     }),
                     pb.collection(Collections.TeacherExtraPaymentView).getFullList({
                         filter: `teacherId = '${searchText}'`
+                    }),
+                    pb.collection(Collections.Teachers).getOne(searchText, {
+                        expand: "userId"
                     })
                 ]);
 
                 setInvoicePaymentData(invoiceData);
                 setExtraPaymentData(extraData);
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            } catch (_) {
+                setTeacherData(teacher as unknown as TexpandTeacherListWithUser)
+            } catch (error) {
+                console.log(error)
                 toast.error("Error fetching data");
+                setInvoicePaymentData([])
+                setExtraPaymentData([])
+                setTeacherData(null)
             } finally {
                 setIsLoading(false);
             }
@@ -54,6 +70,42 @@ const TeacherInvoiceByTeacher = () => {
         fetchData();
     }, [searchText, show, count]);
 
+    const handleOpenModal = (teacherInvoiceId: string) => {
+        if (!teacherData) return;
+        setIsOpen(true)
+        setPaymentAddData({
+            teacherInvoiceId,
+            paidAmount: 0,
+            paymentMethod: "",
+            paymentInfo: ""
+        })
+    }
+
+    const handleCloseModal = () => {
+        setIsOpen(false)
+        setPaymentAddData({
+            teacherInvoiceId: "",
+            paidAmount: 0,
+            paymentMethod: "",
+            paymentInfo: ""
+        })
+    }
+
+    const handleUpdateBalance = () => {
+        if (!teacherData || paymentAddData.paidAmount == 0)
+            setIsLoading(true)
+        pb.collection(Collections.TeacherBalances).create({
+            teacherId: teacherData?.id,
+            ...paymentAddData
+        })
+            .then(() => {
+                toast.success("Balance added")
+                handleCloseModal()
+                setCount(count + 1)
+            })
+            .catch(() => toast.error("Failed to add payment"))
+            .finally(() => setIsLoading(false))
+    }
 
     return (
         <AdminAccordion title="Teacher Invoice History" show={show} setShow={setShow}>
@@ -76,8 +128,8 @@ const TeacherInvoiceByTeacher = () => {
                     </div>
                 </div>
                 <div className="flex gap-5">
-                    <button className="btn">
-                        Add Payment
+                    <button className="btn" disabled={!teacherData} onClick={() => handleOpenModal("")}>
+                        Add Blank Payment
                     </button>
                     <button className="btn" onClick={() => setCount(count + 1)}>
                         Refresh Data
@@ -110,10 +162,14 @@ const TeacherInvoiceByTeacher = () => {
                         {paymentData.map((item, i) => (
                             <tr key={i}>
                                 <td>
-                                    {JSON.stringify(item.invoicedAt).length > 3 ? dateTimeViewFormatter.format(new Date(JSON.parse(JSON.stringify(item.invoicedAt)))) : "N/A"}
+                                    {JSON.stringify(item.invoicedAt).length > 3 ? dateTimeViewFormatter(new Date(JSON.parse(JSON.stringify(item.invoicedAt)))) : "N/A"}
                                 </td>
                                 <td>
-                                    {item.paidAt.length > 3 ? dateTimeViewFormatter.format(new Date(item.paidAt)) : "N/A"}
+                                    {item.paidAt.length > 3 ?
+                                        dateTimeViewFormatter(new Date(item.paidAt))
+                                        :
+                                        <button className="btn w-32" onClick={() => handleOpenModal(item.teacherInvoiceId)}>Add Payment</button>
+                                    }
                                 </td>
                                 <td>
                                     <code className="code bg-base-200 px-2 py-1">{item.userId}</code>
@@ -122,10 +178,14 @@ const TeacherInvoiceByTeacher = () => {
                                     <code className="code bg-base-200 px-2 py-1">{item.teacherId}</code>
                                 </td>
                                 <td>
-                                    <code className="code bg-base-200 px-2 py-1">{item.teacherInvoiceId}</code>
+                                    {item.teacherInvoiceId?.length > 0 ? (
+                                        <code className="code bg-base-200 px-2 py-1">{item.teacherInvoiceId}</code>
+                                    ) : "N/A"}
                                 </td>
                                 <td>
-                                    <code className="code bg-base-200 px-2 py-1">{item.teacherBalanceId}</code>
+                                    {item.teacherBalanceId?.length > 0 ? (
+                                        <code className="code bg-base-200 px-2 py-1">{item.teacherBalanceId}</code>
+                                    ) : "N/A"}
                                 </td>
                                 <td>
                                     {JSON.stringify(item.totalTeachersPrice)} TK
@@ -169,6 +229,54 @@ const TeacherInvoiceByTeacher = () => {
                     </tbody>
                 </table>
             </div>
+            <Dialog open={isOpen} onClose={handleCloseModal} className="relative z-50">
+                <div className="fixed inset-0 flex w-screen items-center justify-center p-4 bg-base-300/75">
+                    <DialogPanel className="card max-w-lg space-y-4 border bg-base-100 border-base-300 p-8">
+                        <div className="flex flex-col justify-center items-center gap-5">
+                            <label className="form-control w-full w-48">
+                                <div className="label pb-2">
+                                    <span className="label-text">Paid Amount</span>
+                                </div>
+                                <input
+                                    type="number"
+                                    className="input input-bordered w-full"
+                                    value={paymentAddData.paidAmount}
+                                    onChange={e => setPaymentAddData({ ...paymentAddData, paidAmount: Number(e.target.value) })}
+                                />
+                            </label>
+                            <label className="form-control w-full w-48">
+                                <div className="label pb-2">
+                                    <span className="label-text">Payment Method</span>
+                                </div>
+                                <input
+                                    type="text"
+                                    className="input input-bordered w-full"
+                                    value={paymentAddData.paymentMethod}
+                                    onChange={e => setPaymentAddData({ ...paymentAddData, paymentMethod: e.target.value })}
+                                />
+                            </label>
+                            <label className="form-control w-full w-48">
+                                <div className="label pb-2">
+                                    <span className="label-text">Payment Info</span>
+                                </div>
+                                <input
+                                    type="text"
+                                    className="input input-bordered w-full"
+                                    value={paymentAddData.paymentInfo}
+                                    onChange={e => setPaymentAddData({ ...paymentAddData, paymentInfo: e.target.value })}
+                                />
+                            </label>
+                            <button
+                                className="btn btn-primary w-full"
+                                onClick={handleUpdateBalance}
+                                disabled={isLoading}
+                            >
+                                Submit Payment
+                            </button>
+                        </div>
+                    </DialogPanel>
+                </div>
+            </Dialog>
             {isLoading && <Loading />}
         </AdminAccordion>
     )
