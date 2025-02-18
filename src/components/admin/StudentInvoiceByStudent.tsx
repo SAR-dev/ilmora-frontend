@@ -118,7 +118,7 @@ const StudentInvoiceByStudent = () => {
     }
 
     return (
-        <AdminAccordion title="Student Invoice History" show={show} setShow={setShow}>
+        <AdminAccordion title="Student Invoice By Student" show={show} setShow={setShow}>
             <div className="flex justify-between">
                 <div className="flex gap-2 items-center">
                     <input
