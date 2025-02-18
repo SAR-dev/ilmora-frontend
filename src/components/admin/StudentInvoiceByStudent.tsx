@@ -6,6 +6,8 @@ import toast from "react-hot-toast";
 import { pb } from "contexts/PocketContext";
 import { Collections, StudentExtraPaymentViewResponse, StudentInvoicePaymentViewResponse } from "types/pocketbase";
 import { dateTimeViewFormatter, sumArray } from "helpers";
+import { Dialog, DialogPanel } from "@headlessui/react";
+import { TexpandStudentListWithUser } from "types/extended";
 
 const StudentInvoiceByStudent = () => {
     const [count, setCount] = useState(1)
@@ -16,6 +18,15 @@ const StudentInvoiceByStudent = () => {
 
     const [invoicePaymentData, setInvoicePaymentData] = useState<StudentInvoicePaymentViewResponse[]>([])
     const [extraPaymentData, setExtraPaymentData] = useState<StudentExtraPaymentViewResponse[]>([])
+    const [studentData, setStudentData] = useState<TexpandStudentListWithUser | null>(null)
+
+    const [isOpen, setIsOpen] = useState(false)
+    const [paymentAddData, setPaymentAddData] = useState({
+        studentInvoiceId: "",
+        paidAmount: 0,
+        paymentMethod: "",
+        paymentInfo: ""
+    })
 
     const paymentData = useMemo(() => {
         return [...invoicePaymentData, ...extraPaymentData].sort((a, b) => new Date(a.paidAt).getTime() - new Date(b.paidAt).getTime())
@@ -23,25 +34,30 @@ const StudentInvoiceByStudent = () => {
 
     useEffect(() => {
         if (!show || searchText.length === 0) return;
-
         setIsLoading(true);
-
         const fetchData = async () => {
             try {
-                const [invoiceData, extraData] = await Promise.all([
+                const [invoiceData, extraData, student] = await Promise.all([
                     pb.collection(Collections.StudentInvoicePaymentView).getFullList({
                         filter: `studentId = '${searchText}'`
                     }),
                     pb.collection(Collections.StudentExtraPaymentView).getFullList({
                         filter: `studentId = '${searchText}'`
+                    }),
+                    pb.collection(Collections.Students).getOne(searchText, {
+                        expand: "userId"
                     })
                 ]);
 
                 setInvoicePaymentData(invoiceData);
                 setExtraPaymentData(extraData);
+                setStudentData(student as unknown as TexpandStudentListWithUser)
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
             } catch (_) {
                 toast.error("Error fetching data");
+                setInvoicePaymentData([])
+                setExtraPaymentData([])
+                setStudentData(null)
             } finally {
                 setIsLoading(false);
             }
@@ -49,6 +65,27 @@ const StudentInvoiceByStudent = () => {
 
         fetchData();
     }, [searchText, show, count]);
+
+    const handleOpenModal = (studentInvoiceId: string) => {
+        if (!studentData) return;
+        setIsOpen(true)
+        setPaymentAddData({
+            studentInvoiceId,
+            paidAmount: 0,
+            paymentMethod: "",
+            paymentInfo: ""
+        })
+    }
+
+    const handleCloseModal = () => {
+        setIsOpen(false)
+        setPaymentAddData({
+            studentInvoiceId: "",
+            paidAmount: 0,
+            paymentMethod: "",
+            paymentInfo: ""
+        })
+    }
 
 
     return (
@@ -72,8 +109,8 @@ const StudentInvoiceByStudent = () => {
                     </div>
                 </div>
                 <div className="flex gap-5">
-                    <button className="btn">
-                        Add Payment
+                    <button className="btn" disabled={!studentData} onClick={() => handleOpenModal("")}>
+                        Add Blank Payment
                     </button>
                     <button className="btn" onClick={() => setCount(count + 1)}>
                         Refresh Data
@@ -109,7 +146,7 @@ const StudentInvoiceByStudent = () => {
                                     {JSON.stringify(item.invoicedAt).length > 3 ? dateTimeViewFormatter.format(new Date(JSON.parse(JSON.stringify(item.invoicedAt)))) : "N/A"}
                                 </td>
                                 <td>
-                                    {item.paidAt.length > 3 ? dateTimeViewFormatter.format(new Date(item.paidAt)) : "N/A"}
+                                    {item.paidAt.length > 3 ? dateTimeViewFormatter.format(new Date(item.paidAt)) : <button className="btn" onClick={() => handleOpenModal(item.studentInvoiceId)}>Add Payment</button>}
                                 </td>
                                 <td>
                                     <code className="code bg-base-200 px-2 py-1">{item.userId}</code>
@@ -165,6 +202,48 @@ const StudentInvoiceByStudent = () => {
                     </tbody>
                 </table>
             </div>
+            <Dialog open={isOpen} onClose={handleCloseModal} className="relative z-50">
+                <div className="fixed inset-0 flex w-screen items-center justify-center p-4 bg-base-300/75">
+                    <DialogPanel className="card max-w-lg space-y-4 border bg-base-100 border-base-300 p-8">
+                        <div className="flex flex-col justify-center items-center gap-5">
+                            <label className="form-control w-full w-48">
+                                <div className="label pb-2">
+                                    <span className="label-text">Paid Amount</span>
+                                </div>
+                                <input
+                                    type="number"
+                                    className="input input-bordered w-full"
+                                    value={paymentAddData.paidAmount}
+                                    onChange={e => setPaymentAddData({ ...paymentAddData, paidAmount: Number(e.target.value) })}
+                                />
+                            </label>
+                            <label className="form-control w-full w-48">
+                                <div className="label pb-2">
+                                    <span className="label-text">Payment Method</span>
+                                </div>
+                                <input
+                                    type="text"
+                                    className="input input-bordered w-full"
+                                    value={paymentAddData.paymentMethod}
+                                    onChange={e => setPaymentAddData({ ...paymentAddData, paymentMethod: e.target.value })}
+                                />
+                            </label>
+                            <label className="form-control w-full w-48">
+                                <div className="label pb-2">
+                                    <span className="label-text">Payment Info</span>
+                                </div>
+                                <input
+                                    type="text"
+                                    className="input input-bordered w-full"
+                                    value={paymentAddData.paymentInfo}
+                                    onChange={e => setPaymentAddData({ ...paymentAddData, paymentInfo: e.target.value })}
+                                />
+                            </label>
+                            <button className="btn btn-primary w-full">Submit Payment</button>
+                        </div>
+                    </DialogPanel>
+                </div>
+            </Dialog>
             {isLoading && <Loading />}
         </AdminAccordion>
     )

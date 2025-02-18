@@ -189,7 +189,14 @@ const ClassLogDetails = () => {
                 {classDetails && (
                     <div className="card m-5 p-5 border border-base-300 bg-base-100 w-fit mx-auto flex justify-center items-center">
                         <div className="size-20">
-                            <img className='size-20 object-cover rounded-full' src="http://127.0.0.1:8090/api/files/_pb_users_auth_/ma3f08vcdj76585/864023729_mqz9oiytcn.jpg.jpg" alt="" />
+                            {classDetails.studentAvatar?.length > 0 ? (
+                                <img
+                                    className="size-20 object-cover rounded-full"
+                                    src={`${import.meta.env.VITE_API_URL}/api/files/_pb_users_auth_/${classDetails.studentUserId}/${classDetails.studentAvatar}`}
+                                />
+                            ) : (
+                                <div className="size-20 object-cover rounded-full bg-base-300 animate-pulse" />
+                            )}
                         </div>
                         <div className="flex flex-col justify-center items-center my-2">
                             <div className='font-semibold text-primary text-lg'>{classDetails.studentName}</div>
@@ -384,10 +391,10 @@ const ClassLogDetails = () => {
                             <div className="flex flex-col justify-center items-center gap-5">
                                 <AiFillAlert className='size-20 text-warning' />
                                 <div className="text-center">
-                                    Are you sure you want to delete this class ? 
+                                    Are you sure you want to delete this class ?
                                     <br />
                                     You can not undo this action
-                                    </div>
+                                </div>
                                 <div className="flex gap-5">
                                     <button
                                         className="btn"

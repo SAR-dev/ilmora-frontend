@@ -90,6 +90,8 @@ export interface ClassLogDetailsDataType {
     teachersPrice: string;
     classLink: string;
     packageId: string;
+    studentUserId: string
+    teacherUserId: string
 }
 
 export interface AdminStudentLastInvoiceListType {
