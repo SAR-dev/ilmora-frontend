@@ -63,7 +63,7 @@ const TeacherNavbar = () => {
             <Drawer
                 open={showDrawer}
                 onClose={toggleDrawer}
-                direction='left'
+                direction='right'
                 className=''
                 duration={100}
             >

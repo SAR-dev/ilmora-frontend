@@ -53,6 +53,15 @@ export const timeViewFormatter = new Intl.DateTimeFormat('en-GB', {
   minute: '2-digit'
 })
 
+export const dateTimeViewFormatter = new Intl.DateTimeFormat('en-GB', {
+  day: '2-digit',
+  month: 'short',
+  year: 'numeric',
+  hour12: true,
+  hour: '2-digit',
+  minute: '2-digit'
+});
+
 export const getDateInYYYYMMDD = (date: Date) => {
   return `${date.getFullYear().toString().padStart(2, "0")}-${(date.getMonth() + 1).toString().padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`
 }
@@ -126,6 +135,8 @@ export const gerStringError = (err: unknown) => {
 
 export const daysDifference = (date: Date) => {
   const today = new Date();
-  const diffTime = date.getTime() - today.getTime();
+  const diffTime = today.getTime() - date.getTime();
   return Math.round(diffTime / (1000 * 60 * 60 * 24));
 }
+
+export const sumArray = (values: (string | number) []) => values.reduce((acc, num) => Number(acc) + Number(num), 0)
