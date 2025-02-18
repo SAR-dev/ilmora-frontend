@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import { ReactNode } from 'react';
-import { FaCircle } from 'react-icons/fa';
+import { FaChevronDown, FaChevronUp, FaCircle } from 'react-icons/fa';
 
 const AdminAccordion = ({
     title,
@@ -23,6 +23,7 @@ const AdminAccordion = ({
                     <div className="font-semibold">{title}</div>
                 </div>
                 <button className={classNames("btn btn-sm btn-primary", { "btn-outline": show })} onClick={toogleShow}>
+                    {show ? <FaChevronUp className='size-4' /> : <FaChevronDown className='size-4' />}
                     {show ? "Hide Details" : "Show Details"}
                 </button>
             </div>
