@@ -4,18 +4,22 @@ import AdminAccordion from "./AdminAccordion"
 import { FaSearch } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { pb } from "contexts/PocketContext";
-import { Collections, StudentExtraPaymentViewResponse, StudentInvoicePaymentViewResponse } from "types/pocketbase";
+import {
+    Collections,
+    TeacherExtraPaymentViewResponse,
+    TeacherInvoicePaymentViewResponse,
+} from "types/pocketbase";
 import { dateTimeViewFormatter, sumArray } from "helpers";
 
-const StudentInvoiceByStudent = () => {
+const TeacherInvoiceByTeacher = () => {
     const [count, setCount] = useState(1)
     const [show, setShow] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const inputRef = useRef<HTMLInputElement>(null);
     const [searchText, setSearchText] = useState("")
 
-    const [invoicePaymentData, setInvoicePaymentData] = useState<StudentInvoicePaymentViewResponse[]>([])
-    const [extraPaymentData, setExtraPaymentData] = useState<StudentExtraPaymentViewResponse[]>([])
+    const [invoicePaymentData, setInvoicePaymentData] = useState<TeacherInvoicePaymentViewResponse[]>([])
+    const [extraPaymentData, setExtraPaymentData] = useState<TeacherExtraPaymentViewResponse[]>([])
 
     const paymentData = useMemo(() => {
         return [...invoicePaymentData, ...extraPaymentData].sort((a, b) => new Date(a.paidAt).getTime() - new Date(b.paidAt).getTime())
@@ -29,11 +33,11 @@ const StudentInvoiceByStudent = () => {
         const fetchData = async () => {
             try {
                 const [invoiceData, extraData] = await Promise.all([
-                    pb.collection(Collections.StudentInvoicePaymentView).getFullList({
-                        filter: `studentId = '${searchText}'`
+                    pb.collection(Collections.TeacherInvoicePaymentView).getFullList({
+                        filter: `teacherId = '${searchText}'`
                     }),
-                    pb.collection(Collections.StudentExtraPaymentView).getFullList({
-                        filter: `studentId = '${searchText}'`
+                    pb.collection(Collections.TeacherExtraPaymentView).getFullList({
+                        filter: `teacherId = '${searchText}'`
                     })
                 ]);
 
@@ -52,11 +56,11 @@ const StudentInvoiceByStudent = () => {
 
 
     return (
-        <AdminAccordion title="Student Invoice History" show={show} setShow={setShow}>
+        <AdminAccordion title="Teacher Invoice History" show={show} setShow={setShow}>
             <div className="flex justify-between">
                 <div className="flex gap-2 items-center">
                     <input
-                        placeholder='Student Id'
+                        placeholder='Teacher Id'
                         type="text"
                         className='input input-bordered w-48'
                         ref={inputRef}
@@ -65,7 +69,7 @@ const StudentInvoiceByStudent = () => {
                         <FaSearch className="size-5" />
                     </button>
                     <div className="border border-base-300 w-48 h-full flex items-center px-2">
-                        Total Due: {sumArray(paymentData.map(e => JSON.parse(JSON.stringify(e.totalStudentsPrice))))}
+                        Total Due: {sumArray(paymentData.map(e => JSON.parse(JSON.stringify(e.totalTeachersPrice))))}
                     </div>
                     <div className="border border-base-300 w-48 h-full flex items-center px-2">
                         Total Paid: {sumArray(paymentData.map(e => e.paidAmount))}
@@ -87,7 +91,7 @@ const StudentInvoiceByStudent = () => {
                             <th>Invoiced At</th>
                             <th>Paid At</th>
                             <th>User Id</th>
-                            <th>Student Id</th>
+                            <th>Teacher Id</th>
                             <th>Invoice Id</th>
                             <th>Balance Id</th>
                             <th>Due Amount</th>
@@ -114,16 +118,16 @@ const StudentInvoiceByStudent = () => {
                                     <code className="code bg-base-200 px-2 py-1">{item.userId}</code>
                                 </td>
                                 <td>
-                                    <code className="code bg-base-200 px-2 py-1">{item.studentId}</code>
+                                    <code className="code bg-base-200 px-2 py-1">{item.teacherId}</code>
                                 </td>
                                 <td>
-                                    <code className="code bg-base-200 px-2 py-1">{item.studentInvoiceId}</code>
+                                    <code className="code bg-base-200 px-2 py-1">{item.teacherInvoiceId}</code>
                                 </td>
                                 <td>
-                                    <code className="code bg-base-200 px-2 py-1">{item.studentBalanceId}</code>
+                                    <code className="code bg-base-200 px-2 py-1">{item.teacherBalanceId}</code>
                                 </td>
                                 <td>
-                                    {JSON.stringify(item.totalStudentsPrice)} TK
+                                    {JSON.stringify(item.totalTeachersPrice)} TK
                                 </td>
                                 <td>
                                     {item.paidAmount} TK
@@ -166,4 +170,4 @@ const StudentInvoiceByStudent = () => {
     )
 }
 
-export default StudentInvoiceByStudent
+export default TeacherInvoiceByTeacher

@@ -4,6 +4,7 @@ import StudentInvoiceCreate from 'components/admin/StudentInvoiceCreate'
 import StudentInvoiceList from 'components/admin/StudentInvoiceList'
 import StudentList from 'components/admin/StudentList'
 import TeacherCreate from 'components/admin/TeacherCreate'
+import TeacherInvoiceByTeacher from 'components/admin/TeacherInvoiceByTeacher'
 import TeacherInvoiceCreate from 'components/admin/TeacherInvoiceCreate'
 import TeacherInvoiceList from 'components/admin/TeacherInvoiceList'
 import TeacherList from 'components/admin/TeacherList'
@@ -31,6 +32,7 @@ const AdminHome = () => {
                         <StudentInvoiceList />
                         <TeacherInvoiceList />
                         <StudentInvoiceByStudent />
+                        <TeacherInvoiceByTeacher />
                         {/* student invoice list */}
                         {/* teacher invoice list */}
                         {/* Student Payment History */}

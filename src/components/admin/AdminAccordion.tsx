@@ -1,5 +1,6 @@
+import classNames from 'classnames';
 import { ReactNode } from 'react';
-import { FaChevronRight } from 'react-icons/fa';
+import { FaCircle } from 'react-icons/fa';
 
 const AdminAccordion = ({ 
     title, 
@@ -18,10 +19,10 @@ const AdminAccordion = ({
         <div className="flex flex-col gap-5">
             <div className="w-full flex justify-between items-center pb-5 border-b border-info/50">
                 <div className="flex items-center gap-2 text-info">
-                    <FaChevronRight className="size-4" />
+                    <FaCircle className="size-4" />
                     <div className="font-semibold">{title}</div>
                 </div>
-                <button className="btn btn-sm btn-info btn-outline" onClick={toogleShow}>
+                <button className={classNames("btn btn-sm btn-info", { "btn-outline": show })} onClick={toogleShow}>
                     {show ? "Hide Details" : "Show Details"}
                 </button>
             </div>
