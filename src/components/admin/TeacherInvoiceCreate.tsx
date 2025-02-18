@@ -65,7 +65,7 @@ const TeacherInvoiceCreate = () => {
     }
 
     return (
-        <AdminAccordion title="Create Teacher Invoices" show={show} setShow={setShow}>
+        <AdminAccordion title="Create Teacher Invoice" show={show} setShow={setShow}>
             <div className="flex justify-between">
                 <div className="flex gap-2">
                     <input

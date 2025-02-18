@@ -5,7 +5,8 @@ import { pb } from "contexts/PocketContext"
 import { Collections, StudentInvoicesResponse } from "types/pocketbase";
 import { ListResult } from "pocketbase"
 import PaginateRes from "./PaginateRes"
-import { dateViewFormatter, timeViewFormatter } from "helpers";
+import { api, dateViewFormatter, timeViewFormatter } from "helpers";
+import toast from "react-hot-toast";
 
 const StudentInvoiceList = () => {
     const [count, setCount] = useState(1)
@@ -33,8 +34,22 @@ const StudentInvoiceList = () => {
         setPageNo(pageNo - 1)
     }
 
+    const handleRollback = (studentInvoiceId: string) => {
+        setIsLoading(true)
+        api
+        .post("/api/a/student-invoices-rollback", {
+            studentInvoiceId
+        })
+        .then(() => {
+            toast.success("Invoice deleted!")
+            setCount(count + 1)
+        })
+        .catch(() => toast.error("Invoice delete failed!"))
+        .finally(() => setIsLoading(false))
+    }
+
     return (
-        <AdminAccordion title="Student Invoices" show={show} setShow={setShow}>
+        <AdminAccordion title="Student Invoice List" show={show} setShow={setShow}>
             <div>
                 <button className="btn" onClick={() => setCount(count + 1)}>
                     Refresh Data
@@ -59,7 +74,7 @@ const StudentInvoiceList = () => {
                                     {dateViewFormatter.format(new Date(item.created))} {timeViewFormatter.format(new Date(item.created))}
                                 </td>
                                 <td>
-                                    <button className="btn btn-sm">Rollback</button>
+                                    <button className="btn btn-sm" onClick={() => handleRollback(item.id)}>Rollback</button>
                                 </td>
                             </tr>
                         ))}

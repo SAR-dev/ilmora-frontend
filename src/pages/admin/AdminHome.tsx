@@ -19,27 +19,18 @@ const AdminHome = () => {
                     headerIcon={<MdOutlineAdminPanelSettings className='size-5' />}
                     headerTitle='Admin Panel'
                 >
-                    {/* <div className='grid grid-cols-5 gap-5 p-5'>
-                        <Link to="/a/users" className="btn">Users, Students, Teachers</Link>
-                        <button className="btn">Invoices, Balances</button>
-                        <button className="btn">Teacher Balance List</button>
-                        <button className="btn">Invoice Generate</button>
-                        <button className="btn">Invoice Manage</button>
-                        <button className="btn">Class List</button>
-                        <button className="btn">Teacher Manage</button>
-                        <button className="btn">Notice Manage</button>
-                        <button className="btn">Resource Manage</button>
-                    </div> */}
                     <div className="grid grid-cols-1 gap-5 p-5">
                         <StudentCreate />
                         <TeacherCreate />
                         <StudentList />
                         <TeacherList />
                         <UserUpdate />
-                        <StudentInvoiceList />
-                        <TeacherInvoiceList />
                         <StudentInvoiceCreate />
                         <TeacherInvoiceCreate />
+                        <StudentInvoiceList />
+                        <TeacherInvoiceList />
+                        {/* Student Payment History */}
+                        {/* Teacher Payment History */}
                     </div>
                 </Card>
             </div>
