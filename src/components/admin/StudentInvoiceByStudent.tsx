@@ -178,12 +178,12 @@ const StudentInvoiceByStudent = () => {
                                     </div>
                                 </td>
                                 <td>
-                                <div className="w-40">
-                                    {item.paidAt.length > 3 ?
-                                        dateTimeViewFormatter(new Date(item.paidAt))
-                                        :
-                                        <button className="btn w-32" onClick={() => handleOpenModal(item.studentInvoiceId)}>Add Payment</button>
-                                    }
+                                    <div className="w-40">
+                                        {item.paidAt.length > 3 ?
+                                            dateTimeViewFormatter(new Date(item.paidAt))
+                                            :
+                                            <button className="btn w-32" onClick={() => handleOpenModal(item.studentInvoiceId)}>Add Payment</button>
+                                        }
                                     </div>
                                 </td>
                                 <td>

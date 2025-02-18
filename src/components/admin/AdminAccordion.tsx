@@ -17,18 +17,16 @@ const AdminAccordion = ({
 
     return (
         <div>
-            <div className="w-full flex justify-between items-center p-5 border-b border-t border-info/50 bg-info/10">
-                <div className="flex items-center gap-2 text-info">
+            <div className="w-full flex justify-between items-center p-5 border-b border-t border-primary/50 bg-primary/10">
+                <div className="flex items-center gap-2 text-primary">
                     <FaCircle className="size-4" />
                     <div className="font-semibold">{title}</div>
                 </div>
-                <button className={classNames("btn btn-sm btn-info", { "btn-outline": show })} onClick={toogleShow}>
+                <button className={classNames("btn btn-sm btn-primary", { "btn-outline": show })} onClick={toogleShow}>
                     {show ? "Hide Details" : "Show Details"}
                 </button>
             </div>
-            <div className='flex flex-col gap-5 p-5'>
-                {show && children}
-            </div>
+            {show && <div className='flex flex-col gap-5 p-5'>{children}</div>}
         </div>
 
     )
