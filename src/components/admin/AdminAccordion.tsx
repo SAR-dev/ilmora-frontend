@@ -2,13 +2,13 @@ import classNames from 'classnames';
 import { ReactNode } from 'react';
 import { FaCircle } from 'react-icons/fa';
 
-const AdminAccordion = ({ 
-    title, 
+const AdminAccordion = ({
+    title,
     children,
     show,
     setShow
-}: { 
-    title: string, 
+}: {
+    title: string,
     children: ReactNode,
     show: boolean,
     setShow: (props: boolean) => void
@@ -16,8 +16,8 @@ const AdminAccordion = ({
     const toogleShow = () => setShow(!show)
 
     return (
-        <div className="flex flex-col gap-5">
-            <div className="w-full flex justify-between items-center pb-5 border-b border-info/50">
+        <div>
+            <div className="w-full flex justify-between items-center p-5 border-b border-t border-info/50 bg-info/10">
                 <div className="flex items-center gap-2 text-info">
                     <FaCircle className="size-4" />
                     <div className="font-semibold">{title}</div>
@@ -26,7 +26,9 @@ const AdminAccordion = ({
                     {show ? "Hide Details" : "Show Details"}
                 </button>
             </div>
-            {show && children}
+            <div className='flex flex-col gap-5 p-5'>
+                {show && children}
+            </div>
         </div>
 
     )

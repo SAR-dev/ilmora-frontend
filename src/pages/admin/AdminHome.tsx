@@ -21,7 +21,7 @@ const AdminHome = () => {
                     headerIcon={<MdOutlineAdminPanelSettings className='size-5' />}
                     headerTitle='Admin Panel'
                 >
-                    <div className="grid grid-cols-1 gap-5 p-5">
+                    <div className="grid grid-cols-1 border border-t-0 border-info/50 m-5">
                         <StudentCreate />
                         <TeacherCreate />
                         <StudentList />

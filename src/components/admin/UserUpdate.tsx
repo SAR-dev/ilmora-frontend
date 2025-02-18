@@ -21,14 +21,14 @@ const UserUpdate = () => {
         location: ""
     })
     const inputRef = useRef<HTMLInputElement>(null);
-    const [userId, setUserId] = useState("")
+    const [searchText, setSearchText] = useState("")
 
     useEffect(() => {
-        if(userId.length == 0) return;
+        if(searchText.length == 0) return;
         setIsLoading(true)
         pb
             .collection(Collections.Users)
-            .getOne(userId)
+            .getOne(searchText)
             .then(res => {
                 setFormData({
                     email: res.email,
@@ -41,14 +41,27 @@ const UserUpdate = () => {
             })
             .catch(() => toast.error("User not found"))
             .finally(() => setIsLoading(false))
-    }, [userId])
+    }, [searchText])
+
+    useEffect(() => {
+      if(show && inputRef.current){
+        inputRef.current.value = searchText
+        inputRef.current.focus()
+      }
+    }, [show])
     
+    
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === "Enter") {
+            setSearchText(inputRef.current?.value ?? "");
+        }
+    };
 
     const handleUpdateUser = async () => {
         setIsLoading(true)
         setError("")
         try {
-            await pb.collection(Collections.Users).update(userId, {
+            await pb.collection(Collections.Users).update(searchText, {
                 ...formData
             })
             setFormData({
@@ -75,8 +88,9 @@ const UserUpdate = () => {
                     type="text"
                     className='input input-bordered w-48'
                     ref={inputRef}
+                    onKeyDown={handleKeyDown}
                 />
-                <button className="btn btn-square" onClick={() => setUserId(inputRef.current?.value ?? "")}>
+                <button className="btn btn-square" onClick={() => setSearchText(inputRef.current?.value ?? "")}>
                     <FaSearch className="size-5" />
                 </button>
             </div>

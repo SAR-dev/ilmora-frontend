@@ -33,6 +33,20 @@ const TeacherInvoiceCreate = () => {
             .finally(() => setIsLoading(false))
     }, [pageNo, searchText, show, count])
 
+    useEffect(() => {
+        if (show && inputRef.current) {
+            inputRef.current.value = searchText
+            inputRef.current.focus()
+        }
+    }, [show])
+
+
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === "Enter") {
+            setSearchText(inputRef.current?.value ?? "");
+        }
+    };
+
     const handleNext = () => {
         setPageNo(pageNo + 1)
         setTeacherIds([])
@@ -75,6 +89,7 @@ const TeacherInvoiceCreate = () => {
                         type="text"
                         className='input input-bordered w-48'
                         ref={inputRef}
+                        onKeyDown={handleKeyDown}
                     />
                     <button className="btn btn-square" onClick={() => setSearchText(inputRef.current?.value ?? "")}>
                         <FaSearch className="size-5" />

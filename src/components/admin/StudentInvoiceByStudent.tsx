@@ -66,6 +66,20 @@ const StudentInvoiceByStudent = () => {
         fetchData();
     }, [searchText, show, count]);
 
+    useEffect(() => {
+        if (show && inputRef.current) {
+            inputRef.current.value = searchText
+            inputRef.current.focus()
+        }
+    }, [show])
+
+
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === "Enter") {
+            setSearchText(inputRef.current?.value ?? "");
+        }
+    };
+
     const handleOpenModal = (studentInvoiceId: string) => {
         if (!studentData) return;
         setIsOpen(true)
@@ -112,6 +126,7 @@ const StudentInvoiceByStudent = () => {
                         type="text"
                         className='input input-bordered w-48'
                         ref={inputRef}
+                        onKeyDown={handleKeyDown}
                     />
                     <button className="btn btn-square" onClick={() => setSearchText(inputRef.current?.value ?? "")}>
                         <FaSearch className="size-5" />
@@ -158,14 +173,18 @@ const StudentInvoiceByStudent = () => {
                         {paymentData.map((item, i) => (
                             <tr key={i}>
                                 <td>
-                                    {JSON.stringify(item.invoicedAt).length > 3 ? dateTimeViewFormatter(new Date(JSON.parse(JSON.stringify(item.invoicedAt)))) : "N/A"}
+                                    <div className="w-40">
+                                        {JSON.stringify(item.invoicedAt).length > 3 ? dateTimeViewFormatter(new Date(JSON.parse(JSON.stringify(item.invoicedAt)))) : "N/A"}
+                                    </div>
                                 </td>
                                 <td>
+                                <div className="w-40">
                                     {item.paidAt.length > 3 ?
                                         dateTimeViewFormatter(new Date(item.paidAt))
                                         :
                                         <button className="btn w-32" onClick={() => handleOpenModal(item.studentInvoiceId)}>Add Payment</button>
                                     }
+                                    </div>
                                 </td>
                                 <td>
                                     <code className="code bg-base-200 px-2 py-1">{item.userId}</code>
