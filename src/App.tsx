@@ -3,16 +3,19 @@ import { RouterProvider } from "react-router"
 import router from "./router"
 import { PocketbaseProvider } from "contexts/PocketContext"
 import { ClassNoteProvider } from "contexts/ClassNoteContext"
+import { AlertProvider } from "contexts/AlertContext"
 
 const App = () => {
   return (
     <PocketbaseProvider>
       <ClassNoteProvider>
-        <Toaster
-          position="bottom-left"
-          reverseOrder={false}
-        />
-        <RouterProvider router={router} />
+        <AlertProvider>
+          <Toaster
+            position="bottom-left"
+            reverseOrder={false}
+          />
+          <RouterProvider router={router} />
+        </AlertProvider>
       </ClassNoteProvider>
     </PocketbaseProvider>
   )

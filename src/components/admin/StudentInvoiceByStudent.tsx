@@ -99,6 +99,7 @@ const StudentInvoiceByStudent = () => {
                             <th>Payment Method</th>
                             <th>Payment Info</th>
                             <th>Message</th>
+                            <th>Details</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -148,6 +149,9 @@ const StudentInvoiceByStudent = () => {
                                 </td>
                                 <td>
                                     <button className="btn w-32">Send Message</button>
+                                </td>
+                                <td>
+                                    <button className="btn w-32">View Details</button>
                                 </td>
                             </tr>
                         ))}

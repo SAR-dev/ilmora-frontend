@@ -6,8 +6,10 @@ import { api, daysDifference } from "helpers";
 import { AdminTeacherLastInvoiceListType } from "types/response";
 import { FaSearch } from "react-icons/fa";
 import toast from "react-hot-toast";
+import { useAlert } from "contexts/AlertContext";
 
 const TeacherInvoiceCreate = () => {
+    const { openAlert } = useAlert()
     const [count, setCount] = useState(1)
     const [teacherIds, setTeacherIds] = useState<string[]>([])
     const [show, setShow] = useState(false)
@@ -79,7 +81,7 @@ const TeacherInvoiceCreate = () => {
                     </button>
                 </div>
                 <div className="flex gap-5">
-                    <button className="btn" onClick={handleGenerateInvoice}>
+                    <button className="btn" onClick={() => openAlert(handleGenerateInvoice)}>
                         Generate Invoice
                     </button>
                     <button className="btn" onClick={() => setCount(count + 1)}>
