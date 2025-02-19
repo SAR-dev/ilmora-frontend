@@ -13,6 +13,7 @@ import { dateTimeViewFormatter } from "helpers";
 import { Dialog, DialogPanel } from "@headlessui/react";
 import { ListResult } from "pocketbase";
 import PaginateRes from "./PaginateRes";
+import { Link } from "react-router";
 
 const TeacherInvoiceByInvoiceNo = () => {
     const [count, setCount] = useState(1)
@@ -229,7 +230,15 @@ const TeacherInvoiceByInvoiceNo = () => {
                                     <button className="btn w-32">Send Message</button>
                                 </td>
                                 <td>
-                                    <button className="btn w-32">View Details</button>
+                                    {item.teacherInvoiceId.length > 0 && (
+                                        <Link
+                                            to={`${import.meta.env.VITE_API_URL}/invoice/teacher/${item.teacherInvoiceId}/${item.teacherId}/html`}
+                                            target="_blank"
+                                            className="btn w-32"
+                                        >
+                                            View Receipt
+                                        </Link>
+                                    )}
                                 </td>
                             </tr>
                         ))}

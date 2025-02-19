@@ -12,6 +12,7 @@ import {
 import { dateTimeViewFormatter, sumArray } from "helpers";
 import { TexpandTeacherListWithUser } from "types/extended";
 import { Dialog, DialogPanel } from "@headlessui/react";
+import { Link } from "react-router";
 
 const TeacherInvoiceByTeacher = () => {
     const [count, setCount] = useState(1)
@@ -257,7 +258,15 @@ const TeacherInvoiceByTeacher = () => {
                                     <button className="btn w-32">Send Message</button>
                                 </td>
                                 <td>
-                                    <button className="btn w-32">View Details</button>
+                                    {item.teacherInvoiceId.length > 0 && (
+                                        <Link
+                                            to={`${import.meta.env.VITE_API_URL}/invoice/teacher/${item.teacherInvoiceId}/${item.teacherId}/html`}
+                                            target="_blank"
+                                            className="btn w-32"
+                                        >
+                                            View Receipt
+                                        </Link>
+                                    )}
                                 </td>
                             </tr>
                         ))}

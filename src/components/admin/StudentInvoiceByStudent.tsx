@@ -8,6 +8,7 @@ import { Collections, StudentExtraPaymentViewResponse, StudentInvoicePaymentView
 import { dateTimeViewFormatter, sumArray } from "helpers";
 import { Dialog, DialogPanel } from "@headlessui/react";
 import { TexpandStudentListWithUser } from "types/extended";
+import { Link } from "react-router";
 
 const StudentInvoiceByStudent = () => {
     const [count, setCount] = useState(1)
@@ -253,7 +254,15 @@ const StudentInvoiceByStudent = () => {
                                     <button className="btn w-32">Send Message</button>
                                 </td>
                                 <td>
-                                    <button className="btn w-32">View Details</button>
+                                    {item.studentInvoiceId.length > 0 && (
+                                        <Link
+                                            to={`${import.meta.env.VITE_API_URL}/invoice/student/${item.studentInvoiceId}/${item.studentId}/html`}
+                                            target="_blank"
+                                            className="btn w-32"
+                                        >
+                                            View Receipt
+                                        </Link>
+                                    )}
                                 </td>
                             </tr>
                         ))}
