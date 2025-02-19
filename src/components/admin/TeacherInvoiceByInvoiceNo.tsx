@@ -9,23 +9,25 @@ import {
     TeacherExtraPaymentViewResponse,
     TeacherInvoicePaymentViewResponse,
 } from "types/pocketbase";
-import { dateTimeViewFormatter, sumArray } from "helpers";
-import { TexpandTeacherListWithUser } from "types/extended";
+import { dateTimeViewFormatter } from "helpers";
 import { Dialog, DialogPanel } from "@headlessui/react";
+import { ListResult } from "pocketbase";
+import PaginateRes from "./PaginateRes";
 
-const TeacherInvoiceByTeacher = () => {
+const TeacherInvoiceByInvoiceNo = () => {
     const [count, setCount] = useState(1)
     const [show, setShow] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const inputRef = useRef<HTMLInputElement>(null);
     const [searchText, setSearchText] = useState("")
+    const [pageNo, setPageNo] = useState(1)
 
-    const [invoicePaymentData, setInvoicePaymentData] = useState<TeacherInvoicePaymentViewResponse[]>([])
-    const [extraPaymentData, setExtraPaymentData] = useState<TeacherExtraPaymentViewResponse[]>([])
-    const [teacherData, setTeacherData] = useState<TexpandTeacherListWithUser | null>(null)
+    const [invoicePaymentData, setInvoicePaymentData] = useState<ListResult<TeacherInvoicePaymentViewResponse>>()
+    const [extraPaymentData, setExtraPaymentData] = useState<ListResult<TeacherExtraPaymentViewResponse>>()
 
     const [isOpen, setIsOpen] = useState(false)
     const [paymentAddData, setPaymentAddData] = useState({
+        teacherId: "",
         teacherInvoiceId: "",
         paidAmount: 0,
         paymentMethod: "",
@@ -33,7 +35,7 @@ const TeacherInvoiceByTeacher = () => {
     })
 
     const paymentData = useMemo(() => {
-        return [...invoicePaymentData, ...extraPaymentData].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+        return [...(invoicePaymentData?.items ?? []), ...(extraPaymentData?.items ?? [])].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
     }, [invoicePaymentData, extraPaymentData])
 
     useEffect(() => {
@@ -41,34 +43,29 @@ const TeacherInvoiceByTeacher = () => {
         setIsLoading(true);
         const fetchData = async () => {
             try {
-                const [invoiceData, extraData, teacher] = await Promise.all([
-                    pb.collection(Collections.TeacherInvoicePaymentView).getFullList({
-                        filter: `teacherId = '${searchText}'`
+                const [invoiceData, extraData] = await Promise.all([
+                    pb.collection(Collections.TeacherInvoicePaymentView).getList(pageNo, 20, {
+                        filter: `teacherInvoiceId = '${searchText}'`
                     }),
-                    pb.collection(Collections.TeacherExtraPaymentView).getFullList({
+                    pb.collection(Collections.TeacherExtraPaymentView).getList(pageNo, 20, {
                         filter: `teacherId = '${searchText}'`
-                    }),
-                    pb.collection(Collections.Teachers).getOne(searchText, {
-                        expand: "userId"
                     })
                 ]);
 
                 setInvoicePaymentData(invoiceData);
                 setExtraPaymentData(extraData);
-                setTeacherData(teacher as unknown as TexpandTeacherListWithUser)
             } catch (error) {
                 console.log(error)
                 toast.error("Error fetching data");
-                setInvoicePaymentData([])
-                setExtraPaymentData([])
-                setTeacherData(null)
+                setInvoicePaymentData(undefined)
+                setExtraPaymentData(undefined)
             } finally {
                 setIsLoading(false);
             }
         };
 
         fetchData();
-    }, [searchText, show, count]);
+    }, [searchText, show, count, pageNo]);
 
     useEffect(() => {
         if (show && inputRef.current) {
@@ -77,6 +74,13 @@ const TeacherInvoiceByTeacher = () => {
         }
     }, [show])
 
+    const handleNext = () => {
+        setPageNo(pageNo + 1)
+    }
+
+    const handlePrev = () => {
+        setPageNo(pageNo - 1)
+    }
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === "Enter") {
@@ -84,10 +88,10 @@ const TeacherInvoiceByTeacher = () => {
         }
     };
 
-    const handleOpenModal = (teacherInvoiceId: string) => {
-        if (!teacherData) return;
+    const handleOpenModal = (teacherId: string, teacherInvoiceId: string) => {
         setIsOpen(true)
         setPaymentAddData({
+            teacherId,
             teacherInvoiceId,
             paidAmount: 0,
             paymentMethod: "",
@@ -98,6 +102,7 @@ const TeacherInvoiceByTeacher = () => {
     const handleCloseModal = () => {
         setIsOpen(false)
         setPaymentAddData({
+            teacherId: "",
             teacherInvoiceId: "",
             paidAmount: 0,
             paymentMethod: "",
@@ -106,10 +111,9 @@ const TeacherInvoiceByTeacher = () => {
     }
 
     const handleUpdateBalance = () => {
-        if (!teacherData || paymentAddData.paidAmount == 0)
+        if (paymentAddData.paidAmount == 0)
             setIsLoading(true)
         pb.collection(Collections.TeacherBalances).create({
-            teacherId: teacherData?.id,
             ...paymentAddData
         })
             .then(() => {
@@ -122,11 +126,11 @@ const TeacherInvoiceByTeacher = () => {
     }
 
     return (
-        <AdminAccordion title="Teacher Invoice By Teacher" show={show} setShow={setShow}>
+        <AdminAccordion title="Teacher Invoice By Invoice No" show={show} setShow={setShow}>
             <div className="flex justify-between">
                 <div className="flex gap-2 items-center">
                     <input
-                        placeholder='Teacher Id'
+                        placeholder='Teacher Invoice Id'
                         type="text"
                         className='input input-bordered w-48'
                         ref={inputRef}
@@ -142,38 +146,6 @@ const TeacherInvoiceByTeacher = () => {
                     </button>
                 </div>
             </div>
-            {teacherData && (
-                <div className="overflow-x-auto border border-base-300">
-                    <table className="table">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>WhatsApp</th>
-                                <th>Location</th>
-                                <th>Total Due</th>
-                                <th>Total Paid</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>{teacherData.expand.userId.name}</td>
-                                <td>{teacherData.expand.userId.email}</td>
-                                <td>{teacherData.expand.userId.whatsAppNo}</td>
-                                <td>{teacherData.expand.userId.location}</td>
-                                <td>{sumArray(paymentData.map(e => JSON.parse(JSON.stringify(e.totalTeachersPrice))))} TK</td>
-                                <td>{sumArray(paymentData.map(e => e.paidAmount))} TK</td>
-                                <td>
-                                    <button className="btn" onClick={() => handleOpenModal("")}>
-                                        Add Blank Payment
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            )}
             <div className="overflow-x-auto border border-base-300">
                 <table className="table">
                     <thead>
@@ -209,7 +181,7 @@ const TeacherInvoiceByTeacher = () => {
                                         {item.paidAt.length > 3 ?
                                             dateTimeViewFormatter(new Date(item.paidAt))
                                             :
-                                            <button className="btn w-32" onClick={() => handleOpenModal(item.teacherInvoiceId)}>Add Payment</button>
+                                            <button className="btn w-32" onClick={() => handleOpenModal(item.teacherId, item.teacherInvoiceId)}>Add Payment</button>
                                         }
                                     </div>
                                 </td>
@@ -271,6 +243,9 @@ const TeacherInvoiceByTeacher = () => {
                     </tbody>
                 </table>
             </div>
+            <div>
+                <PaginateRes data={invoicePaymentData} handleNext={handleNext} handlePrev={handlePrev} />
+            </div>
             <Dialog open={isOpen} onClose={handleCloseModal} className="relative z-50">
                 <div className="fixed inset-0 flex w-screen items-center justify-center p-4 bg-base-300/75">
                     <DialogPanel className="card max-w-lg space-y-4 border bg-base-100 border-base-300 p-8">
@@ -324,4 +299,4 @@ const TeacherInvoiceByTeacher = () => {
     )
 }
 
-export default TeacherInvoiceByTeacher
+export default TeacherInvoiceByInvoiceNo

@@ -4,36 +4,34 @@ import AdminAccordion from "./AdminAccordion"
 import { FaSearch } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { pb } from "contexts/PocketContext";
-import {
-    Collections,
-    TeacherExtraPaymentViewResponse,
-    TeacherInvoicePaymentViewResponse,
-} from "types/pocketbase";
-import { dateTimeViewFormatter, sumArray } from "helpers";
-import { TexpandTeacherListWithUser } from "types/extended";
+import { Collections, StudentExtraPaymentViewResponse, StudentInvoicePaymentViewResponse } from "types/pocketbase";
+import { dateTimeViewFormatter } from "helpers";
 import { Dialog, DialogPanel } from "@headlessui/react";
+import { ListResult } from "pocketbase";
+import PaginateRes from "./PaginateRes";
 
-const TeacherInvoiceByTeacher = () => {
+const StudentInvoiceByInvoiceNo = () => {
     const [count, setCount] = useState(1)
     const [show, setShow] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const inputRef = useRef<HTMLInputElement>(null);
     const [searchText, setSearchText] = useState("")
+    const [pageNo, setPageNo] = useState(1)
 
-    const [invoicePaymentData, setInvoicePaymentData] = useState<TeacherInvoicePaymentViewResponse[]>([])
-    const [extraPaymentData, setExtraPaymentData] = useState<TeacherExtraPaymentViewResponse[]>([])
-    const [teacherData, setTeacherData] = useState<TexpandTeacherListWithUser | null>(null)
+    const [invoicePaymentData, setInvoicePaymentData] = useState<ListResult<StudentInvoicePaymentViewResponse>>()
+    const [extraPaymentData, setExtraPaymentData] = useState<ListResult<StudentExtraPaymentViewResponse>>()
 
     const [isOpen, setIsOpen] = useState(false)
     const [paymentAddData, setPaymentAddData] = useState({
-        teacherInvoiceId: "",
+        studentId: "",
+        studentInvoiceId: "",
         paidAmount: 0,
         paymentMethod: "",
         paymentInfo: ""
     })
 
     const paymentData = useMemo(() => {
-        return [...invoicePaymentData, ...extraPaymentData].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+        return [...(invoicePaymentData?.items ?? []), ...(extraPaymentData?.items ?? [])].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
     }, [invoicePaymentData, extraPaymentData])
 
     useEffect(() => {
@@ -41,34 +39,29 @@ const TeacherInvoiceByTeacher = () => {
         setIsLoading(true);
         const fetchData = async () => {
             try {
-                const [invoiceData, extraData, teacher] = await Promise.all([
-                    pb.collection(Collections.TeacherInvoicePaymentView).getFullList({
-                        filter: `teacherId = '${searchText}'`
+                const [invoiceData, extraData] = await Promise.all([
+                    pb.collection(Collections.StudentInvoicePaymentView).getList(pageNo, 20, {
+                        filter: `studentInvoiceId = '${searchText}'`
                     }),
-                    pb.collection(Collections.TeacherExtraPaymentView).getFullList({
-                        filter: `teacherId = '${searchText}'`
-                    }),
-                    pb.collection(Collections.Teachers).getOne(searchText, {
-                        expand: "userId"
+                    pb.collection(Collections.StudentExtraPaymentView).getList(pageNo, 20, {
+                        filter: `studentId = '${searchText}'`
                     })
                 ]);
 
                 setInvoicePaymentData(invoiceData);
                 setExtraPaymentData(extraData);
-                setTeacherData(teacher as unknown as TexpandTeacherListWithUser)
             } catch (error) {
                 console.log(error)
                 toast.error("Error fetching data");
-                setInvoicePaymentData([])
-                setExtraPaymentData([])
-                setTeacherData(null)
+                setInvoicePaymentData(undefined)
+                setExtraPaymentData(undefined)
             } finally {
                 setIsLoading(false);
             }
         };
 
         fetchData();
-    }, [searchText, show, count]);
+    }, [searchText, show, count, pageNo]);
 
     useEffect(() => {
         if (show && inputRef.current) {
@@ -77,6 +70,13 @@ const TeacherInvoiceByTeacher = () => {
         }
     }, [show])
 
+    const handleNext = () => {
+        setPageNo(pageNo + 1)
+    }
+
+    const handlePrev = () => {
+        setPageNo(pageNo - 1)
+    }
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === "Enter") {
@@ -84,11 +84,11 @@ const TeacherInvoiceByTeacher = () => {
         }
     };
 
-    const handleOpenModal = (teacherInvoiceId: string) => {
-        if (!teacherData) return;
+    const handleOpenModal = (studentId: string, studentInvoiceId: string) => {
         setIsOpen(true)
         setPaymentAddData({
-            teacherInvoiceId,
+            studentId,
+            studentInvoiceId,
             paidAmount: 0,
             paymentMethod: "",
             paymentInfo: ""
@@ -98,7 +98,8 @@ const TeacherInvoiceByTeacher = () => {
     const handleCloseModal = () => {
         setIsOpen(false)
         setPaymentAddData({
-            teacherInvoiceId: "",
+            studentId: "",
+            studentInvoiceId: "",
             paidAmount: 0,
             paymentMethod: "",
             paymentInfo: ""
@@ -106,10 +107,9 @@ const TeacherInvoiceByTeacher = () => {
     }
 
     const handleUpdateBalance = () => {
-        if (!teacherData || paymentAddData.paidAmount == 0)
+        if (paymentAddData.paidAmount == 0)
             setIsLoading(true)
-        pb.collection(Collections.TeacherBalances).create({
-            teacherId: teacherData?.id,
+        pb.collection(Collections.StudentBalances).create({
             ...paymentAddData
         })
             .then(() => {
@@ -122,11 +122,11 @@ const TeacherInvoiceByTeacher = () => {
     }
 
     return (
-        <AdminAccordion title="Teacher Invoice By Teacher" show={show} setShow={setShow}>
+        <AdminAccordion title="Student Invoice By Invoice No" show={show} setShow={setShow}>
             <div className="flex justify-between">
                 <div className="flex gap-2 items-center">
                     <input
-                        placeholder='Teacher Id'
+                        placeholder='Student Invoice Id'
                         type="text"
                         className='input input-bordered w-48'
                         ref={inputRef}
@@ -142,38 +142,6 @@ const TeacherInvoiceByTeacher = () => {
                     </button>
                 </div>
             </div>
-            {teacherData && (
-                <div className="overflow-x-auto border border-base-300">
-                    <table className="table">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>WhatsApp</th>
-                                <th>Location</th>
-                                <th>Total Due</th>
-                                <th>Total Paid</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>{teacherData.expand.userId.name}</td>
-                                <td>{teacherData.expand.userId.email}</td>
-                                <td>{teacherData.expand.userId.whatsAppNo}</td>
-                                <td>{teacherData.expand.userId.location}</td>
-                                <td>{sumArray(paymentData.map(e => JSON.parse(JSON.stringify(e.totalTeachersPrice))))} TK</td>
-                                <td>{sumArray(paymentData.map(e => e.paidAmount))} TK</td>
-                                <td>
-                                    <button className="btn" onClick={() => handleOpenModal("")}>
-                                        Add Blank Payment
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            )}
             <div className="overflow-x-auto border border-base-300">
                 <table className="table">
                     <thead>
@@ -181,7 +149,7 @@ const TeacherInvoiceByTeacher = () => {
                             <th>Invoiced At</th>
                             <th>Paid At</th>
                             <th>User Id</th>
-                            <th>Teacher Id</th>
+                            <th>Student Id</th>
                             <th>Invoice Id</th>
                             <th>Balance Id</th>
                             <th>Due Amount</th>
@@ -209,7 +177,7 @@ const TeacherInvoiceByTeacher = () => {
                                         {item.paidAt.length > 3 ?
                                             dateTimeViewFormatter(new Date(item.paidAt))
                                             :
-                                            <button className="btn w-32" onClick={() => handleOpenModal(item.teacherInvoiceId)}>Add Payment</button>
+                                            <button className="btn w-32" onClick={() => handleOpenModal(item.studentId, item.studentInvoiceId)}>Add Payment</button>
                                         }
                                     </div>
                                 </td>
@@ -217,20 +185,20 @@ const TeacherInvoiceByTeacher = () => {
                                     <code className="code bg-base-200 px-2 py-1">{item.userId}</code>
                                 </td>
                                 <td>
-                                    <code className="code bg-base-200 px-2 py-1">{item.teacherId}</code>
+                                    <code className="code bg-base-200 px-2 py-1">{item.studentId}</code>
                                 </td>
                                 <td>
-                                    {item.teacherInvoiceId?.length > 0 ? (
-                                        <code className="code bg-base-200 px-2 py-1">{item.teacherInvoiceId}</code>
+                                    {item.studentInvoiceId?.length > 0 ? (
+                                        <code className="code bg-base-200 px-2 py-1">{item.studentInvoiceId}</code>
                                     ) : "N/A"}
                                 </td>
                                 <td>
-                                    {item.teacherBalanceId?.length > 0 ? (
-                                        <code className="code bg-base-200 px-2 py-1">{item.teacherBalanceId}</code>
+                                    {item.studentBalanceId?.length > 0 ? (
+                                        <code className="code bg-base-200 px-2 py-1">{item.studentBalanceId}</code>
                                     ) : "N/A"}
                                 </td>
                                 <td>
-                                    {JSON.stringify(item.totalTeachersPrice)} TK
+                                    {JSON.stringify(item.totalStudentsPrice)} TK
                                 </td>
                                 <td>
                                     {item.paidAmount} TK
@@ -270,6 +238,9 @@ const TeacherInvoiceByTeacher = () => {
                         )}
                     </tbody>
                 </table>
+            </div>
+            <div>
+                <PaginateRes data={invoicePaymentData} handleNext={handleNext} handlePrev={handlePrev} />
             </div>
             <Dialog open={isOpen} onClose={handleCloseModal} className="relative z-50">
                 <div className="fixed inset-0 flex w-screen items-center justify-center p-4 bg-base-300/75">
@@ -324,4 +295,4 @@ const TeacherInvoiceByTeacher = () => {
     )
 }
 
-export default TeacherInvoiceByTeacher
+export default StudentInvoiceByInvoiceNo

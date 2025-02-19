@@ -29,7 +29,7 @@ const StudentInvoiceByStudent = () => {
     })
 
     const paymentData = useMemo(() => {
-        return [...invoicePaymentData, ...extraPaymentData].sort((a, b) => new Date(a.paidAt).getTime() - new Date(b.paidAt).getTime())
+        return [...invoicePaymentData, ...extraPaymentData].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
     }, [invoicePaymentData, extraPaymentData])
 
     useEffect(() => {
@@ -131,22 +131,45 @@ const StudentInvoiceByStudent = () => {
                     <button className="btn btn-square" onClick={() => setSearchText(inputRef.current?.value ?? "")}>
                         <FaSearch className="size-5" />
                     </button>
-                    <div className="border border-base-300 w-48 h-full flex items-center px-2">
-                        Total Due: {sumArray(paymentData.map(e => JSON.parse(JSON.stringify(e.totalStudentsPrice))))}
-                    </div>
-                    <div className="border border-base-300 w-48 h-full flex items-center px-2">
-                        Total Paid: {sumArray(paymentData.map(e => e.paidAmount))}
-                    </div>
                 </div>
                 <div className="flex gap-5">
-                    <button className="btn" disabled={!studentData} onClick={() => handleOpenModal("")}>
-                        Add Blank Payment
-                    </button>
                     <button className="btn" onClick={() => setCount(count + 1)}>
                         Refresh Data
                     </button>
                 </div>
             </div>
+            {studentData && (
+                <div className="overflow-x-auto border border-base-300">
+                    <table className="table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>WhatsApp</th>
+                                <th>Location</th>
+                                <th>Total Due</th>
+                                <th>Total Paid</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{studentData.expand.userId.name}</td>
+                                <td>{studentData.expand.userId.email}</td>
+                                <td>{studentData.expand.userId.whatsAppNo}</td>
+                                <td>{studentData.expand.userId.location}</td>
+                                <td>{sumArray(paymentData.map(e => JSON.parse(JSON.stringify(e.totalStudentsPrice))))} TK</td>
+                                <td>{sumArray(paymentData.map(e => e.paidAmount))} TK</td>
+                                <td>
+                                    <button className="btn" onClick={() => handleOpenModal("")}>
+                                        Add Blank Payment
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            )}
             <div className="overflow-x-auto border border-base-300">
                 <table className="table">
                     <thead>

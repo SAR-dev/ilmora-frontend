@@ -15,7 +15,7 @@ const PaginateRes = ({
                 Total {data?.totalItems ?? 0} results found . Showing page {data?.page ?? 1} of {data?.totalPages ?? 1}
             </div>
             <div className="join grid grid-cols-2">
-                <button className="join-item btn btn-outline" disabled={data?.page == 1} onClick={handlePrev}>Previous page</button>
+                <button className="join-item btn btn-outline" disabled={!data || data?.page == 1} onClick={handlePrev}>Previous page</button>
                 <button className="join-item btn btn-outline" disabled={data?.page == data?.totalPages || data?.totalItems == 0} onClick={handleNext}>Next Page</button>
             </div>
         </div>
