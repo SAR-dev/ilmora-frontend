@@ -108,6 +108,7 @@ const TeacherInvoiceCreate = () => {
                 <table className="table">
                     <thead>
                         <tr>
+                            <th></th>
                             <th>User Id</th>
                             <th>Teacher Id</th>
                             <th>Name</th>
