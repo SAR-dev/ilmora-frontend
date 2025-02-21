@@ -1,20 +1,21 @@
 import { createBrowserRouter } from "react-router";
+import { RequireSuperAuth } from "layouts/RequireSuperAuth";
+import { RequireUnAuth } from "layouts/RequireUnAuth";
+import { RequireTeacherAuth } from "layouts/RequireTeacherAuth";
 import TeacherHome from "pages/teacher/TeacherHome";
 import NotFound from "pages/NotFound.";
 import RoutineCreate from "pages/teacher/RoutineCreate";
 import ClassCalendar from "pages/teacher/ClassCalendar";
 import ClassLogCreate from "pages/teacher/ClassLogCreate";
 import SignIn from "pages/SignIn";
-import { RequireUnAuth } from "layouts/RequireUnAuth";
-import { RequireTeacherAuth } from "layouts/RequireTeacherAuth";
 import NoticeList from "pages/teacher/NoticeList";
 import NoticeDetails from "pages/teacher/NoticeDetails";
 import ClassLogDetails from "pages/teacher/ClassLogDetails";
 import ClassTable from "pages/teacher/ClassTable";
-import { RequireSuperAuth } from "layouts/RequireSuperAuth";
 import AdminHome from "pages/admin/AdminHome";
 import PaymentsInvoices from "pages/teacher/PaymentsInvoices";
 import Homepage from "pages/Homepage";
+import { RequireStudentAuth } from "layouts/RequireStudentAuth";
 
 const router = createBrowserRouter([
   { path: "/", element: <Homepage /> },
@@ -42,6 +43,12 @@ const router = createBrowserRouter([
       { path: "/t/notices", element: <NoticeList /> },
       { path: "/t/notices/:id", element: <NoticeDetails /> },
       { path: "/t/payments", element: <PaymentsInvoices /> },
+    ]
+  },
+  {
+    element: <RequireStudentAuth />,
+    children: [
+      
     ]
   },
   { path: "*", element: <NotFound /> }

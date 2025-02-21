@@ -25,6 +25,11 @@ function NoticeList() {
                     {noticeList.map((data, i) => (
                         <NoticeCard data={data} key={i} />
                     ))}
+                    {noticeList.length == 0 && (
+                        <div className="p-5 bg-base-100 text-center">
+                            No Result Found
+                        </div>
+                    )}
                 </Card>
             </div>
         </TeacherNavLayout>
