@@ -9,6 +9,11 @@ import { dateTimeViewFormatter, sumArray } from "helpers";
 import { Dialog, DialogPanel } from "@headlessui/react";
 import { TexpandStudentListWithUser } from "types/extended";
 import { Link } from "react-router";
+import { BsReceiptCutoff } from "react-icons/bs";
+import classNames from "classnames";
+
+const invoiceType = "Invoice"
+const extraType = "Extra"
 
 const StudentInvoiceByStudent = () => {
     const [count, setCount] = useState(1)
@@ -30,7 +35,14 @@ const StudentInvoiceByStudent = () => {
     })
 
     const paymentData = useMemo(() => {
-        return [...invoicePaymentData, ...extraPaymentData].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+        return [
+            ...invoicePaymentData.map(e => {
+                return { ...e, type: invoiceType }
+            }),
+            ...extraPaymentData.map(e => {
+                return { ...e, type: extraType }
+            })
+        ].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
     }, [invoicePaymentData, extraPaymentData])
 
     useEffect(() => {
@@ -119,13 +131,13 @@ const StudentInvoiceByStudent = () => {
     }
 
     return (
-        <AdminAccordion title="Student Invoice By Student" show={show} setShow={setShow}>
+        <AdminAccordion title="Student Payments By Student" show={show} setShow={setShow}>
             <div className="flex justify-between">
                 <div className="flex gap-2 items-center">
                     <input
                         placeholder='Student Id'
                         type="text"
-                        className='input input-bordered w-48'
+                        className='input input-bordered w-48 uppercase placeholder:normal-case'
                         ref={inputRef}
                         onKeyDown={handleKeyDown}
                     />
@@ -139,22 +151,26 @@ const StudentInvoiceByStudent = () => {
                     </button>
                 </div>
             </div>
-            {studentData && (
-                <div className="overflow-x-auto border border-base-300">
-                    <table className="table">
-                        <thead>
+            <div className="overflow-x-auto border border-base-300">
+                <table className="table">
+                    <thead>
+                        <tr>
+                            <th>User Id</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>WhatsApp</th>
+                            <th>Location</th>
+                            <th>Total Due</th>
+                            <th>Total Paid</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {studentData && (
                             <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>WhatsApp</th>
-                                <th>Location</th>
-                                <th>Total Due</th>
-                                <th>Total Paid</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
+                                <td>
+                                    <code className="code bg-base-200 px-2 py-1">{studentData.expand.userId.id}</code>
+                                </td>
                                 <td>{studentData.expand.userId.name}</td>
                                 <td>{studentData.expand.userId.email}</td>
                                 <td>{studentData.expand.userId.whatsAppNo}</td>
@@ -162,59 +178,52 @@ const StudentInvoiceByStudent = () => {
                                 <td>{sumArray(paymentData.map(e => JSON.parse(JSON.stringify(e.totalStudentsPrice))))} TK</td>
                                 <td>{sumArray(paymentData.map(e => e.paidAmount))} TK</td>
                                 <td>
-                                    <button className="btn" onClick={() => handleOpenModal("")}>
+                                    <button className="btn btn-sm btn-info" onClick={() => handleOpenModal("")}>
                                         Add Blank Payment
                                     </button>
                                 </td>
                             </tr>
-                        </tbody>
-                    </table>
-                </div>
-            )}
+                        )}
+                        {!studentData && (
+                            <tr>
+                                <td colSpan={8} className='p-5 bg-base-200 text-center'>
+                                    No Student Found
+                                </td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </div>
             <div className="overflow-x-auto border border-base-300">
                 <table className="table">
                     <thead>
                         <tr>
-                            <th>Invoiced At</th>
-                            <th>Paid At</th>
-                            <th>User Id</th>
-                            <th>Student Id</th>
+                            <th></th>
                             <th>Invoice Id</th>
+                            <th>Invoiced At</th>
+                            <th>Invoiced Amount</th>
                             <th>Balance Id</th>
-                            <th>Due Amount</th>
-                            <th>Paid Amount</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>WhatsApp</th>
-                            <th>Location</th>
+                            <th>Balanced At</th>
+                            <th>Balanced Amount</th>
                             <th>Payment Method</th>
                             <th>Payment Info</th>
-                            <th>Message</th>
-                            <th>Details</th>
                         </tr>
                     </thead>
                     <tbody>
                         {paymentData.map((item, i) => (
                             <tr key={i}>
                                 <td>
-                                    <div className="w-40">
-                                        {JSON.stringify(item.invoicedAt).length > 3 ? dateTimeViewFormatter(new Date(JSON.parse(JSON.stringify(item.invoicedAt)))) : "N/A"}
+                                    <div className="tooltip tooltip-info tooltip-right" data-tip="View Receipt">
+                                        <Link
+                                            to={`${import.meta.env.VITE_API_URL}/invoice/student/${item.studentInvoiceId}/${item.studentId}/html`}
+                                            target="_blank"
+                                            className={classNames("btn btn-square btn-sm", {
+                                                "btn-disabled": item.type == extraType
+                                            })}
+                                        >
+                                            <BsReceiptCutoff className="size-4" />
+                                        </Link>
                                     </div>
-                                </td>
-                                <td>
-                                    <div className="w-40">
-                                        {item.paidAt.length > 3 ?
-                                            dateTimeViewFormatter(new Date(item.paidAt))
-                                            :
-                                            <button className="btn w-32" onClick={() => handleOpenModal(item.studentInvoiceId)}>Add Payment</button>
-                                        }
-                                    </div>
-                                </td>
-                                <td>
-                                    <code className="code bg-base-200 px-2 py-1">{item.userId}</code>
-                                </td>
-                                <td>
-                                    <code className="code bg-base-200 px-2 py-1">{item.studentId}</code>
                                 </td>
                                 <td>
                                     {item.studentInvoiceId?.length > 0 ? (
@@ -222,27 +231,28 @@ const StudentInvoiceByStudent = () => {
                                     ) : "N/A"}
                                 </td>
                                 <td>
-                                    {item.studentBalanceId?.length > 0 ? (
-                                        <code className="code bg-base-200 px-2 py-1">{item.studentBalanceId}</code>
-                                    ) : "N/A"}
+                                    {JSON.stringify(item.invoicedAt).length > 3 ?
+                                        dateTimeViewFormatter(new Date(JSON.parse(JSON.stringify(item.invoicedAt))))
+                                        : "N/A"
+                                    }
                                 </td>
                                 <td>
-                                    {JSON.stringify(item.totalStudentsPrice)} TK
+                                    {item.type != extraType ? `${JSON.stringify(item.totalStudentsPrice)} TK` : "N/A"}
+
+                                </td>
+                                <td>
+                                    {item.studentBalanceId?.length > 0 ? (
+                                        <code className="code bg-base-200 px-2 py-1">{item.studentBalanceId}</code>
+                                    ) : <button className="btn btn-info" onClick={() => handleOpenModal(item.studentInvoiceId)}>Add Payment</button>}
+                                </td>
+                                <td>
+                                    {item.paidAt.length > 3 ?
+                                        dateTimeViewFormatter(new Date(item.paidAt))
+                                        : "N/A"
+                                    }
                                 </td>
                                 <td>
                                     {item.paidAmount} TK
-                                </td>
-                                <td>
-                                    {item.name}
-                                </td>
-                                <td>
-                                    {item.email}
-                                </td>
-                                <td>
-                                    {item.whatsAppNo}
-                                </td>
-                                <td>
-                                    {item.location}
                                 </td>
                                 <td>
                                     {item.paymentMethod}
@@ -250,26 +260,12 @@ const StudentInvoiceByStudent = () => {
                                 <td>
                                     {item.paymentInfo}
                                 </td>
-                                <td>
-                                    <button className="btn w-32">Send Message</button>
-                                </td>
-                                <td>
-                                    {item.studentInvoiceId.length > 0 && (
-                                        <Link
-                                            to={`${import.meta.env.VITE_API_URL}/invoice/student/${item.studentInvoiceId}/${item.studentId}/html`}
-                                            target="_blank"
-                                            className="btn w-32"
-                                        >
-                                            View Receipt
-                                        </Link>
-                                    )}
-                                </td>
                             </tr>
                         ))}
                         {!isLoading && paymentData.length == 0 && (
                             <tr>
-                                <td colSpan={16} className='p-5 bg-base-200 text-center'>
-                                    No Result Found
+                                <td colSpan={9} className='p-5 bg-base-200 text-center'>
+                                    No Payments Found
                                 </td>
                             </tr>
                         )}

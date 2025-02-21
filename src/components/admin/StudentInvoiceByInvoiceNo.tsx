@@ -1,5 +1,5 @@
 import Loading from "components/Loading"
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import AdminAccordion from "./AdminAccordion"
 import { FaSearch } from "react-icons/fa";
 import toast from "react-hot-toast";
@@ -10,6 +10,7 @@ import { Dialog, DialogPanel } from "@headlessui/react";
 import { ListResult } from "pocketbase";
 import PaginateRes from "./PaginateRes";
 import { Link } from "react-router";
+import { BsReceiptCutoff } from "react-icons/bs";
 
 const StudentInvoiceByInvoiceNo = () => {
     const [count, setCount] = useState(1)
@@ -30,10 +31,6 @@ const StudentInvoiceByInvoiceNo = () => {
         paymentMethod: "",
         paymentInfo: ""
     })
-
-    const paymentData = useMemo(() => {
-        return [...(invoicePaymentData?.items ?? []), ...(extraPaymentData?.items ?? [])].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
-    }, [invoicePaymentData, extraPaymentData])
 
     useEffect(() => {
         if (!show || searchText.length === 0) return;
@@ -129,7 +126,7 @@ const StudentInvoiceByInvoiceNo = () => {
                     <input
                         placeholder='Student Invoice Id'
                         type="text"
-                        className='input input-bordered w-48'
+                        className='input input-bordered w-48 uppercase placeholder:normal-case'
                         ref={inputRef}
                         onKeyDown={handleKeyDown}
                     />
@@ -147,62 +144,71 @@ const StudentInvoiceByInvoiceNo = () => {
                 <table className="table">
                     <thead>
                         <tr>
+                            <th></th>
+                            <th>Invoice Id</th>
                             <th>Invoiced At</th>
-                            <th>Paid At</th>
+                            <th>Invoiced Amount</th>
+                            <th>Balance Id</th>
+                            <th>Balanced At</th>
+                            <th>Balanced Amount</th>
+                            <th>Payment Method</th>
+                            <th>Payment Info</th>
                             <th>User Id</th>
                             <th>Student Id</th>
-                            <th>Invoice Id</th>
-                            <th>Balance Id</th>
-                            <th>Due Amount</th>
-                            <th>Paid Amount</th>
                             <th>Name</th>
                             <th>Email</th>
                             <th>WhatsApp</th>
                             <th>Location</th>
-                            <th>Payment Method</th>
-                            <th>Payment Info</th>
-                            <th>Message</th>
-                            <th>Details</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {paymentData.map((item, i) => (
+                        {invoicePaymentData?.items.map((item, i) => (
                             <tr key={i}>
                                 <td>
-                                    <div className="w-40">
-                                        {JSON.stringify(item.invoicedAt).length > 3 ? dateTimeViewFormatter(new Date(JSON.parse(JSON.stringify(item.invoicedAt)))) : "N/A"}
+                                    <div className="tooltip tooltip-info tooltip-right" data-tip="View Receipt">
+                                        <Link
+                                            to={`${import.meta.env.VITE_API_URL}/invoice/student/${item.studentInvoiceId}/${item.studentId}/html`}
+                                            target="_blank"
+                                            className="btn btn-square btn-sm"
+                                        >
+                                            <BsReceiptCutoff className="size-4" />
+                                        </Link>
                                     </div>
                                 </td>
                                 <td>
-                                    <div className="w-40">
-                                        {item.paidAt.length > 3 ?
-                                            dateTimeViewFormatter(new Date(item.paidAt))
-                                            :
-                                            <button className="btn w-32" onClick={() => handleOpenModal(item.studentId, item.studentInvoiceId)}>Add Payment</button>
-                                        }
-                                    </div>
+                                    <code className="code bg-base-200 px-2 py-1">{item.studentInvoiceId}</code>
                                 </td>
                                 <td>
-                                    <code className="code bg-base-200 px-2 py-1">{item.userId}</code>
-                                </td>
-                                <td>
-                                    <code className="code bg-base-200 px-2 py-1">{item.studentId}</code>
-                                </td>
-                                <td>
-                                    {item.studentInvoiceId?.length > 0 ? (
-                                        <code className="code bg-base-200 px-2 py-1">{item.studentInvoiceId}</code>
-                                    ) : "N/A"}
-                                </td>
-                                <td>
-                                    {item.studentBalanceId?.length > 0 ? (
-                                        <code className="code bg-base-200 px-2 py-1">{item.studentBalanceId}</code>
-                                    ) : "N/A"}
+                                    {dateTimeViewFormatter(new Date(JSON.parse(JSON.stringify(item.invoicedAt))))}
                                 </td>
                                 <td>
                                     {JSON.stringify(item.totalStudentsPrice)} TK
                                 </td>
                                 <td>
+                                    {item.studentBalanceId?.length > 0 ? (
+                                        <code className="code bg-base-200 px-2 py-1">{item.studentBalanceId}</code>
+                                    ) : <button className="btn btn-info btn-sm" onClick={() => handleOpenModal(item.studentId, item.studentInvoiceId)}>Add Payment</button>}
+                                </td>
+                                <td>
+                                    {item.paidAt.length > 3 ?
+                                        dateTimeViewFormatter(new Date(item.paidAt))
+                                        : "N/A"
+                                    }
+                                </td>
+                                <td>
                                     {item.paidAmount} TK
+                                </td>
+                                <td>
+                                    {item.paymentMethod}
+                                </td>
+                                <td>
+                                    {item.paymentInfo}
+                                </td>
+                                <td>
+                                    {item.userId}
+                                </td>
+                                <td>
+                                    {item.studentId}
                                 </td>
                                 <td>
                                     {item.name}
@@ -216,6 +222,48 @@ const StudentInvoiceByInvoiceNo = () => {
                                 <td>
                                     {item.location}
                                 </td>
+                            </tr>
+                        ))}
+                        {!isLoading && (!invoicePaymentData || invoicePaymentData?.items.length == 0) && (
+                            <tr>
+                                <td colSpan={15} className='p-5 bg-base-200 text-center'>
+                                    No Invoiced Payments Found
+                                </td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </div>
+            <div className="overflow-x-auto border border-base-300">
+                <table className="table">
+                    <thead>
+                        <tr>
+                            <th>Balance Id</th>
+                            <th>Balanced At</th>
+                            <th>Balanced Amount</th>
+                            <th>Payment Method</th>
+                            <th>Payment Info</th>
+                            <th>User Id</th>
+                            <th>Student Id</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>WhatsApp</th>
+                            <th>Location</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {extraPaymentData?.items.map((item, i) => (
+                            <tr key={i}>
+                                <td>
+                                    <code className="code bg-base-200 px-2 py-1">{item.studentBalanceId}</code>
+                                </td>
+                                <td>
+                                    {dateTimeViewFormatter(new Date(item.paidAt))}
+                                </td>
+
+                                <td>
+                                    {item.paidAmount} TK
+                                </td>
                                 <td>
                                     {item.paymentMethod}
                                 </td>
@@ -223,25 +271,29 @@ const StudentInvoiceByInvoiceNo = () => {
                                     {item.paymentInfo}
                                 </td>
                                 <td>
-                                    <button className="btn w-32">Send Message</button>
+                                    {item.userId}
                                 </td>
                                 <td>
-                                    {item.studentInvoiceId.length > 0 && (
-                                        <Link
-                                            to={`${import.meta.env.VITE_API_URL}/invoice/student/${item.studentInvoiceId}/${item.studentId}/html`}
-                                            target="_blank"
-                                            className="btn w-32"
-                                        >
-                                            View Receipt
-                                        </Link>
-                                    )}
+                                    {item.studentId}
+                                </td>
+                                <td>
+                                    {item.name}
+                                </td>
+                                <td>
+                                    {item.email}
+                                </td>
+                                <td>
+                                    {item.whatsAppNo}
+                                </td>
+                                <td>
+                                    {item.location}
                                 </td>
                             </tr>
                         ))}
-                        {!isLoading && paymentData.length == 0 && (
+                        {!isLoading && (!extraPaymentData || extraPaymentData?.items.length == 0) && (
                             <tr>
-                                <td colSpan={16} className='p-5 bg-base-200 text-center'>
-                                    No Result Found
+                                <td colSpan={11} className='p-5 bg-base-200 text-center'>
+                                    No Extra Payments Found
                                 </td>
                             </tr>
                         )}

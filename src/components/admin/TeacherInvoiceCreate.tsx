@@ -87,7 +87,7 @@ const TeacherInvoiceCreate = () => {
                     <input
                         placeholder='Teacher Id'
                         type="text"
-                        className='input input-bordered w-48'
+                        className='input input-bordered w-48 uppercase placeholder:normal-case'
                         ref={inputRef}
                         onKeyDown={handleKeyDown}
                     />
