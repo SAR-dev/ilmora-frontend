@@ -36,32 +36,32 @@ const TeacherInvoiceByInvoiceNo = () => {
         paymentInfo: ""
     })
 
+    const fetchData = async () => {
+        try {
+            const [invoiceData, extraData] = await Promise.all([
+                pb.collection(Collections.TeacherInvoicePaymentView).getList(pageNo, 20, {
+                    filter: `teacherInvoiceId = '${searchText}'`
+                }),
+                pb.collection(Collections.TeacherExtraPaymentView).getList(pageNo, 20, {
+                    filter: `teacherId = '${searchText}'`
+                })
+            ]);
+
+            setInvoicePaymentData(invoiceData);
+            setExtraPaymentData(extraData);
+        } catch (error) {
+            console.log(error)
+            toast.error("Error fetching data");
+            setInvoicePaymentData(undefined)
+            setExtraPaymentData(undefined)
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     useEffect(() => {
         if (!show || searchText.length === 0) return;
         setIsLoading(true);
-        const fetchData = async () => {
-            try {
-                const [invoiceData, extraData] = await Promise.all([
-                    pb.collection(Collections.TeacherInvoicePaymentView).getList(pageNo, 20, {
-                        filter: `teacherInvoiceId = '${searchText}'`
-                    }),
-                    pb.collection(Collections.TeacherExtraPaymentView).getList(pageNo, 20, {
-                        filter: `teacherId = '${searchText}'`
-                    })
-                ]);
-
-                setInvoicePaymentData(invoiceData);
-                setExtraPaymentData(extraData);
-            } catch (error) {
-                console.log(error)
-                toast.error("Error fetching data");
-                setInvoicePaymentData(undefined)
-                setExtraPaymentData(undefined)
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
         fetchData();
     }, [searchText, show, count, pageNo]);
 
@@ -180,33 +180,32 @@ const TeacherInvoiceByInvoiceNo = () => {
                                     </div>
                                 </td>
                                 <td>
-                                    <code className="code bg-base-200 px-2 py-1">{item.teacherInvoiceId}</code>
+                                    {item.teacherInvoiceId?.length > 0 ? (
+                                        <code className="code bg-base-200 px-2 py-1">{item.teacherInvoiceId}</code>
+                                    ) : "-"}
                                 </td>
                                 <td>
-                                    {dateTimeViewFormatter(new Date(JSON.parse(JSON.stringify(item.invoicedAt))))}
+                                    {JSON.stringify(item.invoicedAt).length > 3 ?
+                                        dateTimeViewFormatter(new Date(JSON.parse(JSON.stringify(item.invoicedAt))))
+                                        : "-"
+                                    }
                                 </td>
                                 <td>
-                                    {JSON.stringify(item.totalTeachersPrice)} TK
+                                    {item.teacherInvoiceId?.length > 0 ? `${JSON.stringify(item.totalTeachersPrice)} TK` : "-"}
                                 </td>
                                 <td>
                                     {item.teacherBalanceId?.length > 0 ? (
                                         <code className="code bg-base-200 px-2 py-1">{item.teacherBalanceId}</code>
-                                    ) : <button className="btn btn-info btn-sm" onClick={() => handleOpenModal(item.teacherId, item.teacherBalanceId)}>Add Payment</button>}
+                                    ) : <button className="btn btn-info btn-sm" onClick={() => handleOpenModal(item.teacherId ,item.teacherInvoiceId)}>Add Payment</button>}
                                 </td>
                                 <td>
-                                    {item.paidAt.length > 3 ?
-                                        dateTimeViewFormatter(new Date(item.paidAt))
-                                        : "N/A"
-                                    }
+                                    {item.paidAt.length > 3 ? dateTimeViewFormatter(new Date(item.paidAt)) : "-"}
                                 </td>
                                 <td>
-                                    {item.paidAmount} TK
+                                    {item.teacherBalanceId?.length > 0 ? `${item.paidAmount} TK` : "-"}
                                 </td>
                                 <td>
-                                    {item.paymentMethod}
-                                </td>
-                                <td>
-                                    {item.paymentInfo}
+                                    {item.teacherBalanceId?.length > 0 ? item.paymentMethod : "-"}
                                 </td>
                                 <td>
                                     {item.userId}

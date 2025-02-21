@@ -24,5 +24,9 @@ export const constants = {
     ROUTINE_VIEWS: {
         CALENDAR: "calendar",
         DAYS: "days"
+    },
+    PAYMENT_TYPE: {
+        INVOICE_TYPE: "Invoice",
+        EXTRA_TYPE: "Extra"
     }
 }

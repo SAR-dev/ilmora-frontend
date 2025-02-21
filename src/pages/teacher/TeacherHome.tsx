@@ -1,6 +1,6 @@
 import ClassCardMin from "components/ClassCardMin";
 import TeacherNavLayout from "layouts/TeacherNavLayout"
-import { MdOutlineNotificationsActive } from "react-icons/md";
+import { MdOutlineNotificationsActive, MdOutlinePayment } from "react-icons/md";
 import { RiMastodonLine } from "react-icons/ri";
 import { PiStudentDuotone } from "react-icons/pi";
 import StudentCardMin from "components/StudentCardMin";
@@ -47,9 +47,9 @@ const TeacherHome = () => {
   const dataFetched = useMemo(() => statsFetched && classesFetched, [statsFetched, classesFetched])
 
   const classLogTitle = useMemo(() => {
-    if(selectedDate.toDateString() == today.toDateString()) return "Today's Class Logs"
-    if(selectedDate.toDateString() == yesterday.toDateString()) return "Yesterday's Class Logs"
-    if(selectedDate.toDateString() == tomorrow.toDateString()) return "Tomorrow's Class Logs"
+    if (selectedDate.toDateString() == today.toDateString()) return "Today's Class Logs"
+    if (selectedDate.toDateString() == yesterday.toDateString()) return "Yesterday's Class Logs"
+    if (selectedDate.toDateString() == tomorrow.toDateString()) return "Tomorrow's Class Logs"
     return `Class Log - ${dateViewFormatter.format(selectedDate)}`
   }, [selectedDate])
 
@@ -225,7 +225,7 @@ const TeacherHome = () => {
                 headerTitle="Options"
               >
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 p-5">
-                <Link to="/t/classes/table" className="btn justify-start sm:justify-center">
+                  <Link to="/t/classes/table" className="btn justify-start sm:justify-center">
                     <TbTableDashed className="size-4" />
                     Class Table
                   </Link>
@@ -240,6 +240,10 @@ const TeacherHome = () => {
                   <Link to="/t/routines/create" className="btn justify-start sm:justify-center">
                     <FaRegCalendarAlt className="size-4" />
                     Create Routines
+                  </Link>
+                  <Link to="/t/payments" className="btn col-span-1 sm:col-span-2">
+                    <MdOutlinePayment className="size-4" />
+                    Payments & Invoices
                   </Link>
                 </div>
               </Card>

@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 
 const SignIn = () => {
     const { login, superLogin } = usePocket()
-    const [signType, setSignType] = useState<1 | 2 | 3>(1)
+    const [signType, setSignType] = useState<1 | 2>(1)
     const [isLoading, setIsLoading] = useState(false)
     const [formData, setFormData] = useState({
         email: '',
@@ -15,14 +15,14 @@ const SignIn = () => {
 
     const handleLogIn = () => {
         setIsLoading(true)
-        if (signType == 1 || signType == 2) {
+        if (signType == 1) {
             login(formData)
                 .catch(() => {
                     toast.error("Sign In failed. Please try again.")
                 })
                 .finally(() => setIsLoading(false))
         }
-        if (signType == 3) {
+        if (signType == 2) {
             superLogin(formData)
                 .catch(() => {
                     toast.error("Sign In failed. Please try again.")
@@ -51,15 +51,6 @@ const SignIn = () => {
                                 "bg-primary text-primary-content": signType == 2
                             })}
                             onClick={() => setSignType(2)}
-                        >
-                            Student
-                        </button>
-                        <button
-                            className={classNames("flex-1 py-3 hover:bg-primary/75 hover:text-primary-content cursor-pointer", {
-                                "bg-base-200": signType != 3,
-                                "bg-primary text-primary-content": signType == 3
-                            })}
-                            onClick={() => setSignType(3)}
                         >
                             Admin
                         </button>

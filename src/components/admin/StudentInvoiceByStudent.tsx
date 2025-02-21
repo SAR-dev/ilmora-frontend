@@ -11,9 +11,7 @@ import { TexpandStudentListWithUser } from "types/extended";
 import { Link } from "react-router";
 import { BsReceiptCutoff } from "react-icons/bs";
 import classNames from "classnames";
-
-const invoiceType = "Invoice"
-const extraType = "Extra"
+import { constants } from "constants";
 
 const StudentInvoiceByStudent = () => {
     const [count, setCount] = useState(1)
@@ -37,45 +35,45 @@ const StudentInvoiceByStudent = () => {
     const paymentData = useMemo(() => {
         return [
             ...invoicePaymentData.map(e => {
-                return { ...e, type: invoiceType }
+                return { ...e, type: constants.PAYMENT_TYPE.INVOICE_TYPE }
             }),
             ...extraPaymentData.map(e => {
-                return { ...e, type: extraType }
+                return { ...e, type: constants.PAYMENT_TYPE.EXTRA_TYPE }
             })
         ].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
     }, [invoicePaymentData, extraPaymentData])
 
+    const fetchData = async () => {
+        try {
+            const [invoiceData, extraData, student] = await Promise.all([
+                pb.collection(Collections.StudentInvoicePaymentView).getFullList({
+                    filter: `studentId = '${searchText}'`
+                }),
+                pb.collection(Collections.StudentExtraPaymentView).getFullList({
+                    filter: `studentId = '${searchText}'`
+                }),
+                pb.collection(Collections.Students).getOne(searchText, {
+                    expand: "userId"
+                })
+            ]);
+
+            setInvoicePaymentData(invoiceData);
+            setExtraPaymentData(extraData);
+            setStudentData(student as unknown as TexpandStudentListWithUser)
+        } catch (error) {
+            console.log(error)
+            toast.error("Error fetching data");
+            setInvoicePaymentData([])
+            setExtraPaymentData([])
+            setStudentData(null)
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     useEffect(() => {
         if (!show || searchText.length === 0) return;
         setIsLoading(true);
-        const fetchData = async () => {
-            try {
-                const [invoiceData, extraData, student] = await Promise.all([
-                    pb.collection(Collections.StudentInvoicePaymentView).getFullList({
-                        filter: `studentId = '${searchText}'`
-                    }),
-                    pb.collection(Collections.StudentExtraPaymentView).getFullList({
-                        filter: `studentId = '${searchText}'`
-                    }),
-                    pb.collection(Collections.Students).getOne(searchText, {
-                        expand: "userId"
-                    })
-                ]);
-
-                setInvoicePaymentData(invoiceData);
-                setExtraPaymentData(extraData);
-                setStudentData(student as unknown as TexpandStudentListWithUser)
-            } catch (error) {
-                console.log(error)
-                toast.error("Error fetching data");
-                setInvoicePaymentData([])
-                setExtraPaymentData([])
-                setStudentData(null)
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
         fetchData();
     }, [searchText, show, count]);
 
@@ -218,7 +216,7 @@ const StudentInvoiceByStudent = () => {
                                             to={`${import.meta.env.VITE_API_URL}/invoice/student/${item.studentInvoiceId}/${item.studentId}/html`}
                                             target="_blank"
                                             className={classNames("btn btn-square btn-sm", {
-                                                "btn-disabled": item.type == extraType
+                                                "btn-disabled": item.type == constants.PAYMENT_TYPE.EXTRA_TYPE
                                             })}
                                         >
                                             <BsReceiptCutoff className="size-4" />
@@ -228,37 +226,30 @@ const StudentInvoiceByStudent = () => {
                                 <td>
                                     {item.studentInvoiceId?.length > 0 ? (
                                         <code className="code bg-base-200 px-2 py-1">{item.studentInvoiceId}</code>
-                                    ) : "N/A"}
+                                    ) : "-"}
                                 </td>
                                 <td>
                                     {JSON.stringify(item.invoicedAt).length > 3 ?
                                         dateTimeViewFormatter(new Date(JSON.parse(JSON.stringify(item.invoicedAt))))
-                                        : "N/A"
+                                        : "-"
                                     }
                                 </td>
                                 <td>
-                                    {item.type != extraType ? `${JSON.stringify(item.totalStudentsPrice)} TK` : "N/A"}
-
+                                    {item.studentInvoiceId?.length > 0 ? `${JSON.stringify(item.totalStudentsPrice)} TK` : "-"}
                                 </td>
                                 <td>
                                     {item.studentBalanceId?.length > 0 ? (
                                         <code className="code bg-base-200 px-2 py-1">{item.studentBalanceId}</code>
-                                    ) : <button className="btn btn-info" onClick={() => handleOpenModal(item.studentInvoiceId)}>Add Payment</button>}
+                                    ) : <button className="btn btn-info btn-sm" onClick={() => handleOpenModal(item.studentInvoiceId)}>Add Payment</button>}
                                 </td>
                                 <td>
-                                    {item.paidAt.length > 3 ?
-                                        dateTimeViewFormatter(new Date(item.paidAt))
-                                        : "N/A"
-                                    }
+                                    {item.paidAt.length > 3 ? dateTimeViewFormatter(new Date(item.paidAt)) : "-"}
                                 </td>
                                 <td>
-                                    {item.paidAmount} TK
+                                    {item.studentBalanceId?.length > 0 ? `${item.paidAmount} TK` : "-"}
                                 </td>
                                 <td>
-                                    {item.paymentMethod}
-                                </td>
-                                <td>
-                                    {item.paymentInfo}
+                                    {item.studentBalanceId?.length > 0 ? item.paymentMethod : "-"}
                                 </td>
                             </tr>
                         ))}
