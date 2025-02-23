@@ -12,6 +12,7 @@ import { Link } from "react-router";
 import { BsReceiptCutoff } from "react-icons/bs";
 import classNames from "classnames";
 import { constants } from "constants";
+import CopyToClipboard from "components/CopyToClipboard";
 
 const StudentInvoiceByStudent = () => {
     const [count, setCount] = useState(1)
@@ -167,7 +168,9 @@ const StudentInvoiceByStudent = () => {
                         {studentData && (
                             <tr>
                                 <td>
-                                    <code className="code bg-base-200 px-2 py-1">{studentData.expand.userId.id}</code>
+                                    <CopyToClipboard text={studentData.expand.userId.id}>
+                                        <code className="code bg-base-200 px-2 py-1">{studentData.expand.userId.id}</code>
+                                    </CopyToClipboard>
                                 </td>
                                 <td>{studentData.expand.userId.name}</td>
                                 <td>{studentData.expand.userId.email}</td>
@@ -225,7 +228,9 @@ const StudentInvoiceByStudent = () => {
                                 </td>
                                 <td>
                                     {item.studentInvoiceId?.length > 0 ? (
-                                        <code className="code bg-base-200 px-2 py-1">{item.studentInvoiceId}</code>
+                                        <CopyToClipboard text={item.studentInvoiceId}>
+                                            <code className="code bg-base-200 px-2 py-1">{item.studentInvoiceId}</code>
+                                        </CopyToClipboard>
                                     ) : "-"}
                                 </td>
                                 <td>
@@ -239,7 +244,9 @@ const StudentInvoiceByStudent = () => {
                                 </td>
                                 <td>
                                     {item.studentBalanceId?.length > 0 ? (
-                                        <code className="code bg-base-200 px-2 py-1">{item.studentBalanceId}</code>
+                                        <CopyToClipboard text={item.studentBalanceId}>
+                                            <code className="code bg-base-200 px-2 py-1">{item.studentBalanceId}</code>
+                                        </CopyToClipboard>
                                     ) : <button className="btn btn-info btn-sm" onClick={() => handleOpenModal(item.studentInvoiceId)}>Add Payment</button>}
                                 </td>
                                 <td>

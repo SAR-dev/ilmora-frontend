@@ -7,6 +7,7 @@ import { ListResult } from "pocketbase"
 import { TexpandTeacherListWithUser } from "types/extended";
 import PaginateRes from "./PaginateRes"
 import { FaSearch } from "react-icons/fa";
+import CopyToClipboard from "components/CopyToClipboard";
 
 const TeacherList = () => {
     const [count, setCount] = useState(1)
@@ -87,10 +88,14 @@ const TeacherList = () => {
                         {data?.items.map((item, i) => (
                             <tr key={i}>
                                 <th>
-                                    <code className="code bg-base-200 px-2 py-1">{item.expand.userId.id}</code>
+                                    <CopyToClipboard text={item.expand.userId.id}>
+                                        <code className="code bg-base-200 px-2 py-1">{item.expand.userId.id}</code>
+                                    </CopyToClipboard>
                                 </th>
                                 <td>
+                                    <CopyToClipboard text={item.id}>
                                     <code className="code bg-base-200 px-2 py-1">{item.id}</code>
+                                    </CopyToClipboard>
                                 </td>
                                 <td>
                                     {item.expand.userId.name}

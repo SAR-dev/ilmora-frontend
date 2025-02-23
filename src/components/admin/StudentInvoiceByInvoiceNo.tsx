@@ -11,6 +11,7 @@ import { ListResult } from "pocketbase";
 import PaginateRes from "./PaginateRes";
 import { Link } from "react-router";
 import { BsReceiptCutoff } from "react-icons/bs";
+import CopyToClipboard from "components/CopyToClipboard";
 
 const StudentInvoiceByInvoiceNo = () => {
     const [count, setCount] = useState(1)
@@ -177,7 +178,9 @@ const StudentInvoiceByInvoiceNo = () => {
                                 </td>
                                 <td>
                                     {item.studentInvoiceId?.length > 0 ? (
-                                        <code className="code bg-base-200 px-2 py-1">{item.studentInvoiceId}</code>
+                                        <CopyToClipboard text={item.studentInvoiceId}>
+                                            <code className="code bg-base-200 px-2 py-1">{item.studentInvoiceId}</code>
+                                        </CopyToClipboard>
                                     ) : "-"}
                                 </td>
                                 <td>
@@ -191,7 +194,9 @@ const StudentInvoiceByInvoiceNo = () => {
                                 </td>
                                 <td>
                                     {item.studentBalanceId?.length > 0 ? (
-                                        <code className="code bg-base-200 px-2 py-1">{item.studentBalanceId}</code>
+                                        <CopyToClipboard text={item.studentBalanceId}>
+                                            <code className="code bg-base-200 px-2 py-1">{item.studentBalanceId}</code>
+                                        </CopyToClipboard>
                                     ) : <button className="btn btn-info btn-sm" onClick={() => handleOpenModal(item.studentId, item.studentInvoiceId)}>Add Payment</button>}
                                 </td>
                                 <td>
@@ -204,10 +209,18 @@ const StudentInvoiceByInvoiceNo = () => {
                                     {item.studentBalanceId?.length > 0 ? item.paymentMethod : "-"}
                                 </td>
                                 <td>
-                                    {item.userId}
+                                    <CopyToClipboard text={item.userId}>
+                                        <code className="code bg-base-200 px-2 py-1">
+                                            {item.userId}
+                                        </code>
+                                    </CopyToClipboard>
                                 </td>
                                 <td>
-                                    {item.studentId}
+                                    <CopyToClipboard text={item.studentId}>
+                                        <code className="code bg-base-200 px-2 py-1">
+                                            {item.studentId}
+                                        </code>
+                                    </CopyToClipboard>
                                 </td>
                                 <td>
                                     {item.name}
@@ -254,7 +267,9 @@ const StudentInvoiceByInvoiceNo = () => {
                         {extraPaymentData?.items.map((item, i) => (
                             <tr key={i}>
                                 <td>
-                                    <code className="code bg-base-200 px-2 py-1">{item.studentBalanceId}</code>
+                                    <CopyToClipboard text={item.studentBalanceId}>
+                                        <code className="code bg-base-200 px-2 py-1">{item.studentBalanceId}</code>
+                                    </CopyToClipboard>
                                 </td>
                                 <td>
                                     {dateTimeViewFormatter(new Date(item.paidAt))}
@@ -270,10 +285,18 @@ const StudentInvoiceByInvoiceNo = () => {
                                     {item.paymentInfo}
                                 </td>
                                 <td>
-                                    {item.userId}
+                                    <CopyToClipboard text={item.userId}>
+                                        <code className="code bg-base-200 px-2 py-1">
+                                            {item.userId}
+                                        </code>
+                                    </CopyToClipboard>
                                 </td>
                                 <td>
-                                    {item.studentId}
+                                    <CopyToClipboard text={item.studentId}>
+                                        <code className="code bg-base-200 px-2 py-1">
+                                            {item.studentId}
+                                        </code>
+                                    </CopyToClipboard>
                                 </td>
                                 <td>
                                     {item.name}

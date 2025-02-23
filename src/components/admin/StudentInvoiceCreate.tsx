@@ -7,6 +7,7 @@ import { AdminStudentLastInvoiceListType } from "types/response";
 import { FaSearch } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { useAlert } from "contexts/AlertContext";
+import CopyToClipboard from "components/CopyToClipboard";
 
 const StudentInvoiceCreate = () => {
     const { openAlert } = useAlert()
@@ -130,10 +131,14 @@ const StudentInvoiceCreate = () => {
                                     />
                                 </td>
                                 <td>
-                                    <code className="code bg-base-200 px-2 py-1">{item.userId}</code>
+                                    <CopyToClipboard text={item.userId}>
+                                        <code className="code bg-base-200 px-2 py-1">{item.userId}</code>
+                                    </CopyToClipboard>
                                 </td>
                                 <td>
-                                    <code className="code bg-base-200 px-2 py-1">{item.studentId}</code>
+                                    <CopyToClipboard text={item.studentId}>
+                                        <code className="code bg-base-200 px-2 py-1">{item.studentId}</code>
+                                    </CopyToClipboard>
                                 </td>
                                 <td>
                                     {item.name}

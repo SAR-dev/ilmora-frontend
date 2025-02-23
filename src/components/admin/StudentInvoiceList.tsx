@@ -7,6 +7,7 @@ import { ListResult } from "pocketbase"
 import PaginateRes from "./PaginateRes"
 import { api, dateViewFormatter, timeViewFormatter } from "helpers";
 import toast from "react-hot-toast";
+import CopyToClipboard from "components/CopyToClipboard";
 
 const StudentInvoiceList = () => {
     const [count, setCount] = useState(1)
@@ -37,15 +38,15 @@ const StudentInvoiceList = () => {
     const handleRollback = (studentInvoiceId: string) => {
         setIsLoading(true)
         api
-        .post("/api/a/student-invoices-rollback", {
-            studentInvoiceId
-        })
-        .then(() => {
-            toast.success("Invoice deleted!")
-            setCount(count + 1)
-        })
-        .catch(() => toast.error("Invoice delete failed!"))
-        .finally(() => setIsLoading(false))
+            .post("/api/a/student-invoices-rollback", {
+                studentInvoiceId
+            })
+            .then(() => {
+                toast.success("Invoice deleted!")
+                setCount(count + 1)
+            })
+            .catch(() => toast.error("Invoice delete failed!"))
+            .finally(() => setIsLoading(false))
     }
 
     return (
@@ -68,7 +69,9 @@ const StudentInvoiceList = () => {
                         {data?.items.map((item, i) => (
                             <tr key={i}>
                                 <td>
-                                    <code className="code bg-base-200 px-2 py-1">{item.id}</code>
+                                    <CopyToClipboard text={item.id}>
+                                        <code className="code bg-base-200 px-2 py-1">{item.id}</code>
+                                    </CopyToClipboard>
                                 </td>
                                 <td className="uppercase">
                                     {dateViewFormatter.format(new Date(item.created))} {timeViewFormatter.format(new Date(item.created))}

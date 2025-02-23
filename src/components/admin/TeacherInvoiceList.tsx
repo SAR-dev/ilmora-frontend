@@ -7,6 +7,7 @@ import { ListResult } from "pocketbase"
 import PaginateRes from "./PaginateRes"
 import { api, dateViewFormatter, timeViewFormatter } from "helpers";
 import toast from "react-hot-toast";
+import CopyToClipboard from "components/CopyToClipboard";
 
 const TeacherInvoiceList = () => {
     const [count, setCount] = useState(1)
@@ -16,7 +17,7 @@ const TeacherInvoiceList = () => {
     const [data, setData] = useState<ListResult<TeacherInvoicesResponse>>()
 
     useEffect(() => {
-        if(!show) return;
+        if (!show) return;
         setIsLoading(true)
         pb
             .collection(Collections.TeacherInvoices).getList(pageNo, 20, {
@@ -35,8 +36,8 @@ const TeacherInvoiceList = () => {
     }
 
     const handleRollback = (teacherInvoiceId: string) => {
-            setIsLoading(true)
-            api
+        setIsLoading(true)
+        api
             .post("/api/a/student-invoices-rollback", {
                 teacherInvoiceId
             })
@@ -46,7 +47,7 @@ const TeacherInvoiceList = () => {
             })
             .catch(() => toast.error("Invoice delete failed!"))
             .finally(() => setIsLoading(false))
-        }
+    }
 
     return (
         <AdminAccordion title="Teacher Invoice List" show={show} setShow={setShow}>
@@ -68,7 +69,9 @@ const TeacherInvoiceList = () => {
                         {data?.items.map((item, i) => (
                             <tr key={i}>
                                 <td>
-                                    <code className="code bg-base-200 px-2 py-1">{item.id}</code>
+                                    <CopyToClipboard text={item.id}>
+                                        <code className="code bg-base-200 px-2 py-1">{item.id}</code>
+                                    </CopyToClipboard>
                                 </td>
                                 <td className="uppercase">
                                     {dateViewFormatter.format(new Date(item.created))} {timeViewFormatter.format(new Date(item.created))}

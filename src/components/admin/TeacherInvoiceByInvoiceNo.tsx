@@ -15,6 +15,7 @@ import { ListResult } from "pocketbase";
 import PaginateRes from "./PaginateRes";
 import { Link } from "react-router";
 import { BsReceiptCutoff } from "react-icons/bs";
+import CopyToClipboard from "components/CopyToClipboard";
 
 const TeacherInvoiceByInvoiceNo = () => {
     const [count, setCount] = useState(1)
@@ -181,7 +182,9 @@ const TeacherInvoiceByInvoiceNo = () => {
                                 </td>
                                 <td>
                                     {item.teacherInvoiceId?.length > 0 ? (
-                                        <code className="code bg-base-200 px-2 py-1">{item.teacherInvoiceId}</code>
+                                        <CopyToClipboard text={item.teacherInvoiceId}>
+                                            <code className="code bg-base-200 px-2 py-1">{item.teacherInvoiceId}</code>
+                                        </CopyToClipboard>
                                     ) : "-"}
                                 </td>
                                 <td>
@@ -195,8 +198,10 @@ const TeacherInvoiceByInvoiceNo = () => {
                                 </td>
                                 <td>
                                     {item.teacherBalanceId?.length > 0 ? (
-                                        <code className="code bg-base-200 px-2 py-1">{item.teacherBalanceId}</code>
-                                    ) : <button className="btn btn-info btn-sm" onClick={() => handleOpenModal(item.teacherId ,item.teacherInvoiceId)}>Add Payment</button>}
+                                        <CopyToClipboard text={item.teacherBalanceId}>
+                                            <code className="code bg-base-200 px-2 py-1">{item.teacherBalanceId}</code>
+                                        </CopyToClipboard>
+                                    ) : <button className="btn btn-info btn-sm" onClick={() => handleOpenModal(item.teacherId, item.teacherInvoiceId)}>Add Payment</button>}
                                 </td>
                                 <td>
                                     {item.paidAt.length > 3 ? dateTimeViewFormatter(new Date(item.paidAt)) : "-"}
@@ -208,10 +213,18 @@ const TeacherInvoiceByInvoiceNo = () => {
                                     {item.teacherBalanceId?.length > 0 ? item.paymentMethod : "-"}
                                 </td>
                                 <td>
-                                    {item.userId}
+                                    <CopyToClipboard text={item.userId}>
+                                        <code className="code bg-base-200 px-2 py-1">
+                                            {item.userId}
+                                        </code>
+                                    </CopyToClipboard>
                                 </td>
                                 <td>
-                                    {item.teacherId}
+                                    <CopyToClipboard text={item.teacherId}>
+                                        <code className="code bg-base-200 px-2 py-1">
+                                            {item.teacherId}
+                                        </code>
+                                    </CopyToClipboard>
                                 </td>
                                 <td>
                                     {item.name}
@@ -258,7 +271,9 @@ const TeacherInvoiceByInvoiceNo = () => {
                         {extraPaymentData?.items.map((item, i) => (
                             <tr key={i}>
                                 <td>
-                                    <code className="code bg-base-200 px-2 py-1">{item.teacherBalanceId}</code>
+                                    <CopyToClipboard text={item.teacherBalanceId}>
+                                        <code className="code bg-base-200 px-2 py-1">{item.teacherBalanceId}</code>
+                                    </CopyToClipboard>
                                 </td>
                                 <td>
                                     {dateTimeViewFormatter(new Date(item.paidAt))}
@@ -274,10 +289,18 @@ const TeacherInvoiceByInvoiceNo = () => {
                                     {item.paymentInfo}
                                 </td>
                                 <td>
-                                    {item.userId}
+                                    <CopyToClipboard text={item.userId}>
+                                        <code className="code bg-base-200 px-2 py-1">
+                                            {item.userId}
+                                        </code>
+                                    </CopyToClipboard>
                                 </td>
                                 <td>
-                                    {item.teacherId}
+                                    <CopyToClipboard text={item.teacherId}>
+                                        <code className="code bg-base-200 px-2 py-1">
+                                            {item.teacherId}
+                                        </code>
+                                    </CopyToClipboard>
                                 </td>
                                 <td>
                                     {item.name}

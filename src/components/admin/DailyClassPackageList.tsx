@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import AdminAccordion from "./AdminAccordion"
 import { pb } from "contexts/PocketContext"
 import { Collections, DailyClassPackagesResponse } from "types/pocketbase";
+import CopyToClipboard from "components/CopyToClipboard";
 
 const DailyClassPackageList = () => {
     const [show, setShow] = useState(false)
@@ -36,7 +37,9 @@ const DailyClassPackageList = () => {
                         {data.map((item, i) => (
                             <tr key={i}>
                                 <th>
-                                    <code className="code bg-base-200 px-2 py-1">{item.id}</code>
+                                    <CopyToClipboard text={item.id}>
+                                        <code className="code bg-base-200 px-2 py-1">{item.id}</code>
+                                    </CopyToClipboard>
                                 </th>
                                 <td>
                                     {item.hidden ? (
