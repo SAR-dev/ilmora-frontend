@@ -1,11 +1,9 @@
 import Loading from "components/Loading"
-import { pb } from "contexts/PocketContext"
-import { gerStringError } from "helpers"
+import { api, getAxiosStringError } from "helpers";
 import { useState } from "react"
-import toast from "react-hot-toast"
-import { Collections } from "types/pocketbase"
 import AdminErrorDisplay from "./AdminErrorDisplay"
 import AdminAccordion from "./AdminAccordion"
+import toast from "react-hot-toast";
 
 const StudentCreate = () => {
     const [show, setShow] = useState(false)
@@ -17,34 +15,18 @@ const StudentCreate = () => {
         password: "",
         whatsAppNo: "",
         utcOffset: "",
-        location: ""
+        location: "",
+        teacherId: ""
     })
 
     const handleCreateStudent = async () => {
         setIsLoading(true)
         setError("")
-        try {
-            const user = await pb.collection(Collections.Users).create({
-                ...formData,
-                passwordConfirm: formData.password
-            })
-            await pb.collection(Collections.Students).create({
-                userId: user.id
-            })
-            setFormData({
-                email: "",
-                name: "",
-                password: "",
-                whatsAppNo: "",
-                utcOffset: "",
-                location: ""
-            })
-            toast.success("Student record created")
-        } catch (err: unknown) {
-            setError(gerStringError(err))
-        } finally {
-            setIsLoading(false)
-        }
+        api
+            .post("/api/a/student", {...formData, teacherId: formData.teacherId.toLowerCase()})
+            .then(() => toast.success("Student record created"))
+            .catch((err) => setError(getAxiosStringError(err)))
+            .finally(() => setIsLoading(false))
     }
 
     return (
@@ -137,6 +119,21 @@ const StudentCreate = () => {
                         onChange={e => setFormData({
                             ...formData,
                             location: e.target.value
+                        })}
+                    />
+                </label>
+                <label className="form-control">
+                    <div className="label pb-2">
+                        <span className="label-text">Teacher Id</span>
+                    </div>
+                    <input
+                        placeholder='Dhaka, Bangladesh'
+                        type="text"
+                        className='input input-bordered uppercase placeholder:normal-case'
+                        value={formData.teacherId}
+                        onChange={e => setFormData({
+                            ...formData,
+                            teacherId: e.target.value
                         })}
                     />
                 </label>

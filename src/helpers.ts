@@ -127,7 +127,7 @@ export const convertToOffset = (date: Date, offset: string): Date | null => {
   return newTime;
 };
 
-export const gerStringError = (err: unknown) => {
+export const getPocketStringError = (err: unknown) => {
   if (typeof err === "object" && err !== null && "data" in err) {
     return JSON.stringify((err as { data: unknown }).data, null, 2); // Pretty-print JSON
   } else if (err instanceof Error) {
@@ -136,6 +136,20 @@ export const gerStringError = (err: unknown) => {
     return "An unknown error occurred.";
   }
 }
+
+export const getAxiosStringError = (err: unknown) => {
+  if (typeof err === "object" && err !== null) {
+    if ("response" in err && typeof err.response === "object" && err.response !== null) {
+      return JSON.stringify((err as { response: { data: unknown } }).response.data, null, 2);
+    } else if ("data" in err) {
+      return JSON.stringify((err as { data: unknown }).data, null, 2);
+    } else if ("message" in err && typeof err.message === "string") {
+      return err.message;
+    }
+  }
+
+  return "An unknown error occurred.";
+};
 
 export const daysDifference = (date: Date) => {
   const today = new Date();

@@ -1,9 +1,7 @@
 import Loading from "components/Loading"
-import { pb } from "contexts/PocketContext"
-import { gerStringError } from "helpers"
+import { api, getAxiosStringError } from "helpers";
 import { useState } from "react"
 import toast from "react-hot-toast"
-import { Collections } from "types/pocketbase"
 import AdminErrorDisplay from "./AdminErrorDisplay"
 import AdminAccordion from "./AdminAccordion"
 
@@ -23,28 +21,11 @@ const TeacherCreate = () => {
     const handleCreateTeacher = async () => {
         setIsLoading(true)
         setError("")
-        try {
-            const user = await pb.collection(Collections.Users).create({
-                ...formData,
-                passwordConfirm: formData.password
-            })
-            await pb.collection(Collections.Teachers).create({
-                userId: user.id
-            })
-            setFormData({
-                email: "",
-                name: "",
-                password: "",
-                whatsAppNo: "",
-                utcOffset: "",
-                location: ""
-            })
-            toast.success("Teacher record created")
-        } catch (err: unknown) {
-            setError(gerStringError(err))
-        } finally {
-            setIsLoading(false)
-        }
+        api
+            .post("/api/a/teacher", { ...formData })
+            .then(() => toast.success("Teacher record created"))
+            .catch((err) => setError(getAxiosStringError(err)))
+            .finally(() => setIsLoading(false))
     }
 
     return (

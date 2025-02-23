@@ -1,6 +1,6 @@
 import Loading from "components/Loading"
 import { pb } from "contexts/PocketContext"
-import { gerStringError } from "helpers"
+import { getPocketStringError } from "helpers"
 import { useEffect, useRef, useState } from "react"
 import toast from "react-hot-toast"
 import { Collections } from "types/pocketbase"
@@ -74,7 +74,7 @@ const UserUpdate = () => {
             })
             toast.success("User updated")
         } catch (err: unknown) {
-            setError(gerStringError(err))
+            setError(getPocketStringError(err))
         } finally {
             setIsLoading(false)
         }
