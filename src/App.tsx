@@ -4,6 +4,7 @@ import router from "./router"
 import { PocketbaseProvider } from "contexts/PocketContext"
 import { ClassNoteProvider } from "contexts/ClassNoteContext"
 import { AlertProvider } from "contexts/AlertContext"
+import { ThemeInitializer } from "stores/themeStore"
 
 const App = () => {
   return (
@@ -14,6 +15,7 @@ const App = () => {
             position="bottom-left"
             reverseOrder={false}
           />
+          <ThemeInitializer />
           <RouterProvider router={router} />
         </AlertProvider>
       </ClassNoteProvider>

@@ -7,7 +7,6 @@ import { dateTimeViewFormatter, sumArray } from 'helpers'
 import TeacherNavLayout from 'layouts/TeacherNavLayout'
 import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast'
-import { BsReceiptCutoff } from 'react-icons/bs'
 import { MdOutlinePayment } from 'react-icons/md'
 import { Link } from 'react-router'
 import { Collections, TeacherExtraPaymentViewResponse, TeacherInvoicePaymentViewResponse } from 'types/pocketbase'
@@ -68,76 +67,62 @@ function PaymentsInvoices() {
                     headerTitle="Payment & Invoices"
                 >
                     <div className="grid grid-cols-1 gap-5 p-5">
-                        <div className="overflow-x-auto border border-base-300">
-                            <table className="table">
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th>Invoice Id</th>
-                                        <th>Invoiced At</th>
-                                        <th>Invoiced Amount</th>
-                                        <th>Balance Id</th>
-                                        <th>Balanced At</th>
-                                        <th>Balanced Amount</th>
-                                        <th>Payment Method</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {paymentData.map((item, i) => (
-                                        <tr key={i}>
-                                            <td>
-                                                <div className="tooltip tooltip-info tooltip-right" data-tip="View Receipt">
-                                                    <Link
-                                                        to={`${import.meta.env.VITE_API_URL}/invoice/teacher/${item.teacherInvoiceId}/${item.teacherId}/html`}
-                                                        target="_blank"
-                                                        className={classNames("btn btn-square btn-sm", {
-                                                            "btn-disabled": item.type == constants.PAYMENT_TYPE.EXTRA_TYPE
-                                                        })}
-                                                    >
-                                                        <BsReceiptCutoff className="size-4" />
-                                                    </Link>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                {item.teacherInvoiceId?.length > 0 ? (
-                                                    <code className="code bg-base-200 px-2 py-1">{item.teacherInvoiceId}</code>
-                                                ) : "-"}
-                                            </td>
-                                            <td>
-                                                {JSON.stringify(item.invoicedAt).length > 3 ?
-                                                    dateTimeViewFormatter(new Date(JSON.parse(JSON.stringify(item.invoicedAt))))
-                                                    : "-"
-                                                }
-                                            </td>
-                                            <td>
-                                                {item.teacherInvoiceId?.length > 0 ? `${JSON.stringify(item.totalTeachersPrice)} TK` : "-"}
-                                            </td>
-                                            <td>
-                                                {item.teacherBalanceId?.length > 0 ? (
-                                                    <code className="code bg-base-200 px-2 py-1">{item.teacherBalanceId}</code>
-                                                ) : "-"}
-                                            </td>
-                                            <td>
-                                                {item.paidAt.length > 3 ? dateTimeViewFormatter(new Date(item.paidAt)) : "-"}
-                                            </td>
-                                            <td>
-                                                {item.teacherBalanceId?.length > 0 ? `${item.paidAmount} TK` : "-"}
-                                            </td>
-                                            <td>
-                                                {item.teacherBalanceId?.length > 0 ? item.paymentMethod : "-"}
-                                            </td>
-                                        </tr>
-                                    ))}
-                                    {!isLoading && paymentData.length == 0 && (
-                                        <tr>
-                                            <td colSpan={9} className='p-5 bg-base-200 text-center'>
-                                                No Payments Found
-                                            </td>
-                                        </tr>
-                                    )}
-                                </tbody>
-                            </table>
-                        </div>
+                        {paymentData.map((item, i) => (
+                            <div className="grid grid-cols-2 border border-base-300 divide-x divide-y divide-base-300 bg-base-200" key={i}>
+                                <div className='px-4 py-2 font-semibold text-base-content/50'>Invoice Id</div>
+                                <div className='px-4 py-2'>
+                                    {item.teacherInvoiceId.length > 0 ? (
+                                        <Link
+                                            to={`${import.meta.env.VITE_API_URL}/invoice/teacher/${item.teacherInvoiceId}/${item.teacherId}/html`}
+                                            target="_blank"
+                                            className={classNames("btn btn-xs btn-info code uppercase", {
+                                                "btn-disabled": item.type == constants.PAYMENT_TYPE.EXTRA_TYPE
+                                            })}
+                                        >
+                                            {item.teacherInvoiceId}
+                                        </Link>
+                                    ) : ("-")}
+                                </div>
+                                <div className='px-4 py-2 font-semibold text-base-content/50'>Invoiced At</div>
+                                <div className='px-4 py-2'>
+                                    {JSON.stringify(item.invoicedAt).length > 3 ?
+                                        dateTimeViewFormatter(new Date(JSON.parse(JSON.stringify(item.invoicedAt))))
+                                        : "-"
+                                    }
+                                </div>
+                                <div className='px-4 py-2 font-semibold text-base-content/50'>Invoiced Amount</div>
+                                <div className='px-4 py-2'>
+                                    {item.teacherInvoiceId?.length > 0 ? `${JSON.stringify(item.totalTeachersPrice)} TK` : "-"}
+                                </div>
+                                <div className='px-4 py-2 font-semibold text-base-content/50'>Balance Id</div>
+                                <div className='px-4 py-2'>
+                                    {item.teacherBalanceId?.length > 0 ? (
+                                        <code className="code bg-base-200 px-2 py-1">{item.teacherBalanceId}</code>
+                                    ) : "-"}
+                                </div>
+                                <div className='px-4 py-2 font-semibold text-base-content/50'>Balanced Atd</div>
+                                <div className='px-4 py-2'>
+                                    {item.paidAt.length > 3 ? dateTimeViewFormatter(new Date(item.paidAt)) : "-"}
+                                </div>
+                                <div className='px-4 py-2 font-semibold text-base-content/50'>Balanced Amount</div>
+                                <div className='px-4 py-2'>
+                                    {item.teacherBalanceId?.length > 0 ? `${item.paidAmount} TK` : "-"}
+                                </div>
+                                <div className='px-4 py-2 font-semibold text-base-content/50'>Payment Method</div>
+                                <div className='px-4 py-2'>
+                                    {item.teacherBalanceId?.length > 0 ? item.paymentMethod : "-"}
+                                </div>
+                                <div className='px-4 py-2 font-semibold text-base-content/50'>Payment Info</div>
+                                <div className='px-4 py-2'>
+                                    {item.paymentInfo}
+                                </div>
+                            </div>
+                        ))}
+                        {!isLoading && paymentData.length == 0 && (
+                            <div className='p-5 bg-base-200 text-center w-full'>
+                                    No Payments Found
+                            </div>
+                        )}
                         {paymentData.length > 0 && (
                             <div className="overflow-x-auto border border-base-300">
                                 <table className="table">

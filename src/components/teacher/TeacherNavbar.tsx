@@ -7,7 +7,7 @@ import { ThemeName, useThemeStore } from "stores/themeStore";
 import { usePocket } from "contexts/PocketContext";
 import { TbTableDashed } from "react-icons/tb";
 import { BsCalendar2Week } from "react-icons/bs";
-import { MdOutlineNotificationsActive } from "react-icons/md";
+import { MdOutlineNotificationsActive, MdOutlinePayment } from "react-icons/md";
 
 const TeacherNavbar = () => {
     const { user, logout } = usePocket()
@@ -94,6 +94,10 @@ const TeacherNavbar = () => {
                             <Link to="/t/routines/create" className="no-animation btn gap-3 justify-start btn-primary btn-ghost">
                                 <FaRegCalendarAlt className="size-5" />
                                 Create Routines
+                            </Link>
+                            <Link to="/t/payments" className="no-animation btn gap-3 justify-start btn-primary btn-ghost">
+                                <MdOutlinePayment className="size-5" />
+                                Payments & Invoices
                             </Link>
                         </div>
                     </div>

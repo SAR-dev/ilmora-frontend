@@ -1,4 +1,5 @@
 import { constants } from 'constants'
+import { useEffect } from 'react'
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 
@@ -25,3 +26,13 @@ export const useThemeStore = create<ThemeStore>()(
         storage: createJSONStorage(() => localStorage),
     })
 )
+
+export const ThemeInitializer = () => {
+    const theme = useThemeStore((state) => state.theme);
+
+    useEffect(() => {
+        document.querySelector("html")?.setAttribute("data-theme", theme);
+    }, [theme]);
+
+    return null; // No UI element needed
+};

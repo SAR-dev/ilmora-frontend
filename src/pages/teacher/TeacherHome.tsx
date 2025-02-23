@@ -224,24 +224,24 @@ const TeacherHome = () => {
                 headerIcon={<IoOptions className="size-5" />}
                 headerTitle="Options"
               >
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 p-5">
+                <div className="grid grid-cols-2 gap-5 p-5">
                   <Link to="/t/classes/table" className="btn justify-start sm:justify-center">
-                    <TbTableDashed className="size-4" />
+                    <TbTableDashed className="size-4 hidden sm:flex" />
                     Class Table
                   </Link>
                   <Link to="/t/classes/calendar" className="btn justify-start sm:justify-center">
-                    <BsCalendar2Week className="size-4" />
+                    <BsCalendar2Week className="size-4 hidden sm:flex" />
                     Class Calendar
                   </Link>
                   <Link to="/t/classes/create" className="btn justify-start sm:justify-center">
-                    <FaRegCalendarPlus className="size-4" />
+                    <FaRegCalendarPlus className="size-4 hidden sm:flex" />
                     Create Class
                   </Link>
                   <Link to="/t/routines/create" className="btn justify-start sm:justify-center">
-                    <FaRegCalendarAlt className="size-4" />
+                    <FaRegCalendarAlt className="size-4 hidden sm:flex" />
                     Create Routines
                   </Link>
-                  <Link to="/t/payments" className="btn col-span-1 sm:col-span-2">
+                  <Link to="/t/payments" className="btn col-span-2">
                     <MdOutlinePayment className="size-4" />
                     Payments & Invoices
                   </Link>
