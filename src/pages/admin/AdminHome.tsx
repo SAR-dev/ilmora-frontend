@@ -1,3 +1,4 @@
+import DailyClassPackageList from 'components/admin/DailyClassPackageList'
 import StudentCreate from 'components/admin/StudentCreate'
 import StudentInvoiceByInvoiceNo from 'components/admin/StudentInvoiceByInvoiceNo'
 import StudentInvoiceByStudent from 'components/admin/StudentInvoiceByStudent'
@@ -10,7 +11,6 @@ import TeacherInvoiceByTeacher from 'components/admin/TeacherInvoiceByTeacher'
 import TeacherInvoiceCreate from 'components/admin/TeacherInvoiceCreate'
 import TeacherInvoiceList from 'components/admin/TeacherInvoiceList'
 import TeacherList from 'components/admin/TeacherList'
-import UserUpdate from 'components/admin/UserUpdate'
 import Card from 'components/Card'
 import AdminNavLayout from 'layouts/AdminNavLayout'
 import { MdOutlineAdminPanelSettings } from 'react-icons/md'
@@ -24,19 +24,20 @@ const AdminHome = () => {
                     headerTitle='Admin Panel'
                 >
                     <div className="grid grid-cols-1">
-                        <StudentCreate />
                         <TeacherCreate />
-                        <StudentList />
+                        <StudentCreate />
                         <TeacherList />
-                        <UserUpdate />
-                        <StudentInvoiceCreate />
+                        <StudentList />
+                        <DailyClassPackageList />
+                        {/* <UserUpdate /> */}
                         <TeacherInvoiceCreate />
-                        <StudentInvoiceList />
+                        <StudentInvoiceCreate />
                         <TeacherInvoiceList />
-                        <StudentInvoiceByStudent />
+                        <StudentInvoiceList />
                         <TeacherInvoiceByTeacher />
-                        <StudentInvoiceByInvoiceNo />
+                        <StudentInvoiceByStudent />
                         <TeacherInvoiceByInvoiceNo />
+                        <StudentInvoiceByInvoiceNo />
                     </div>
                 </Card>
             </div>

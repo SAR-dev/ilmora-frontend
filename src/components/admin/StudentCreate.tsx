@@ -16,14 +16,18 @@ const StudentCreate = () => {
         whatsAppNo: "",
         utcOffset: "",
         location: "",
-        teacherId: ""
+        teacherId: "",
+        classLink: "",
+        dailyClassPackageId: "",
+        dailyClassTeachersPrice: "",
+        dailyClassStudentsPrice: ""
     })
 
     const handleCreateStudent = async () => {
         setIsLoading(true)
         setError("")
         api
-            .post("/api/a/student", {...formData, teacherId: formData.teacherId.toLowerCase()})
+            .post("/api/a/student", {...formData})
             .then(() => toast.success("Student record created"))
             .catch((err) => setError(getAxiosStringError(err)))
             .finally(() => setIsLoading(false))
@@ -127,13 +131,73 @@ const StudentCreate = () => {
                         <span className="label-text">Teacher Id</span>
                     </div>
                     <input
-                        placeholder='Dhaka, Bangladesh'
+                        placeholder=''
                         type="text"
-                        className='input input-bordered uppercase placeholder:normal-case'
+                        className='input input-bordered'
                         value={formData.teacherId}
                         onChange={e => setFormData({
                             ...formData,
                             teacherId: e.target.value
+                        })}
+                    />
+                </label>
+                <label className="form-control">
+                    <div className="label pb-2">
+                        <span className="label-text">Class Link</span>
+                    </div>
+                    <input
+                        placeholder=''
+                        type="text"
+                        className='input input-bordered'
+                        value={formData.classLink}
+                        onChange={e => setFormData({
+                            ...formData,
+                            classLink: e.target.value
+                        })}
+                    />
+                </label>
+                <label className="form-control">
+                    <div className="label pb-2">
+                        <span className="label-text">Class Package Id</span>
+                    </div>
+                    <input
+                        placeholder=''
+                        type="text"
+                        className='input input-bordered'
+                        value={formData.dailyClassPackageId}
+                        onChange={e => setFormData({
+                            ...formData,
+                            dailyClassPackageId: e.target.value
+                        })}
+                    />
+                </label>
+                <label className="form-control">
+                    <div className="label pb-2">
+                        <span className="label-text">Teacher's Price</span>
+                    </div>
+                    <input
+                        placeholder=''
+                        type="text"
+                        className='input input-bordered'
+                        value={formData.dailyClassTeachersPrice}
+                        onChange={e => setFormData({
+                            ...formData,
+                            dailyClassTeachersPrice: e.target.value
+                        })}
+                    />
+                </label>
+                <label className="form-control">
+                    <div className="label pb-2">
+                        <span className="label-text">Student's Price</span>
+                    </div>
+                    <input
+                        placeholder=''
+                        type="text"
+                        className='input input-bordered'
+                        value={formData.dailyClassStudentsPrice}
+                        onChange={e => setFormData({
+                            ...formData,
+                            dailyClassStudentsPrice: e.target.value
                         })}
                     />
                 </label>

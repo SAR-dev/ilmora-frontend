@@ -30,18 +30,18 @@ const StudentList = () => {
     }, [pageNo, searchText, show, count])
 
     useEffect(() => {
-        if(show && inputRef.current){
-          inputRef.current.value = searchText
-          inputRef.current.focus()
+        if (show && inputRef.current) {
+            inputRef.current.value = searchText
+            inputRef.current.focus()
         }
-      }, [show])
-      
-      
-      const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-          if (event.key === "Enter") {
-              setSearchText(inputRef.current?.value ?? "");
-          }
-      };
+    }, [show])
+
+
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === "Enter") {
+            setSearchText(inputRef.current?.value ?? "");
+        }
+    };
 
     const handleNext = () => {
         setPageNo(pageNo + 1)
