@@ -17,7 +17,7 @@ const AdminAccordion = ({
 
     return (
         <div>
-            <div className="w-full flex justify-between items-center p-5 border-b border-t border-primary/50 bg-primary/10">
+            <div className="w-full flex justify-between items-center p-5 border-t border-primary/50 bg-primary/10">
                 <div className="flex items-center gap-2 text-primary">
                     <FaCircle className="size-4" />
                     <div className="font-semibold">{title}</div>
