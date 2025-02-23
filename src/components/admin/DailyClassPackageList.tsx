@@ -7,7 +7,6 @@ import { Collections, DailyClassPackagesResponse } from "types/pocketbase";
 const DailyClassPackageList = () => {
     const [show, setShow] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
-    const inputRef = useRef<HTMLInputElement>(null);
     const [data, setData] = useState<DailyClassPackagesResponse[]>([])
 
     useEffect(() => {
