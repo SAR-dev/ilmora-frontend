@@ -1,9 +1,11 @@
 import Loading from "components/Loading"
 import { api, getAxiosStringError } from "helpers";
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import AdminErrorDisplay from "./AdminErrorDisplay"
 import AdminAccordion from "./AdminAccordion"
 import toast from "react-hot-toast";
+import { pb } from "contexts/PocketContext";
+import { Collections } from "types/pocketbase";
 
 const StudentCreate = () => {
     const [show, setShow] = useState(false)
@@ -32,6 +34,22 @@ const StudentCreate = () => {
             .catch((err) => setError(getAxiosStringError(err)))
             .finally(() => setIsLoading(false))
     }
+
+    useEffect(() => {
+      setIsLoading(true)
+      pb
+        .collection(Collections.DailyClassPackages)
+        .getOne(formData.dailyClassPackageId)
+        .then(res => {
+            setFormData({
+                ...formData,
+                dailyClassTeachersPrice: res.teachersPrice.toString(),
+                dailyClassStudentsPrice: res.studentsPrice.toString()
+            })
+        })
+        .finally(() => setIsLoading(false))
+    }, [formData.dailyClassPackageId])
+    
 
     return (
         <AdminAccordion title="Create Student" show={show} setShow={setShow}>
