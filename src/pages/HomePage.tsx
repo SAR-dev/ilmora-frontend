@@ -2,7 +2,7 @@ import { usePocket } from "contexts/PocketContext"
 import { useEffect } from "react"
 import { useNavigate } from "react-router"
 
-const Homepage = () => {
+const HomePage = () => {
   const { user, userData } = usePocket()
   const navigate = useNavigate()
 
@@ -38,4 +38,4 @@ const Homepage = () => {
   )
 }
 
-export default Homepage
+export default HomePage

@@ -14,11 +14,11 @@ import ClassLogDetails from "pages/teacher/ClassLogDetails";
 import ClassTable from "pages/teacher/ClassTable";
 import AdminHome from "pages/admin/AdminHome";
 import PaymentsInvoices from "pages/teacher/PaymentsInvoices";
-import Homepage from "pages/Homepage";
+import HomePage from "pages/HomePage";
 import { RequireStudentAuth } from "layouts/RequireStudentAuth";
 
 const router = createBrowserRouter([
-  { path: "/", element: <Homepage /> },
+  { path: "/", element: <HomePage /> },
   {
     element: <RequireUnAuth />,
     children: [
