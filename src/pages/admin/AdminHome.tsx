@@ -31,8 +31,8 @@ const AdminHome = () => {
                         <UserUpdate />
                         <TeacherList />
                         <StudentList />
-                        <DailyClassPackageList />
                         <TeacherStudentList />
+                        <DailyClassPackageList />
                         <TeacherInvoiceCreate />
                         <StudentInvoiceCreate />
                         <TeacherInvoiceList />
