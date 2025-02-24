@@ -124,7 +124,7 @@ const TeacherCreate = () => {
             </div>
             <div>
                 <button className="btn btn-primary" onClick={handleCreateTeacher}>
-                    Create Teacher
+                    Create User As Teacher
                 </button>
             </div>
             <AdminErrorDisplay error={error} />

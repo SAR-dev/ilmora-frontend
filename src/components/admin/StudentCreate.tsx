@@ -9,6 +9,7 @@ import { Collections } from "types/pocketbase";
 
 const StudentCreate = () => {
     const [show, setShow] = useState(false)
+    const [showTeacher, setShowTeacher] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState("")
     const [formData, setFormData] = useState({
@@ -29,27 +30,27 @@ const StudentCreate = () => {
         setIsLoading(true)
         setError("")
         api
-            .post("/api/a/student", {...formData})
+            .post("/api/a/student", { ...formData })
             .then(() => toast.success("Student record created"))
             .catch((err) => setError(getAxiosStringError(err)))
             .finally(() => setIsLoading(false))
     }
 
     useEffect(() => {
-      setIsLoading(true)
-      pb
-        .collection(Collections.DailyClassPackages)
-        .getOne(formData.dailyClassPackageId)
-        .then(res => {
-            setFormData({
-                ...formData,
-                dailyClassTeachersPrice: res.teachersPrice.toString(),
-                dailyClassStudentsPrice: res.studentsPrice.toString()
+        setIsLoading(true)
+        pb
+            .collection(Collections.DailyClassPackages)
+            .getOne(formData.dailyClassPackageId)
+            .then(res => {
+                setFormData({
+                    ...formData,
+                    dailyClassTeachersPrice: res.teachersPrice.toString(),
+                    dailyClassStudentsPrice: res.studentsPrice.toString()
+                })
             })
-        })
-        .finally(() => setIsLoading(false))
+            .finally(() => setIsLoading(false))
     }, [formData.dailyClassPackageId])
-    
+
 
     return (
         <AdminAccordion title="Create Student" show={show} setShow={setShow}>
@@ -144,85 +145,95 @@ const StudentCreate = () => {
                         })}
                     />
                 </label>
-                <label className="form-control">
-                    <div className="label pb-2">
-                        <span className="label-text">Teacher Id</span>
+                {!showTeacher && (
+                    <div className="flex items-end">
+                        <button className="btn btn-info" onClick={() => setShowTeacher(true)}>Assign Teacher</button>
                     </div>
-                    <input
-                        placeholder=''
-                        type="text"
-                        className='input input-bordered'
-                        value={formData.teacherId}
-                        onChange={e => setFormData({
-                            ...formData,
-                            teacherId: e.target.value
-                        })}
-                    />
-                </label>
-                <label className="form-control">
-                    <div className="label pb-2">
-                        <span className="label-text">Class Link</span>
-                    </div>
-                    <input
-                        placeholder=''
-                        type="text"
-                        className='input input-bordered'
-                        value={formData.classLink}
-                        onChange={e => setFormData({
-                            ...formData,
-                            classLink: e.target.value
-                        })}
-                    />
-                </label>
-                <label className="form-control">
-                    <div className="label pb-2">
-                        <span className="label-text">Class Package Id</span>
-                    </div>
-                    <input
-                        placeholder=''
-                        type="text"
-                        className='input input-bordered'
-                        value={formData.dailyClassPackageId}
-                        onChange={e => setFormData({
-                            ...formData,
-                            dailyClassPackageId: e.target.value
-                        })}
-                    />
-                </label>
-                <label className="form-control">
-                    <div className="label pb-2">
-                        <span className="label-text">Teacher's Price</span>
-                    </div>
-                    <input
-                        placeholder=''
-                        type="text"
-                        className='input input-bordered'
-                        value={formData.dailyClassTeachersPrice}
-                        onChange={e => setFormData({
-                            ...formData,
-                            dailyClassTeachersPrice: e.target.value
-                        })}
-                    />
-                </label>
-                <label className="form-control">
-                    <div className="label pb-2">
-                        <span className="label-text">Student's Price</span>
-                    </div>
-                    <input
-                        placeholder=''
-                        type="text"
-                        className='input input-bordered'
-                        value={formData.dailyClassStudentsPrice}
-                        onChange={e => setFormData({
-                            ...formData,
-                            dailyClassStudentsPrice: e.target.value
-                        })}
-                    />
-                </label>
+                )}
             </div>
+            {showTeacher && (<>
+                <hr className="opacity-50" />
+                <div className="grid grid-cols-4 gap-5">
+                    <label className="form-control">
+                        <div className="label pb-2">
+                            <span className="label-text">Teacher Id</span>
+                        </div>
+                        <input
+                            placeholder=''
+                            type="text"
+                            className='input input-bordered'
+                            value={formData.teacherId}
+                            onChange={e => setFormData({
+                                ...formData,
+                                teacherId: e.target.value
+                            })}
+                        />
+                    </label>
+                    <label className="form-control">
+                        <div className="label pb-2">
+                            <span className="label-text">Class Link</span>
+                        </div>
+                        <input
+                            placeholder=''
+                            type="text"
+                            className='input input-bordered'
+                            value={formData.classLink}
+                            onChange={e => setFormData({
+                                ...formData,
+                                classLink: e.target.value
+                            })}
+                        />
+                    </label>
+                    <label className="form-control">
+                        <div className="label pb-2">
+                            <span className="label-text">Class Package Id</span>
+                        </div>
+                        <input
+                            placeholder=''
+                            type="text"
+                            className='input input-bordered'
+                            value={formData.dailyClassPackageId}
+                            onChange={e => setFormData({
+                                ...formData,
+                                dailyClassPackageId: e.target.value
+                            })}
+                        />
+                    </label>
+                    <label className="form-control">
+                        <div className="label pb-2">
+                            <span className="label-text">Teacher's Price</span>
+                        </div>
+                        <input
+                            placeholder=''
+                            type="text"
+                            className='input input-bordered'
+                            value={formData.dailyClassTeachersPrice}
+                            onChange={e => setFormData({
+                                ...formData,
+                                dailyClassTeachersPrice: e.target.value
+                            })}
+                        />
+                    </label>
+                    <label className="form-control">
+                        <div className="label pb-2">
+                            <span className="label-text">Student's Price</span>
+                        </div>
+                        <input
+                            placeholder=''
+                            type="text"
+                            className='input input-bordered'
+                            value={formData.dailyClassStudentsPrice}
+                            onChange={e => setFormData({
+                                ...formData,
+                                dailyClassStudentsPrice: e.target.value
+                            })}
+                        />
+                    </label>
+                </div>
+            </>)}
             <div>
                 <button className="btn btn-primary" onClick={handleCreateStudent}>
-                    Create Student
+                    Create User As Student {showTeacher && "& Assign Teacher"}
                 </button>
             </div>
             <AdminErrorDisplay error={error} />

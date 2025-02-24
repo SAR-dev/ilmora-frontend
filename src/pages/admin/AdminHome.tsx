@@ -11,6 +11,8 @@ import TeacherInvoiceByTeacher from 'components/admin/TeacherInvoiceByTeacher'
 import TeacherInvoiceCreate from 'components/admin/TeacherInvoiceCreate'
 import TeacherInvoiceList from 'components/admin/TeacherInvoiceList'
 import TeacherList from 'components/admin/TeacherList'
+import TeacherStudentList from 'components/admin/TeacherStudentList'
+import UserUpdate from 'components/admin/UserUpdate'
 import Card from 'components/Card'
 import AdminNavLayout from 'layouts/AdminNavLayout'
 import { MdOutlineAdminPanelSettings } from 'react-icons/md'
@@ -26,10 +28,11 @@ const AdminHome = () => {
                     <div className="grid grid-cols-1">
                         <TeacherCreate />
                         <StudentCreate />
+                        <UserUpdate />
                         <TeacherList />
                         <StudentList />
                         <DailyClassPackageList />
-                        {/* <UserUpdate /> */}
+                        <TeacherStudentList />
                         <TeacherInvoiceCreate />
                         <StudentInvoiceCreate />
                         <TeacherInvoiceList />
