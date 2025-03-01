@@ -1,7 +1,7 @@
 import Loading from "components/Loading"
 import { useEffect, useRef, useState } from "react";
 import AdminAccordion from "./AdminAccordion"
-import { FaSearch } from "react-icons/fa";
+import { FaCheck, FaSearch } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { pb } from "contexts/PocketContext";
 import {
@@ -9,7 +9,7 @@ import {
     TeacherExtraPaymentViewResponse,
     TeacherInvoicePaymentViewResponse,
 } from "types/pocketbase";
-import { dateTimeViewFormatter } from "helpers";
+import { dateTimeViewFormatter, dateViewFormatter } from "helpers";
 import { Dialog, DialogPanel } from "@headlessui/react";
 import { ListResult } from "pocketbase";
 import PaginateRes from "./PaginateRes";
@@ -124,6 +124,35 @@ const TeacherInvoiceByInvoiceNo = () => {
             .finally(() => setIsLoading(false))
     }
 
+    const sendMessage = (invoiceId: string) => {
+        const invoice = invoicePaymentData?.items.find(e => e.teacherInvoiceId == invoiceId)
+        if (!invoice) return;
+        if (invoice.messageSent == 0) {
+            pb.collection(Collections.TeacherInvoiceMsg).create({
+                teacherId: invoice.teacherId,
+                teacherInvoiceId: invoice.teacherInvoiceId
+            })
+                .then(() => {
+                    setCount(count + 1)
+                    const message = `
+                            ${invoice.name},
+                    
+                            As-Salamu Alaikum,
+                            Payment Invoice [ ${dateViewFormatter.format(new Date(invoice.createdAt))} ]
+                            Payment Amount [ ${invoice.totalTeachersPrice} TK ]
+                    
+                            Please see details at: ${import.meta.env.VITE_API_URL}/invoice/teacher/${invoice.teacherInvoiceId}/${invoice.teacherId}/html
+                            `
+                    const link = `https://wa.me/${invoice.whatsAppNo?.replace(/\D/g, "")}?text=${encodeURIComponent(message)}`
+                    window.open(link, '_blank')?.focus();
+                })
+                .catch(err => {
+                    toast.error("Failed to generate message!")
+                    console.log("Error: ", err)
+                })
+        }
+    }
+
     return (
         <AdminAccordion title="Teacher Invoice By Invoice No" show={show} setShow={setShow}>
             <div className="flex justify-between">
@@ -151,6 +180,7 @@ const TeacherInvoiceByInvoiceNo = () => {
                         <tr>
                             <th></th>
                             <th>Invoice Id</th>
+                            <th>Message Status</th>
                             <th>Invoiced At</th>
                             <th>Invoiced Amount</th>
                             <th>Balance Id</th>
@@ -186,6 +216,16 @@ const TeacherInvoiceByInvoiceNo = () => {
                                             <code className="code bg-base-200 px-2 py-1">{item.teacherInvoiceId}</code>
                                         </CopyToClipboard>
                                     ) : "-"}
+                                </td>
+                                <td>
+                                    {JSON.parse(JSON.stringify(item.messageSent)) == 1 ? (
+                                        <button onClick={() => sendMessage(item.teacherInvoiceId)} className="btn btn-sm btn-success">
+                                            <FaCheck className="size-4" />
+                                            Sent
+                                        </button>
+                                    ) : (
+                                        <button onClick={() => sendMessage(item.teacherInvoiceId)} className="btn btn-sm btn-info">Send Msg</button>
+                                    )}
                                 </td>
                                 <td>
                                     {JSON.stringify(item.invoicedAt).length > 3 ?
