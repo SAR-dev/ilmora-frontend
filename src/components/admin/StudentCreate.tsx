@@ -31,7 +31,22 @@ const StudentCreate = () => {
         setError("")
         api
             .post("/api/a/student", { ...formData })
-            .then(() => toast.success("Student record created"))
+            .then(() => {
+                toast.success("Student record created")
+                setFormData({
+                    email: "",
+                    name: "",
+                    password: "",
+                    whatsAppNo: "",
+                    utcOffset: "",
+                    location: "",
+                    teacherId: "",
+                    classLink: "",
+                    dailyClassPackageId: "",
+                    dailyClassTeachersPrice: "",
+                    dailyClassStudentsPrice: ""
+                })
+            })
             .catch((err) => setError(getAxiosStringError(err)))
             .finally(() => setIsLoading(false))
     }

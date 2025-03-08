@@ -23,7 +23,17 @@ const TeacherCreate = () => {
         setError("")
         api
             .post("/api/a/teacher", { ...formData })
-            .then(() => toast.success("Teacher record created"))
+            .then(() => {
+                toast.success("Teacher record created")
+                setFormData({
+                    email: "",
+                    name: "",
+                    password: "",
+                    whatsAppNo: "",
+                    utcOffset: "",
+                    location: ""
+                })
+            })
             .catch((err) => setError(getAxiosStringError(err)))
             .finally(() => setIsLoading(false))
     }
