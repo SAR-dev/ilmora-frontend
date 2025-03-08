@@ -8,6 +8,7 @@ import { TexpandStudentListWithUser } from "types/extended"
 import PaginateRes from "./PaginateRes"
 import { FaSearch } from "react-icons/fa";
 import CopyToClipboard from "components/CopyToClipboard";
+import toast from "react-hot-toast";
 
 const StudentList = () => {
     const [count, setCount] = useState(1)
@@ -52,6 +53,18 @@ const StudentList = () => {
         setPageNo(pageNo - 1)
     }
 
+    const changeClassAbility = (studentId: string, disableClass: boolean) => {
+        setIsLoading(true)
+        pb
+            .collection(Collections.Students)
+            .update(studentId, { disableClass })
+            .then(() => toast.success(disableClass ? "Class disabled!" : "Class Enabled!"))
+            .finally(() => {
+                setCount(count + 1)
+                setIsLoading(false)
+            })
+    }
+
     return (
         <AdminAccordion title="Student List" show={show} setShow={setShow}>
             <div className="flex justify-between">
@@ -82,6 +95,7 @@ const StudentList = () => {
                             <th>WhatsApp</th>
                             <th>Utc Offset</th>
                             <th>Location</th>
+                            <th>Class Stat</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -94,7 +108,7 @@ const StudentList = () => {
                                 </th>
                                 <td>
                                     <CopyToClipboard text={item.id}>
-                                    <code className="code bg-base-200 px-2 py-1">{item.id}</code>
+                                        <code className="code bg-base-200 px-2 py-1">{item.id}</code>
                                     </CopyToClipboard>
                                 </td>
                                 <td>
@@ -111,6 +125,17 @@ const StudentList = () => {
                                 </td>
                                 <td>
                                     {item.expand.userId.location}
+                                </td>
+                                <td>
+                                    <div className="flex gap-1 items-center">
+                                        <input 
+                                            type="checkbox" 
+                                            className="toggle toggle-success"
+                                            checked={!item.disableClass}
+                                            onChange={e => changeClassAbility(item.id, !e.target.checked)}
+                                        />
+                                        {item.disableClass ? "OFF" : "ON"}
+                                    </div>
                                 </td>
                             </tr>
                         ))}

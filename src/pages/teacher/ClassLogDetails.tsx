@@ -46,6 +46,8 @@ const ClassLogDetails = () => {
         return "N/A"
     }, [time])
 
+    const classDisabled = useMemo(() => classDetails?.disableClass == "1", [classDetails])
+
     const classPackageDetails = useMemo(() => {
         return classPackageList.find(e => e.id == classDetails?.packageId)
     }, [classDetails])
@@ -57,19 +59,6 @@ const ClassLogDetails = () => {
 
         return () => clearInterval(interval);
     }, []);
-
-    useEffect(() => {
-        getClassDetails()
-    }, [id])
-
-    useEffect(() => {
-        if (!classDetails) return;
-        pb
-            .collection(Collections.DailyClassPackages).getFullList({
-                filter: `hidden = false`
-            })
-            .then(res => setClassPackageList(res))
-    }, [classDetails])
 
     const getClassDetails = async () => {
         if (!id || id?.length == 0) return;
@@ -85,7 +74,21 @@ const ClassLogDetails = () => {
             })
     }
 
+    useEffect(() => {
+        getClassDetails()
+    }, [id])
+
+    useEffect(() => {
+        if (!classDetails) return;
+        pb
+            .collection(Collections.DailyClassPackages).getFullList({
+                filter: `hidden = false`
+            })
+            .then(res => setClassPackageList(res))
+    }, [classDetails])
+
     const startClass = async () => {
+        if(classDisabled) return;
         setIsLoading(true)
         await api
             .post(`/api/t/class-logs/${id}/start`)
@@ -126,6 +129,7 @@ const ClassLogDetails = () => {
     }
 
     const saveClassPackage = async () => {
+        if(classDisabled) return;
         if (classDetails?.status != 'FINISHED') {
             toast.error("Class not finished yet")
             return;
@@ -145,6 +149,7 @@ const ClassLogDetails = () => {
     }
 
     const saveClassNote = async () => {
+        if(classDisabled) return;
         if (!classDetails) return;
         setIsLoading(true)
         await api
@@ -161,11 +166,13 @@ const ClassLogDetails = () => {
     }
 
     const openNoteModal = () => {
+        if(classDisabled) return;
         setIsNoteModalOpen(true)
         setNote(classDetails?.classNote ?? "")
     }
 
     const openClassPacModal = () => {
+        if(classDisabled) return;
         setIsPacModalOpen(true)
         setClassPackage(classDetails?.packageId ?? "")
     }
@@ -243,7 +250,12 @@ const ClassLogDetails = () => {
                                 )}
                             </div>
                             <div className="col-span-2">
-                                <div className="flex divide-x divide-base-300">
+                                <div className="flex divide-x divide-base-300 relative">
+                                    {classDisabled && (
+                                        <div className="absolute bg-error h-full w-full flex justify-center items-center z-[1]">
+                                            <div className='text-error-content'>Class has been disabled by admin !</div>
+                                        </div>
+                                    )}
                                     <div className="w-full flex flex-1 justify-center items-center">
                                         {classDetails.status == 'CREATED' ? (
                                             <div className="tooltip tooltip-info" data-tip="Start Class">

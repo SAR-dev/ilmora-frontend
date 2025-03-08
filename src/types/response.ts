@@ -92,6 +92,7 @@ export interface ClassLogDetailsDataType {
     packageId: string;
     studentUserId: string
     teacherUserId: string
+    disableClass: string
 }
 
 export interface AdminStudentLastInvoiceListType {

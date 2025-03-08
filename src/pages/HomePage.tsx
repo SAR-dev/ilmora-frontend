@@ -7,7 +7,7 @@ const HomePage = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    if(!user){
+    if (!user) {
       navigate("/sign-in")
     }
     if (userData.isTeacher) {
@@ -28,10 +28,16 @@ const HomePage = () => {
     <div className="h-screen w-full flex justify-center items-center">
       <div className="flex flex-col gap-2 items-center">
         <span className="loading loading-spinner text-primary loading-lg" />
-        <div className="flex gap-2">
-          <span className="loading loading-dots loading-xs" />
-          Choosing UI Layout
-          <span className="loading loading-dots loading-xs" />
+        <div className="flex flex-col gap-5">
+          <div className="flex gap-2">
+            <span className="loading loading-dots loading-xs" />
+            Choosing UI Layout
+            <span className="loading loading-dots loading-xs" />
+          </div>
+          <button className="btn btn-info" onClick={() => {
+            localStorage.clear()
+            window.location.reload()
+          }}>Refresh</button>
         </div>
       </div>
     </div>

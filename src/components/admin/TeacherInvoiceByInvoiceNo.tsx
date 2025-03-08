@@ -16,6 +16,8 @@ import PaginateRes from "./PaginateRes";
 import { Link } from "react-router";
 import { BsReceiptCutoff } from "react-icons/bs";
 import CopyToClipboard from "components/CopyToClipboard";
+import { useLocalStorage } from "usehooks-ts";
+import { constants } from "constants";
 
 const TeacherInvoiceByInvoiceNo = () => {
     const [count, setCount] = useState(1)
@@ -36,6 +38,10 @@ const TeacherInvoiceByInvoiceNo = () => {
         paymentMethod: "",
         paymentInfo: ""
     })
+
+    const [templateOpen, setTemplateOpen] = useState(false)
+    const [templateMsg, setTemplateMsg] = useLocalStorage<string>(constants.TEMPLATE.KEY.TEACHER, constants.TEMPLATE.MSG.TEACHER)
+    const [tempTemplateMsg, setTempTemplateMsg] = useState("")
 
     const fetchData = async () => {
         try {
@@ -124,8 +130,8 @@ const TeacherInvoiceByInvoiceNo = () => {
             .finally(() => setIsLoading(false))
     }
 
-    const sendMessage = (invoiceId: string) => {
-        const invoice = invoicePaymentData?.items.find(e => e.teacherInvoiceId == invoiceId)
+    const sendMessage = (invoiceId: string, teacherId: string) => {
+        const invoice = invoicePaymentData?.items.find(e => e.teacherInvoiceId == invoiceId && e.teacherId == teacherId)
         if (!invoice) return;
         if (invoice.messageSent == 0) {
             pb.collection(Collections.TeacherInvoiceMsg).create({
@@ -134,15 +140,12 @@ const TeacherInvoiceByInvoiceNo = () => {
             })
                 .then(() => {
                     setCount(count + 1)
-                    const message = `
-                            ${invoice.name},
-                    
-                            As-Salamu Alaikum,
-                            Payment Invoice [ ${dateViewFormatter.format(new Date(invoice.createdAt))} ]
-                            Payment Amount [ ${invoice.totalTeachersPrice} TK ]
-                    
-                            Please see details at: ${import.meta.env.VITE_API_URL}/invoice/teacher/${invoice.teacherInvoiceId}/${invoice.teacherId}/html
-                            `
+                    const message = templateMsg
+                        .replace("{{name}}", invoice.name)
+                        .replace("{{invoicedAt}}", dateViewFormatter.format(new Date(invoice.createdAt)))
+                        .replace("{{invoiceAmount}}", JSON.stringify(invoice.totalTeachersPrice))
+                        .replace("{{invoiceURL}}", `${import.meta.env.VITE_API_URL}/invoice/teacher/${invoice.teacherInvoiceId}/${invoice.teacherId}/html`)
+
                     const link = `https://wa.me/${invoice.whatsAppNo?.replace(/\D/g, "")}?text=${encodeURIComponent(message)}`
                     window.open(link, '_blank')?.focus();
                 })
@@ -151,6 +154,17 @@ const TeacherInvoiceByInvoiceNo = () => {
                     console.log("Error: ", err)
                 })
         }
+    }
+
+    const openTemplate = () => {
+        setTempTemplateMsg(templateMsg)
+        setTemplateOpen(true)
+    }
+
+    const saveTemplate = () => {
+        setTemplateMsg(tempTemplateMsg)
+        setTemplateOpen(false)
+        toast.success("Message template updated!")
     }
 
     return (
@@ -169,6 +183,7 @@ const TeacherInvoiceByInvoiceNo = () => {
                     </button>
                 </div>
                 <div className="flex gap-5">
+                    <button className="btn" onClick={openTemplate}>Message Template</button>
                     <button className="btn" onClick={() => setCount(count + 1)}>
                         Refresh Data
                     </button>
@@ -219,12 +234,12 @@ const TeacherInvoiceByInvoiceNo = () => {
                                 </td>
                                 <td>
                                     {JSON.parse(JSON.stringify(item.messageSent)) == 1 ? (
-                                        <button onClick={() => sendMessage(item.teacherInvoiceId)} className="btn btn-sm btn-success">
+                                        <button onClick={() => sendMessage(item.teacherInvoiceId, item.teacherId)} className="btn btn-sm btn-success">
                                             <FaCheck className="size-4" />
                                             Sent
                                         </button>
                                     ) : (
-                                        <button onClick={() => sendMessage(item.teacherInvoiceId)} className="btn btn-sm btn-info">Send Msg</button>
+                                        <button onClick={() => sendMessage(item.teacherInvoiceId, item.teacherId)} className="btn btn-sm btn-info">Send Msg</button>
                                     )}
                                 </td>
                                 <td>
@@ -412,6 +427,25 @@ const TeacherInvoiceByInvoiceNo = () => {
                                 disabled={isLoading}
                             >
                                 Submit Payment
+                            </button>
+                        </div>
+                    </DialogPanel>
+                </div>
+            </Dialog>
+            <Dialog open={templateOpen} onClose={() => setTemplateOpen(false)} className="relative z-50">
+                <div className="fixed inset-0 flex w-screen items-center justify-center p-4 bg-base-300/75">
+                    <DialogPanel className="card max-w-lg space-y-4 border bg-base-100 border-base-300 p-8">
+                        <div className="flex flex-col justify-center items-center gap-5 w-96">
+                            <textarea
+                                className="textarea textarea-bordered h-64 w-full"
+                                value={tempTemplateMsg}
+                                onChange={e => setTempTemplateMsg(e.target.value)}
+                            />
+                            <button
+                                className="btn btn-primary w-full"
+                                onClick={saveTemplate}
+                            >
+                                Save Template
                             </button>
                         </div>
                     </DialogPanel>

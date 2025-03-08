@@ -28,5 +28,31 @@ export const constants = {
     PAYMENT_TYPE: {
         INVOICE_TYPE: "Invoice",
         EXTRA_TYPE: "Extra"
+    },
+    TEMPLATE: {
+        MSG: {
+            TEACHER:
+                `{{name}},
+
+As-Salamu Alaikum,
+Invoice Date: [ {{invoicedAt}} ]
+Payment Amount: [ {{invoiceAmount}} TK ]
+
+Please see details at: {{invoiceURL}}
+`,
+            STUDENT:
+                `{{name}},
+
+As-Salamu Alaikum,
+Invoice Date: [ {{invoicedAt}} ]
+Payment Amount: [ {{invoiceAmount}} TK ]
+
+Please see details at: {{invoiceURL}}
+`
+        },
+        KEY: {
+            TEACHER: "teacher-msg",
+            STUDENT: "student-msg",
+        }
     }
 }
